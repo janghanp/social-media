@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <div className="w-full border-b border-primary shadow-lg">
+    <div className="w-full border-b border-primary shadow-lg fixed top-0">
       <div className="container mx-auto">
         <div className="navbar bg-base-100">
           {/* left */}
