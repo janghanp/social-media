@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useSession } from "next-auth/react";
 import Navbar from "./Navbar";
 
 type Props = {
@@ -7,10 +7,16 @@ type Props = {
 };
 
 const Layout = ({ children }: Props) => {
+  const { status } = useSession();
+
+  if (status === "loading") {
+    return <></>;
+  }
+
   return (
     <>
       <Navbar />
-      {children}
+      <main className="bg-gray-50 pt-20">{children}</main>
     </>
   );
 };
