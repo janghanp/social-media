@@ -12,11 +12,13 @@
     "@next-auth/prisma-adapter": "^1.0.3",
     "@prisma/client": "^3.14.0",
     "daisyui": "^2.15.0",
+    "formik": "^2.2.9",
     "next": "12.1.6",
     "next-auth": "^4.3.4",
     "react": "18.1.0",
     "react-dom": "18.1.0",
-    "react-icons": "^4.3.1"
+    "react-icons": "^4.3.1",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "17.0.33",

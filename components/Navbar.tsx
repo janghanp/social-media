@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="w-full border-b border-primary shadow-lg fixed top-0 bg-base-100 z-20">
+      <div className="w-full border-b-2 border-primary shadow-lg fixed top-0 bg-base-100 z-20">
         <div className="container max-w-4xl mx-auto">
           <div className="navbar justify-between bg-base-100 px-5 lg:px-0">
             {/* left */}
@@ -37,15 +37,12 @@ const Navbar = () => {
                 <Link href={"/login"}>
                   <div className="btn btn-ghost">log in</div>
                 </Link>
-                <Link href={"/signup"}>
-                  <div className="btn btn-outline ml-5">sign up</div>
-                </Link>
               </div>
             )}
           </div>
         </div>
       </div>
-      <PostModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      {isOpen && <PostModal setIsOpen={setIsOpen} />}
     </>
   );
 };
