@@ -16,7 +16,7 @@ const Layout = ({ children }: Props) => {
   return (
     <>
       <Navbar />
-      <main className="bg-gray-50 pt-20">{children}</main>
+      <main className="bg-gray-50/50">{children}</main>
     </>
   );
 };
