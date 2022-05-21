@@ -10,10 +10,14 @@ export default async function handler(
   if (req.method === "POST") {
     const jwt = await getToken({ req, secret: process.env.SECRET });
 
+    if (!jwt) {
+      res.status(500).json({ message: "Something went wrong..." });
+    }
+
     const post = await prisma.post.create({
       data: {
         body: req.body.body,
-        userId: jwt ? jwt.sub : "",
+        userId: jwt!.sub,
       },
     });
 
