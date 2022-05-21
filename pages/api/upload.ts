@@ -48,6 +48,8 @@ export default async function handler(
         const response = await s3.send(command);
 
         console.log(response);
+
+        res.status(201).json({ message: "Successfully uploaded!" });
       });
     } catch (err) {
       console.log(err);
