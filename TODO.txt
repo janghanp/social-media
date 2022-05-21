@@ -1,1 +1,3 @@
-- Submit with formik
+- How to store images or videos???
+  - What kind of service??
+  - How to model database??
