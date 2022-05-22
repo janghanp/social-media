@@ -1,3 +1,1 @@
-- preview menu bar
-
-- limit the type and amount of files
+- Carousel in preview.
