@@ -76,7 +76,7 @@ const PostModal = ({ setIsOpen }: Props) => {
               value={formik.values.body}
               className={`textarea border-2 ${
                 formik.errors.body ? "textarea-warning" : "textarea-primary"
-              } w-full h-56 text-lg`}
+              } w-full h-40 text-lg`}
             ></textarea>
             {formik.errors.body && (
               <span className="text-red-500 text-sm">{formik.errors.body}</span>
@@ -90,7 +90,7 @@ const PostModal = ({ setIsOpen }: Props) => {
                 className="h-8 w-8 hover:cursor-pointer"
               />
             </div>
-            <div className="flex flex-row space-x-5 mt-10">
+            <div className="flex flex-row space-x-5 mt-5">
               <button
                 type="submit"
                 className="btn btn-outline border-2"
