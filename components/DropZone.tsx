@@ -64,7 +64,7 @@ const DropZone = () => {
     });
 
   const dragAreaClasses = classNames({
-    "p-1 border-2 border-dashed rounded-lg max-h-80 overflow-auto": true,
+    "border-2 border-dashed rounded-lg max-h-80 overflow-auto": true,
     "bg-gray-200": isDragActive,
     "border-warning": fileRejections.length > 0,
     "border-gray-500": fileRejections.length === 0,
@@ -79,37 +79,42 @@ const DropZone = () => {
 
   return (
     <>
-      <section className="relative mt-5 hover:cursor-pointer hover:bg-black/20 transition duration-200 rounded-lg">
-        <div className={dragAreaClasses} {...getRootProps()}>
-          {filesRef.current.length > 0 && (
-            <>
-              {/* Button for deleting preview images */}
-              <div
-                onClick={previewCancelHandler}
-                className="btn btn-sm btn-circle btn-outline border-2 border-gray-500 text-gray-500 absolute z-20 right-5 top-5"
-              >
-                ✕
-              </div>
-              {/* Button for adding an image or a video */}
-              <div className="inset-0 w-56 btn btn-outline border-gray-500 text-gray-500 absolute mx-auto my-auto">
-                <BsFileEarmarkPlus className="w-6 h-6 mr-3" />
-                <span>Add Photos/Videos</span>
-              </div>
-            </>
-          )}
-          <input {...getInputProps()} />
-          {filesRef.current.length > 0 ? (
-            <Preview files={filesRef.current} />
-          ) : (
+      {filesRef.current.length === 0 ? (
+        <section className="relative mt-5 hover:cursor-pointer hover:bg-black/10 transition duration-200 rounded-lg">
+          <div className={dragAreaClasses} {...getRootProps()}>
+            <input {...getInputProps()} />
             <div className="flex flex-col items-center justify-center space-y-2 py-5">
               <HiOutlineUpload className="w-6 h-6 text-gray-500" />
               <p className="text-base text-primary text-center">
                 Drag 'n' drop some files here, or click to select files
               </p>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      ) : (
+        <section className="relative mt-5 rounded-lg">
+          <div className={dragAreaClasses}>
+            {/* preview menubar */}
+            <div className="flex flex-row ">
+              <div
+                onClick={previewCancelHandler}
+                className="btn btn-sm btn-circle border-none text-white absolute z-20 right-5 top-5 bg-black/60"
+              >
+                ✕
+              </div>
+              <div
+                {...getRootProps()}
+                className="right-5 bottom-5 btn btn-md btn-circle border-none text-white absolute z-20 bg-black/60"
+              >
+                <input {...getInputProps()} />
+                <BsFileEarmarkPlus className="w-6 h-6" />
+                {/* <span className="text-sm">Add Photos/Videos</span> */}
+              </div>
+            </div>
+            <Preview files={filesRef.current} />
+          </div>
+        </section>
+      )}
       {fileRejections.map(({ file, errors }) => {
         return (
           <div
