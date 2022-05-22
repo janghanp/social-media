@@ -16,3 +16,12 @@ body {
 #__next {
   height: 100%;
 }
+
+.swiper-button-prev::after {
+  color: black;
+}
+
+.swiper-button-next::after {
+  color: black;
+}
+

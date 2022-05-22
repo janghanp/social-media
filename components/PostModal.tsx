@@ -56,7 +56,7 @@ const PostModal = ({ setIsOpen }: Props) => {
       <div className="fixed inset-0 bg-black/30 z-30"></div>
 
       <div className="absolute flex w-full mx-auto min-h-screen justify-center items-center">
-        <div className="bg-white relative z-40 w-[400px] sm:w-[500px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
+        <div className="bg-white relative z-40 w-5/6 sm:w-[600px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
           <h3 className="font-bold text-xl sm:text-2xl mb-5">
             What's on your mind?
           </h3>
@@ -96,7 +96,7 @@ const PostModal = ({ setIsOpen }: Props) => {
                 className="btn btn-outline border-2"
                 disabled={isLoading ?? "disabled"}
               >
-                Save
+                Post
               </button>
               <button
                 onClick={cancelHandler}
