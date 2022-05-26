@@ -1,1 +1,4 @@
-- Carousel in preview.
+- How to deal with multiple files.
+  - send a reqeust several times??
+
+- How to discard image upload step

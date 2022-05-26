@@ -1,9 +1,8 @@
-import React, { useCallback, useRef, useEffect, useState } from "react";
-import { FileError, useDropzone } from "react-dropzone";
+import React, { useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import classNames from "classnames";
-import axios from "axios";
+// import axios from "axios";
 import { HiOutlineUpload } from "react-icons/hi";
-import { BsFileEarmarkPlus } from "react-icons/bs";
 
 import Preview from "./Preview";
 
@@ -12,30 +11,39 @@ export interface CustomFile extends File {
 }
 
 const DropZone = () => {
-  const [reset, setReset] = useState<boolean>(false);
-  //To keep previous files from re-rendering.
-  const filesRef = useRef<CustomFile[]>([]);
+  const [files, setFiles] = useState<CustomFile[]>([]);
+  // const [progress, setProgress] = useState<number>(0);
 
-  useEffect(() => {}, [filesRef.current]);
+  const onDropHandler = useCallback(async (acceptedFiles: File[]) => {
+    //set preview images
+    setFiles((prevState) => {
+      const newAddedFiles = acceptedFiles.map((file) => {
+        return Object.assign(file, { preview: URL.createObjectURL(file) });
+      });
 
-  const onDropHandler = useCallback((acceptedFiles: File[]) => {
-    const newAddedFiles: CustomFile[] = acceptedFiles.map((file: File) =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      })
-    );
+      return [...prevState, ...newAddedFiles];
+    });
 
-    filesRef.current = [...filesRef.current, ...newAddedFiles];
-
-    // setFiles([...files, ...newAddedFiles]);
-
-    // const formData = new FormData();
-    // formData.append("file", acceptedFiles[0]);
-
-    //Make a http request to store image to the amazon s3
-    // axios.post("/api/upload", formData).then((response) => {
-    //   console.log(response);
+    //Make a http request for creating a signedURL
+    // const { data } = await axios.post("/api/getSignedUrl", {
+    //   type: acceptedFiles[0].type,
     // });
+
+    //Make a put http request for uploading a file data to the amazon s3
+    // const response = await axios.put(data.uploadURL, acceptedFiles[0], {
+    //   headers: {
+    //     "Content-type": acceptedFiles[0].type,
+    //     "Access-Control-Allow-Otigin": "*",
+    //   },
+    //   onUploadProgress: (p) => {
+    //     const completedProgress = Math.floor((p.loaded / p.total) * 100);
+    //
+    //     setProgress(completedProgress);
+    //   },
+    // });
+
+    // console.log(process.env.NEXT_PUBLIC_AWS_BUCKET_URL + "/" + data.Key);
+    // console.log(response);
   }, []);
 
   const fileSizeValidator = (file: File) => {
@@ -51,6 +59,7 @@ const DropZone = () => {
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } =
     useDropzone({
+      multiple: true,
       useFsAccessApi: false,
       accept: {
         "image/jpeg": [".jpeg", ".jpg"],
@@ -70,61 +79,20 @@ const DropZone = () => {
     "border-gray-500": fileRejections.length === 0,
   });
 
-  const previewCancelHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    filesRef.current = [];
-    //force to re-render
-    setReset(!reset);
-  };
-
   return (
     <>
-      {filesRef.current.length === 0 ? (
-        <section className="relative mt-5 hover:cursor-pointer hover:bg-black/10 transition duration-200 rounded-lg">
-          <div className={dragAreaClasses} {...getRootProps()}>
-            <input {...getInputProps()} />
-            <div className="flex flex-col items-center justify-center space-y-2 py-5">
-              <HiOutlineUpload className="w-6 h-6 text-gray-500" />
-              <p className="text-base text-primary text-center">
-                Drag 'n' drop some files here, or click to select files
-              </p>
-            </div>
+      <section className="relative mt-5 hover:cursor-pointer hover:bg-black/10 transition duration-200 rounded-lg">
+        <div className={dragAreaClasses} {...getRootProps()}>
+          <input {...getInputProps()} />
+          <div className="flex flex-col items-center justify-center space-y-2 py-5">
+            <HiOutlineUpload className="w-6 h-6 text-gray-500" />
+            <p className="text-base text-primary text-center">
+              Drag 'n' drop some files here, or click to select files
+            </p>
           </div>
-        </section>
-      ) : (
-        <section className="relative mt-5 rounded-lg">
-          <div className={dragAreaClasses}>
-            {/* preview menubar */}
-            <div className="flex flex-row ">
-              <div
-                onClick={previewCancelHandler}
-                className="btn btn-sm btn-circle border-none text-white absolute z-20 right-5 top-5 bg-black/60"
-              >
-                ✕
-              </div>
-              <div
-                {...getRootProps()}
-                className="right-5 bottom-5 btn btn-md btn-circle border-none text-white absolute z-20 bg-black/60"
-              >
-                <input {...getInputProps()} />
-                <BsFileEarmarkPlus className="w-6 h-6" />
-                {/* <span className="text-sm">Add Photos/Videos</span> */}
-              </div>
-            </div>
-            <Preview files={filesRef.current} />
-          </div>
-        </section>
-      )}
-      {fileRejections.map(({ file, errors }) => {
-        return (
-          <div
-            key={file.name}
-            className="text-sm text-warning text-center mt-5"
-          >
-            {errors[0].message}
-          </div>
-        );
-      })}
+        </div>
+      </section>
+      {files.length > 0 && <Preview files={files} setFiles={setFiles} />}
     </>
   );
 };
