@@ -53,7 +53,7 @@ const PostModal = ({ setIsOpen }: Props) => {
   return (
     <>
       {/* Fade away background */}
-      <div className="fixed inset-0 bg-black/30 z-30"></div>
+      <div className="fixed inset-0 bg-black/70 z-30"></div>
 
       <div className="absolute flex w-full mx-auto min-h-screen justify-center items-center">
         <div className="bg-white relative z-40 w-5/6 sm:w-[600px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
