@@ -8,42 +8,24 @@ import Preview from "./Preview";
 
 export interface CustomFile extends File {
   preview: string;
+  uploaded: boolean;
 }
 
 const DropZone = () => {
   const [files, setFiles] = useState<CustomFile[]>([]);
-  // const [progress, setProgress] = useState<number>(0);
 
   const onDropHandler = useCallback(async (acceptedFiles: File[]) => {
     //set preview images
     setFiles((prevState) => {
       const newAddedFiles = acceptedFiles.map((file) => {
-        return Object.assign(file, { preview: URL.createObjectURL(file) });
+        return Object.assign(file, {
+          preview: URL.createObjectURL(file),
+          uploaded: false,
+        });
       });
 
       return [...prevState, ...newAddedFiles];
     });
-
-    //Make a http request for creating a signedURL
-    // const { data } = await axios.post("/api/getSignedUrl", {
-    //   type: acceptedFiles[0].type,
-    // });
-
-    //Make a put http request for uploading a file data to the amazon s3
-    // const response = await axios.put(data.uploadURL, acceptedFiles[0], {
-    //   headers: {
-    //     "Content-type": acceptedFiles[0].type,
-    //     "Access-Control-Allow-Otigin": "*",
-    //   },
-    //   onUploadProgress: (p) => {
-    //     const completedProgress = Math.floor((p.loaded / p.total) * 100);
-    //
-    //     setProgress(completedProgress);
-    //   },
-    // });
-
-    // console.log(process.env.NEXT_PUBLIC_AWS_BUCKET_URL + "/" + data.Key);
-    // console.log(response);
   }, []);
 
   const fileSizeValidator = (file: File) => {
