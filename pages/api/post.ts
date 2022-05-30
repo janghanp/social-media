@@ -1,7 +1,29 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
+import { S3Client, CopyObjectCommand } from "@aws-sdk/client-s3";
 
 import { prisma } from "../../lib/prisma";
+
+const s3 = new S3Client({
+  region: process.env.AWS_REGION as string,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+  },
+});
+
+const copyObject = async (key: string) => {
+  const input = {
+    Bucket: process.env.AWS_S3_BUCKET,
+    CopySource: `${process.env.AWS_S3_BUCKET}/temp/${key}`,
+    Key: `posts/${key}`,
+    ACL: "public-read",
+  };
+
+  //Copy images in use into another directory
+  const command = new CopyObjectCommand(input);
+  await s3.send(command);
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,18 +36,30 @@ export default async function handler(
       res.status(500).json({ message: "Something went wrong..." });
     }
 
-    const { body, fileUrls } = req.body;
+    try {
+      const { body, Keys }: { body: string; Keys: string[] } = req.body;
+      //Copy objects from temp to posts.
+      await Promise.all(Keys.map((key) => copyObject(key)));
 
-    console.log(body);
-    console.log(fileUrls);
+      const fileUrls = Keys.map(
+        (key) => `${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${key}`
+      );
 
-    // const post = await prisma.post.create({
-    //   data: {
-    //     body: req.body.body,
-    //     userId: jwt!.sub,
-    //   },
-    // });
+      //Store fileUrls and body into the mongodb.
+      await prisma.post.create({
+        data: {
+          userId: jwt!.sub,
+          body: body,
+          files: fileUrls,
+        },
+      });
 
-    // res.status(201).json({ data: post });
+      res.status(201).json({ message: "Successfully posted!" });
+    } catch (err) {
+      console.log(err);
+      res
+        .status(500)
+        .json({ message: "Something went wrong please try again..." });
+    }
   }
 }

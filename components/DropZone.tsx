@@ -10,7 +10,7 @@ import Preview from "./Preview";
 export interface CustomFile extends File {
   preview: string;
   uploaded: boolean;
-  fileUrl?: string;
+  Key?: string;
 }
 
 interface formikProps {
