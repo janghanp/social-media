@@ -29,8 +29,19 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
         },
       });
 
-      //Add the file url uploaded to the s3 to files state in dropzone.
-      console.log(process.env.NEXT_PUBLIC_AWS_BUCKET_URL + "/" + data.Key);
+      //Update the state with an actual file url.
+      setFiles((prevState) =>
+        prevState.map((f) => {
+          if (f === file) {
+            f.fileUrl = process.env.NEXT_PUBLIC_AWS_BUCKET_URL + "/" + data.Key;
+            f.uploaded = true;
+
+            return f;
+          }
+
+          return f;
+        })
+      );
     };
 
     uploadFile();
@@ -38,7 +49,8 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
 
   const deleteHandler = () => {
     URL.revokeObjectURL(file.preview);
-
+    //Delete a file in the state but the file is actually alive in the bucket.
+    //It is going to be deleted handling by tagging and the lifecyle rule on objects.
     setFiles((prevState) => prevState.filter((f) => f !== file));
   };
 

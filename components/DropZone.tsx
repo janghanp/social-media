@@ -1,38 +1,56 @@
-import React, { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import React, { useCallback, useState, useEffect } from "react";
+import { useDropzone, FileRejection } from "react-dropzone";
 import classNames from "classnames";
-// import axios from "axios";
+import { FormikProps } from "formik";
 import { HiOutlineUpload } from "react-icons/hi";
 
+import { formikValues } from "./PostModal";
 import Preview from "./Preview";
 
 export interface CustomFile extends File {
   preview: string;
   uploaded: boolean;
+  fileUrl?: string;
 }
 
-const DropZone = () => {
+interface formikProps {
+  formik: FormikProps<formikValues>;
+}
+
+const DropZone = ({ formik }: formikProps) => {
   const [files, setFiles] = useState<CustomFile[]>([]);
 
-  const onDropHandler = useCallback(async (acceptedFiles: File[]) => {
-    //set preview images
-    setFiles((prevState) => {
-      const newAddedFiles = acceptedFiles.map((file) => {
-        return Object.assign(file, {
-          preview: URL.createObjectURL(file),
-          uploaded: false,
-        });
-      });
+  useEffect(() => {
+    //Set files value in formik
+    formik.setFieldValue("files", files, false);
+  }, [files]);
 
-      return [...prevState, ...newAddedFiles];
-    });
-  }, []);
+  const onDropHandler = useCallback(
+    async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+      if (rejectedFiles.length) {
+        return;
+      }
+
+      //set preview images
+      setFiles((prevState) => {
+        const newAddedFiles = acceptedFiles.map((file) => {
+          return Object.assign(file, {
+            preview: URL.createObjectURL(file),
+            uploaded: false,
+          });
+        });
+
+        return [...prevState, ...newAddedFiles];
+      });
+    },
+    []
+  );
 
   const fileSizeValidator = (file: File) => {
-    if (file.size > 500000000) {
+    if (file.size > 100000000) {
       return {
         code: "size-too-large",
-        message: "The file size is too big. It should be less than 500MB.",
+        message: "The file size is too big. It should be less than 100MB.",
       };
     }
 
@@ -74,6 +92,13 @@ const DropZone = () => {
           </div>
         </div>
       </section>
+      {/* Error */}
+      {fileRejections.length > 0 && (
+        <div className="text-sm text-warning mt-2">
+          {fileRejections[0].errors[0].message}
+        </div>
+      )}
+      {/* Preview */}
       {files.length > 0 && <Preview files={files} setFiles={setFiles} />}
     </>
   );

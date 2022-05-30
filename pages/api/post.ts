@@ -14,13 +14,18 @@ export default async function handler(
       res.status(500).json({ message: "Something went wrong..." });
     }
 
-    const post = await prisma.post.create({
-      data: {
-        body: req.body.body,
-        userId: jwt!.sub,
-      },
-    });
+    const { body, fileUrls } = req.body;
 
-    res.status(201).json({ data: post });
+    console.log(body);
+    console.log(fileUrls);
+
+    // const post = await prisma.post.create({
+    //   data: {
+    //     body: req.body.body,
+    //     userId: jwt!.sub,
+    //   },
+    // });
+
+    // res.status(201).json({ data: post });
   }
 }
