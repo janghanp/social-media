@@ -1,47 +1,45 @@
-import { useRouter } from "next/router";
 import React, { useState } from "react";
-import axios from "axios";
 import { FormikHelpers, useFormik } from "formik";
 import { HiOutlinePhotograph } from "react-icons/hi";
+import axios from "axios";
 
 import { PostValidationSchema } from "../lib/validation";
 import DropZone from "./DropZone";
+
+import { CustomFile } from "./DropZone";
 
 type Props = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-type formikValues = {
+export interface formikValues {
   body: string;
-};
+  files: CustomFile[];
+}
 
 const PostModal = ({ setIsOpen }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toggleDropZone, setToggleDropZone] = useState<boolean>(false);
 
-  const router = useRouter();
-
   const formik = useFormik<formikValues>({
     initialValues: {
       body: "",
+      files: [],
     },
     validationSchema: PostValidationSchema,
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (
       values: formikValues,
-      formikHelpers: FormikHelpers<formikValues>
+      _formikHelpers: FormikHelpers<formikValues>
     ) => {
-      setIsLoading(true);
+      //Block the post button when images are uploading to the bucket.
 
-      const response = await axios.post("/api/post", { body: values.body });
-
-      console.log(response);
-
-      setIsLoading(false);
-      setIsOpen(false);
-
-      router.push("/");
+      //Send http reqeuest to update tags on the objects in the bucket and store body and file data into the mongodb
+      await axios.post("/api/post", {
+        body: values.body,
+        fileUrls: values.files.map((file) => file.fileUrl),
+      });
     },
   });
 
@@ -82,7 +80,7 @@ const PostModal = ({ setIsOpen }: Props) => {
               <span className="text-red-500 text-sm">{formik.errors.body}</span>
             )}
             {/* drop zone */}
-            {toggleDropZone && <DropZone />}
+            {toggleDropZone && <DropZone formik={formik} />}
 
             <div className="mt-5">
               <HiOutlinePhotograph
@@ -107,6 +105,8 @@ const PostModal = ({ setIsOpen }: Props) => {
               </button>
             </div>
           </form>
+          <pre>{JSON.stringify(formik.values, null, 4)}</pre>
+          <pre>{JSON.stringify(formik.errors, null, 4)}</pre>
         </div>
       </div>
     </>
