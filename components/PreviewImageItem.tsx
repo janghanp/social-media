@@ -33,7 +33,7 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
       setFiles((prevState) =>
         prevState.map((f) => {
           if (f === file) {
-            f.fileUrl = process.env.NEXT_PUBLIC_AWS_BUCKET_URL + "/" + data.Key;
+            f.Key = data.Key;
             f.uploaded = true;
 
             return f;

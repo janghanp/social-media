@@ -35,11 +35,12 @@ const PostModal = ({ setIsOpen }: Props) => {
     ) => {
       //Block the post button when images are uploading to the bucket.
 
-      //Send http reqeuest to update tags on the objects in the bucket and store body and file data into the mongodb
-      await axios.post("/api/post", {
+      const response = await axios.post("/api/post", {
         body: values.body,
-        fileUrls: values.files.map((file) => file.fileUrl),
+        Keys: values.files.map((file) => file.Key),
       });
+
+      console.log(response);
     },
   });
 
