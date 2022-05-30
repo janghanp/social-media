@@ -33,14 +33,15 @@ const PostModal = ({ setIsOpen }: Props) => {
       values: formikValues,
       _formikHelpers: FormikHelpers<formikValues>
     ) => {
-      //Block the post button when images are uploading to the bucket.
+      setIsLoading(true);
 
       const response = await axios.post("/api/post", {
         body: values.body,
         Keys: values.files.map((file) => file.Key),
       });
 
-      console.log(response);
+      setIsLoading(false);
+      setIsOpen(false);
     },
   });
 
@@ -61,8 +62,9 @@ const PostModal = ({ setIsOpen }: Props) => {
           </h3>
           <button
             onClick={cancelHandler}
-            className="btn btn-sm btn-circle btn-outline border-2 absolute right-5 top-5"
-            disabled={isLoading ?? "disabled"}
+            className={`btn btn-sm btn-circle btn-outline border-2 absolute right-5 top-5 ${
+              isLoading && "btn-disabled"
+            }`}
           >
             ✕
           </button>
@@ -80,7 +82,7 @@ const PostModal = ({ setIsOpen }: Props) => {
             {formik.errors.body && (
               <span className="text-red-500 text-sm">{formik.errors.body}</span>
             )}
-            {/* drop zone */}
+            {/* Drop zone */}
             {toggleDropZone && <DropZone formik={formik} />}
 
             <div className="mt-5">
@@ -92,22 +94,22 @@ const PostModal = ({ setIsOpen }: Props) => {
             <div className="flex flex-row space-x-5 mt-5">
               <button
                 type="submit"
-                className="btn btn-outline border-2"
+                className={`btn btn-outline border-2 ${
+                  isLoading && "btn-disabled"
+                }`}
                 disabled={isLoading ?? "disabled"}
               >
                 Post
               </button>
               <button
                 onClick={cancelHandler}
-                className="btn btn-ghost"
+                className={`btn btn-ghost ${isLoading && "btn-disabled"}`}
                 disabled={isLoading ?? "disabled"}
               >
                 Cancel
               </button>
             </div>
           </form>
-          <pre>{JSON.stringify(formik.values, null, 4)}</pre>
-          <pre>{JSON.stringify(formik.errors, null, 4)}</pre>
         </div>
       </div>
     </>
