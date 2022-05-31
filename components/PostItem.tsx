@@ -14,31 +14,34 @@ import SwiperNextButton from "./SwiperNextButton";
 const PostItem = ({ post }: { post: Post }) => {
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
+  const swiperRef = useRef<any>(null);
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [customButtons, setCustomButtons] = useState<boolean>(false);
 
   useEffect(() => {
-    setCurrentIndex(0);
-  });
-
-  console.log(nextRef);
+    //Re-render to activate the custom prev and next buttons.
+    if (!customButtons) {
+      setCustomButtons(true);
+    }
+  }, []);
 
   return (
     <div className="w-full bg-base-100 shadow-xl border border-primary rounded-md overflow-hidden p-5 relative">
       <Swiper
+        className="flex justify-center items-center relative z-10 w-full h-full"
         modules={[Pagination, Navigation]}
         slidesPerView={1}
-        navigation={
-          {
-            // prevEl: prevRef.current!,
-            // nextEl: nextRef.current!,
-          }
-        }
+        navigation={{
+          prevEl: prevRef.current!,
+          nextEl: nextRef.current!,
+        }}
         pagination={{ clickable: true }}
         onSlideChange={(slide) => {
-          console.log(slide.activeIndex);
-
           setCurrentIndex(slide.activeIndex);
+        }}
+        onInit={(swiper) => {
+          swiperRef.current = swiper;
         }}
       >
         {post.files?.map((file, index) => (
@@ -52,16 +55,16 @@ const PostItem = ({ post }: { post: Post }) => {
             />
           </SwiperSlide>
         ))}
+        <div>
+          <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
+          <SwiperNextButton
+            nextRef={nextRef}
+            currentIndex={currentIndex}
+            fileLength={post.files ? post.files.length : 0}
+          />
+        </div>
       </Swiper>
       <div>{post.body}</div>
-      {/* <div className="relative z-50">
-        <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
-        <SwiperNextButton
-          nextRef={nextRef}
-          currentIndex={currentIndex}
-          fileLength={post.files ? post.files.length : 0}
-        />
-      </div> */}
     </div>
   );
 };

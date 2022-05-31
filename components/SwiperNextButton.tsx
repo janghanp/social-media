@@ -11,7 +11,7 @@ const SwiperNextButton = ({ nextRef, currentIndex, fileLength }: Props) => {
   return (
     <div
       ref={nextRef}
-      className={`btn btn-circle btn-sm btn-ghost absolute top-32 right-3 z-10 text-white bg-black/50 hover:bg-black/30 ${
+      className={` flex justify-center items-center btn-circle btn-sm btn-ghost absolute top-1/2 -translate-y-1/2 right-3 z-10 text-white bg-black/50 hover:bg-black/30 hover:cursor-pointer ${
         currentIndex === fileLength - 1 && "hidden"
       }`}
     >
