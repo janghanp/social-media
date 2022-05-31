@@ -26,12 +26,10 @@ const Preview = ({ files, setFiles }: Props) => {
       className="flex justify-center items-center relative z-10 w-full h-full mt-5 rounded-lg overflow-hidden border border-primary"
       modules={[Pagination, Navigation]}
       slidesPerView={1}
-      navigation={
-        {
-          // prevEl: prevRef.current!,
-          // nextEl: nextRef.current!,
-        }
-      }
+      navigation={{
+        prevEl: prevRef.current!,
+        nextEl: nextRef.current!,
+      }}
       pagination={{ clickable: true }}
       onSlideChange={(slide) => {
         setCurrentIndex(slide.activeIndex);
@@ -43,12 +41,12 @@ const Preview = ({ files, setFiles }: Props) => {
         </SwiperSlide>
       ))}
       {/* custom prev and next buttons */}
-      {/* <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
+      <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
       <SwiperNextButton
         nextRef={nextRef}
         currentIndex={currentIndex}
         fileLength={files.length}
-      /> */}
+      />
     </Swiper>
   );
 };
