@@ -33,7 +33,7 @@ export default async function handler(
     const jwt = await getToken({ req, secret: process.env.SECRET });
 
     if (!jwt) {
-      res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: "Something went wrong..." });
     }
 
     try {
