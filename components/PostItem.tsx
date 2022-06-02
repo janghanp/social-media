@@ -26,6 +26,8 @@ const PostItem = ({ post }: { post: Post }) => {
     }
   }, []);
 
+  console.log(post.files);
+
   return (
     <div className="w-full bg-base-100 shadow-xl border border-primary rounded-md overflow-hidden p-5 relative">
       <Swiper

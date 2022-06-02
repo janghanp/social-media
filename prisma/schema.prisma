@@ -45,5 +45,5 @@ model Post {
   updatedAt DateTime @updatedAt
 
   userId String @db.ObjectId
-  User   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 }

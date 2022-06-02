@@ -1,9 +1,15 @@
 import type { NextPage, GetServerSideProps } from "next";
-import superjson from "superjson";
 import { prisma } from "../lib/prisma";
 
 import PostsList from "../components/PostsList";
 import Widget from "../components/Widget";
+
+export interface User {
+  id: string;
+  name?: string;
+  email?: string;
+  image: string;
+}
 
 export interface Post {
   id: string;
@@ -12,6 +18,7 @@ export interface Post {
   createdAt: Date;
   updatedAt: Date;
   userId: string;
+  user: User;
 }
 
 interface Props {
@@ -19,7 +26,14 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const posts = await prisma.post.findMany({});
+  const posts = await prisma.post.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      user: true,
+    },
+  });
 
   return {
     props: { posts },
