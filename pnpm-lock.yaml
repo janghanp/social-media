@@ -15,6 +15,7 @@ specifiers:
   babel-plugin-superjson-next: ^0.4.3
   classnames: ^2.3.1
   daisyui: ^2.15.1
+  dayjs: ^1.11.2
   eslint: 8.15.0
   eslint-config-next: 12.1.6
   formik: ^2.2.9
@@ -42,6 +43,7 @@ dependencies:
   babel-plugin-superjson-next: 0.4.3_kw7aodikhhoiwrxuposmqv3po4
   classnames: 2.3.1
   daisyui: 2.15.1_ugi4xkrfysqkt4c4y6hkyfj344
+  dayjs: 1.11.2
   formik: 2.2.9_react@18.1.0
   next: 12.1.6_ef5jwxihqo6n7gxfmzogljlgcm
   next-auth: 4.3.4_ef5jwxihqo6n7gxfmzogljlgcm
@@ -1631,6 +1633,10 @@ packages:
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
+
+  /dayjs/1.11.2:
+    resolution: {integrity: sha512-F4LXf1OeU9hrSYRPTTj/6FbO4HTjPKXvEIC1P2kcnFurViINCVk3ZV0xAS3XVx9MkMsXbbqlK6hjseaYbgKEHw==}
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}

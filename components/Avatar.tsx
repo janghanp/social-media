@@ -9,7 +9,7 @@ const Avatar = ({ image, signout }: Props) => {
   return (
     <div className="dropdown dropdown-end">
       <div tabIndex={0} className="avatar ml-5 hover:cursor-pointer mt-1">
-        <div className="w-8 rounded-full hover:ring ring-primary">
+        <div className="w-8 rounded-full hover:ring ring-primary transition duration-200">
           <Image src={image} alt="avatar" width={32} height={32} />
         </div>
       </div>
