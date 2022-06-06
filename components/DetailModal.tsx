@@ -59,7 +59,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
       <div className="fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"></div>
 
       <div className="absolute inset-0 flex flex-col mx-auto justify-center items-center z-40">
-        <div className="bg-white fixed top-10 z-40 w-5/6 sm:w-[1000px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
+        <div className="bg-white fixed top-10 z-40 w-5/6 sm:w-[1200px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
           <button
             onClick={cancelHandler}
             className={`btn btn-sm btn-circle btn-outline border-2 absolute right-5 top-5`}
@@ -67,7 +67,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
             ✕
           </button>
           {/* Grid */}
-          <div className="grid grid-cols-5">
+          <div className="grid grid-cols-5 space-x-5">
             {/* Images */}
             <Swiper
               className="flex justify-center items-center relative z-10 w-full h-full col-span-3"
@@ -84,11 +84,11 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
             >
               {post.files!.map((file, index) => (
                 <SwiperSlide key={index}>
-                  <div className="relative w-auto xs:w-[470px] h-[600px]">
+                  <div className="relative w-auto xs:w-[670px] h-[670px]">
                     <Image
                       src={file}
                       layout="fill"
-                      objectFit="contain"
+                      objectFit="cover"
                       alt="image"
                     />
                   </div>
@@ -143,6 +143,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
                 <form className="w-full">
                   <div className="flex justify-center items-center">
                     <textarea
+                      placeholder="Add a comment..."
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                         setBody(e.target.value);
                       }}
