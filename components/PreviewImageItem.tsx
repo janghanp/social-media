@@ -81,8 +81,7 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
         ) : (
           <>
             <img
-              // className="w-full h-80 object-cover"
-              className="overflow-auto"
+              className="w-full h-80 object-cover"
               src={file.preview}
               alt={file.name}
             />
