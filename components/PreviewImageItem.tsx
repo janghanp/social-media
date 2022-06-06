@@ -12,40 +12,40 @@ type Props = {
 const PreviewImageItem = ({ file, setFiles }: Props) => {
   const [progress, setProgress] = useState<number>(0);
 
-  useEffect(() => {
-    const uploadFile = async () => {
-      const { data } = await axios.post("/api/getSignedUrl", {
-        type: file.type,
-      });
-
-      await axios.put(data.uploadURL, file, {
-        headers: {
-          "Content-type": file.type,
-          "Access-Control-Allow-Otigin": "*",
-        },
-        onUploadProgress: (p) => {
-          const completedProgress = Math.floor((p.loaded / p.total) * 100);
-          setProgress(completedProgress);
-        },
-      });
-
-      //Update the state with an actual file url.
-      setFiles((prevState) =>
-        prevState.map((f) => {
-          if (f === file) {
-            f.Key = data.Key;
-            f.uploaded = true;
-
-            return f;
-          }
-
-          return f;
-        })
-      );
-    };
-
-    uploadFile();
-  }, []);
+  // useEffect(() => {
+  //   const uploadFile = async () => {
+  //     const { data } = await axios.post("/api/getSignedUrl", {
+  //       type: file.type,
+  //     });
+  //
+  //     await axios.put(data.uploadURL, file, {
+  //       headers: {
+  //         "Content-type": file.type,
+  //         "Access-Control-Allow-Otigin": "*",
+  //       },
+  //       onUploadProgress: (p) => {
+  //         const completedProgress = Math.floor((p.loaded / p.total) * 100);
+  //         setProgress(completedProgress);
+  //       },
+  //     });
+  //
+  //     //Update the state with an actual file url.
+  //     setFiles((prevState) =>
+  //       prevState.map((f) => {
+  //         if (f === file) {
+  //           f.Key = data.Key;
+  //           f.uploaded = true;
+  //
+  //           return f;
+  //         }
+  //
+  //         return f;
+  //       })
+  //     );
+  //   };
+  //
+  //   uploadFile();
+  // }, []);
 
   const deleteHandler = () => {
     URL.revokeObjectURL(file.preview);
