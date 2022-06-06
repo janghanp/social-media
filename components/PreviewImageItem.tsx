@@ -74,14 +74,15 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
       <>
         {file.type.includes("video") ? (
           <>
-            <video className="w-full h-80 object-contain">
+            <video className="w-full h-80 object-cover">
               <source src={file.preview} type={file.type} />
             </video>
           </>
         ) : (
           <>
             <img
-              className="w-full h-80 object-contain"
+              // className="w-full h-80 object-cover"
+              className="overflow-auto"
               src={file.preview}
               alt={file.name}
             />

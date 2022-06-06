@@ -60,7 +60,7 @@ const PostItem = ({ post }: { post: Post }) => {
           </span>
         </div>
         <Swiper
-          className="flex justify-center items-center relative z-10 w-full h-full"
+          className="flex justify-center items-center relative z-10 w-full h-auto"
           modules={[Pagination, Navigation]}
           slidesPerView={1}
           navigation={{
@@ -74,11 +74,11 @@ const PostItem = ({ post }: { post: Post }) => {
         >
           {post.files?.map((file, index) => (
             <SwiperSlide key={index}>
-              <div className="relative w-auto xs:w-[470px] h-[600px]">
+              <div className="relative w-auto xs:w-[470px] h-[470px]">
                 <Image
                   src={file}
                   layout="fill"
-                  objectFit="contain"
+                  objectFit="cover"
                   alt="image"
                 />
               </div>
