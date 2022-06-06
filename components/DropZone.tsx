@@ -13,11 +13,11 @@ export interface CustomFile extends File {
   Key?: string;
 }
 
-interface formikProps {
+interface Props {
   formik: FormikProps<formikValues>;
 }
 
-const DropZone = ({ formik }: formikProps) => {
+const DropZone = ({ formik }: Props) => {
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   useEffect(() => {

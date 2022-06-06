@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { HiOutlinePlus } from "react-icons/hi";
 
@@ -10,6 +10,16 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflowY = "hidden";
+      document.body.style.height = "100%";
+    } else {
+      document.body.style.overflow = "auto";
+      document.body.style.height = "auto";
+    }
+  }, [isOpen]);
 
   return (
     <>
