@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 
 import { Post } from "../pages/index";
 
@@ -71,12 +72,25 @@ const PostItem = ({ post }: { post: Post }) => {
           />
         </div>
       </Swiper>
-      {/* Post body */}
       <div className="p-3">
-        <span className="text-primary text-sm font-semibold mr-3">
-          {post.user.name}
-        </span>
-        <span>{post.body}</span>
+        {/* Reactions */}
+        <div className="flex justify-start items-center space-x-1">
+          <div className="flex justify-center items-center space-x-2 hover:bg-gray-300/50 hover:cursor-pointer rounded-lg px-2 py-1 transition duration-200">
+            <AiOutlineHeart className="w-6 h-6" />
+            <span>100</span>
+          </div>
+          <div className="flex justify-center items-center space-x-2 hover:bg-gray-300/50 hover:cursor-pointer rounded-lg px-2 py-1 transition duration-200">
+            <AiOutlineMessage className="w-6 h-6" />
+            <span>50</span>
+          </div>
+        </div>
+        {/* Post body */}
+        <div className="mt-5">
+          <span className="text-primary text-sm font-bold mr-3">
+            {post.user.name}
+          </span>
+          <span>{post.body}</span>
+        </div>
       </div>
     </div>
   );

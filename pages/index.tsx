@@ -43,10 +43,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Home: NextPage<Props> = ({ posts }: Props) => {
   return (
     <div className="container mx-auto max-w-4xl flex flex-row border min-h-screen lg:px-0 mt-16 pt-10">
-      <section className="w-full lg:w-3/5 border border-red-500">
+      <section className="w-full lg:w-3/5">
         <PostsList posts={posts} />
       </section>
-      <section className="hidden lg:block w-2/5 border border-blue-500">
+      <section className="hidden lg:block w-2/5">
         <Widget />
       </section>
     </div>
