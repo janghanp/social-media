@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FormikHelpers, useFormik } from "formik";
 import { HiOutlinePhotograph } from "react-icons/hi";
@@ -18,6 +19,8 @@ export interface formikValues {
 }
 
 const PostModal = ({ setIsOpen }: Props) => {
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toggleDropZone, setToggleDropZone] = useState<boolean>(false);
 
@@ -40,8 +43,11 @@ const PostModal = ({ setIsOpen }: Props) => {
         Keys: values.files.map((file) => file.Key),
       });
 
+      console.log(response);
+
       setIsLoading(false);
       setIsOpen(false);
+      router.reload();
     },
   });
 
@@ -53,10 +59,10 @@ const PostModal = ({ setIsOpen }: Props) => {
   return (
     <>
       {/* Fade away background */}
-      <div className="fixed inset-0 bg-black/70 z-30"></div>
+      <div className="fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"></div>
 
       <div className="absolute flex w-full mx-auto min-h-screen justify-center items-center">
-        <div className="bg-white relative z-40 w-5/6 sm:w-[600px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
+        <div className="bg-white fixed top-10 z-40 w-5/6 sm:w-[600px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
           <h3 className="font-bold text-xl sm:text-2xl mb-5">
             What's on your mind?
           </h3>
