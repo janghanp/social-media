@@ -12,6 +12,11 @@ type Props = {
 const PreviewImageItem = ({ file, setFiles }: Props) => {
   const [progress, setProgress] = useState<number>(0);
 
+
+
+
+
+
   // useEffect(() => {
   //   const uploadFile = async () => {
   //     const { data } = await axios.post("/api/getSignedUrl", {
