@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
 import { CustomFile } from "./DropZone";
-import { Pagination, Navigation } from "swiper";
+import { Pagination, Navigation, EffectFade } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import 'swiper/css/effect-fade';
 import PreviewImageItem from "./PreviewImageItem";
 import SwiperPrevButton from "./SwiperPrevButton";
 import SwiperNextButton from "./SwiperNextButton";
@@ -24,8 +25,9 @@ const Preview = ({ files, setFiles }: Props) => {
   return (
     <Swiper
       className="flex justify-center items-center  z-10 w-full h-full mt-5 rounded-lg overflow-hidden border border-primary"
+      effect="fade"
       allowTouchMove={false}
-      modules={[Pagination, Navigation]}
+      modules={[Pagination, Navigation, EffectFade]}
       slidesPerView={1}
       navigation={{
         prevEl: prevRef.current!,

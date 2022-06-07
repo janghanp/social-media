@@ -10,6 +10,9 @@ import Preview from "./Preview";
 export interface CustomFile extends File {
   preview: string;
   croppedPreview?: string;
+  zoomInit?: number;
+  cropInit?: { x: number; y: number };
+  aspectInit?: { value: number; text: string };
   uploaded: boolean;
   Key?: string;
 }
@@ -100,6 +103,7 @@ const DropZone = ({ formik }: Props) => {
         </div>
       )}
       {/* Preview */}
+      {JSON.stringify(files, null, 4)}
       {files.length > 0 && <Preview files={files} setFiles={setFiles} />}
     </>
   );
