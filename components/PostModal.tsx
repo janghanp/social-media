@@ -38,6 +38,7 @@ const PostModal = ({ setIsOpen }: Props) => {
     ) => {
       setIsLoading(true);
 
+      //Need to send new blob image to the s3 bucket.
       const response = await axios.post("/api/post", {
         body: values.body,
         Keys: values.files.map((file) => file.Key),

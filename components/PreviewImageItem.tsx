@@ -29,15 +29,13 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
         <>
           <img
             className="w-full h-80 object-cover"
-            src={file.preview}
+            src={file.croppedPreview || file.preview}
             alt={file.name}
           />
         </>
       )}
     </>
   );
-
-  console.log("previewimage item render");
 
   return (
     <>
