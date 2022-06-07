@@ -23,7 +23,8 @@ const Preview = ({ files, setFiles }: Props) => {
 
   return (
     <Swiper
-      className="flex justify-center items-center relative z-10 w-full h-full mt-5 rounded-lg overflow-hidden border border-primary"
+      className="flex justify-center items-center  z-10 w-full h-full mt-5 rounded-lg overflow-hidden border border-primary"
+      allowTouchMove={false}
       modules={[Pagination, Navigation]}
       slidesPerView={1}
       navigation={{

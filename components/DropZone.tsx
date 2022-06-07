@@ -9,6 +9,7 @@ import Preview from "./Preview";
 
 export interface CustomFile extends File {
   preview: string;
+  croppedPreview?: string;
   uploaded: boolean;
   Key?: string;
 }
