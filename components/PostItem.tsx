@@ -48,19 +48,19 @@ const PostItem = ({ post }: { post: Post }) => {
 
   return (
     <>
-      <div className="bg-base-100 shadow-xl border border-primary rounded-md overflow-hidden relative w-full max-w-[470px]">
+      <div className="relative w-full max-w-[470px] overflow-hidden rounded-md border border-primary bg-base-100 shadow-xl">
         {/* User info */}
         <div className="flex items-center space-x-3 p-3">
-          <div className="avatar rounded-full overflow-hidden">
+          <div className="avatar overflow-hidden rounded-full">
             <Image src={post.user.image} width={40} height={40} />
           </div>
-          <span className="text-gray-500 text-sm lowercase">
+          <span className="text-sm lowercase text-gray-500">
             {trimName(post.user.name!)} &nbsp;• &nbsp;{" "}
             {dayjs().to(dayjs(post.createdAt))}
           </span>
         </div>
         <Swiper
-          className="flex justify-center items-center relative z-10 w-full h-auto"
+          className="relative z-10 flex h-auto w-full items-center justify-center"
           modules={[Pagination, Navigation]}
           slidesPerView={1}
           navigation={{
@@ -74,13 +74,8 @@ const PostItem = ({ post }: { post: Post }) => {
         >
           {post.files?.map((file, index) => (
             <SwiperSlide key={index}>
-              <div className="relative w-auto xs:w-[470px] h-[470px]">
-                <Image
-                  src={file}
-                  layout="fill"
-                  objectFit="cover"
-                  alt="image"
-                />
+              <div className="xs:w-[470px] relative h-[470px] w-auto">
+                <Image src={file} layout="fill" objectFit="cover" alt="image" />
               </div>
             </SwiperSlide>
           ))}
@@ -95,22 +90,22 @@ const PostItem = ({ post }: { post: Post }) => {
         </Swiper>
         <div className="p-3">
           {/* Reactions */}
-          <div className="flex justify-start items-center space-x-1">
-            <div className="flex justify-center items-center space-x-2 hover:bg-gray-300/50 hover:cursor-pointer rounded-lg px-2 py-1 transition duration-200">
-              <AiOutlineHeart className="w-6 h-6" />
+          <div className="flex items-center justify-start space-x-1">
+            <div className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50">
+              <AiOutlineHeart className="h-6 w-6" />
               <span>100</span>
             </div>
             <div
               onClick={() => setIsOpen(true)}
-              className="flex justify-center items-center space-x-2 hover:bg-gray-300/50 hover:cursor-pointer rounded-lg px-2 py-1 transition duration-200"
+              className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
             >
-              <AiOutlineMessage className="w-6 h-6" />
+              <AiOutlineMessage className="h-6 w-6" />
               <span>50</span>
             </div>
           </div>
           {/* Post body */}
           <div className="mt-5">
-            <span className="text-primary text-sm font-bold mr-3">
+            <span className="mr-3 text-sm font-bold text-primary">
               {post.user.name}
             </span>
             <span>{post.body}</span>

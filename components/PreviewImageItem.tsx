@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { MdClose, MdOutlineImageSearch } from "react-icons/md";
+import { MdClose, MdOutlineModeEdit } from "react-icons/md";
 
 import { CustomFile } from "./DropZone";
 import ImageCropModal from "./ImageCropModal";
@@ -21,14 +21,14 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
     <>
       {file.type.includes("video") ? (
         <>
-          <video className="w-full h-80 object-cover">
+          <video className="h-80 w-full object-cover">
             <source src={file.preview} type={file.type} />
           </video>
         </>
       ) : (
         <>
           <img
-            className="w-full h-80 object-cover"
+            className="h-80 w-full object-cover"
             src={file.croppedPreview || file.preview}
             alt={file.name}
           />
@@ -48,17 +48,17 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
       />
       <div
         onClick={deleteHandler}
-        className="btn btn-circle btn-sm absolute top-3 right-3 bg-black/50 hover:bg-black/30 border-none z-10"
+        className="btn btn-circle btn-sm absolute top-3 right-3 z-10 border-none bg-black/50 hover:bg-black/30"
       >
         <MdClose />
       </div>
-      <div className="absolute inset-0 flex justify-center items-center">
+      <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="text-white bg-black/50 hover:bg-black/30 p-2 rounded-md hover:cursor-pointer flex flex-col justify-center items-center"
+          className="absolute top-3 left-3 flex flex-row items-center justify-center rounded-md bg-black/50 p-2 text-white hover:cursor-pointer hover:bg-black/30"
           onClick={() => setImageCropModal(true)}
         >
-          <MdOutlineImageSearch className="w-8 h-8 text-center self-center stroke-0" />
-          Edit
+          <MdOutlineModeEdit className="mr-1 h-6 w-6 self-center stroke-0 text-center" />
+          <span>Edit</span>
         </div>
       </div>
       {content}

@@ -28,6 +28,6 @@ export default NextAuth({
   },
   callbacks: {},
   pages: {
-    signIn: '/login'
-  }
+    signIn: "/login",
+  },
 });

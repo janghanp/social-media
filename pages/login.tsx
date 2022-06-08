@@ -41,43 +41,43 @@ const Login: NextPage = () => {
   }, []);
 
   return (
-    <div className="container max-w-4xl mx-auto flex justify-center items-center min-h-screen flex-col">
+    <div className="container mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center">
       {signInError && (
-        <div className="fixed top-60 alert alert-warning shadow-lg max-w-2xl">
+        <div className="alert alert-warning fixed top-60 max-w-2xl shadow-lg">
           <div>
-            <AiOutlineWarning className="w-6 h-6 flex-shrink-0 stroke-current" />
+            <AiOutlineWarning className="h-6 w-6 flex-shrink-0 stroke-current" />
             <span>{signInError}</span>
           </div>
         </div>
       )}
-      <div className="max-w-md w-full mx-auto text-2xl">
-        <div className="text-3xl font-bold text-primary mt-2 text-center">
+      <div className="mx-auto w-full max-w-md text-2xl">
+        <div className="mt-2 text-center text-3xl font-bold text-primary">
           Welcome
         </div>
       </div>
 
-      <div className="max-w-md w-full mx-auto mt-4 bg-white p-8 border border-primary shadow-md">
+      <div className="mx-auto mt-4 w-full max-w-md border border-primary bg-white p-8 shadow-md">
         {/* auth providers group */}
         <div className="flex flex-col space-y-6">
           <button
-            className="btn btn-outline w-full flex flex-row items-center justify-center"
+            className="btn btn-outline flex w-full flex-row items-center justify-center"
             onClick={() => signIn("github", { callbackUrl: "/" })}
           >
-            <AiOutlineGithub className="w-5 h-5 mr-3" />
+            <AiOutlineGithub className="mr-3 h-5 w-5" />
             <span>Sign in with github</span>
           </button>
           <button
-            className="btn btn-outline w-full flex flex-row items-center justify-center"
+            className="btn btn-outline flex w-full flex-row items-center justify-center"
             onClick={() => signIn("google", { callbackUrl: "/" })}
           >
-            <AiOutlineGoogle className="w-5 h-5 mr-3" />
+            <AiOutlineGoogle className="mr-3 h-5 w-5" />
             <span>Sign in with google</span>
           </button>
           <button
-            className="btn btn-outline w-full flex flex-row items-center justify-center"
+            className="btn btn-outline flex w-full flex-row items-center justify-center"
             onClick={() => signIn("facebook", { callbackUrl: "/" })}
           >
-            <AiOutlineFacebook className="w-5 h-5 mr-3" />
+            <AiOutlineFacebook className="mr-3 h-5 w-5" />
             <span>Sign in with facebook</span>
           </button>
         </div>
