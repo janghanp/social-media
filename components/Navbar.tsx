@@ -23,22 +23,22 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="w-full border-b-2 border-primary shadow-lg fixed top-0 bg-base-100 z-20">
-        <div className="container max-w-4xl mx-auto">
+      <div className="fixed top-0 z-20 w-full border-b-2 border-primary bg-base-100 shadow-lg">
+        <div className="container mx-auto max-w-4xl">
           <div className="navbar justify-between bg-base-100 px-5 lg:px-0">
             {/* left */}
             <Link href={"/"}>
-              <div className="normal-case text-xl font-semibold hover:cursor-pointer">
+              <div className="text-xl font-semibold normal-case hover:cursor-pointer">
                 Social Media
               </div>
             </Link>
 
             {/* right */}
             {session ? (
-              <div className="flex flex-row justify-center items-center">
+              <div className="flex flex-row items-center justify-center">
                 <HiOutlinePlus
                   onClick={() => setIsOpen(true)}
-                  className="w-8 h-8 hover:cursor-pointer"
+                  className="h-8 w-8 hover:cursor-pointer"
                 />
                 <Avatar image={session.user.image} signout={signOut} />
               </div>

@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import 'swiper/css/effect-fade';
+import "swiper/css/effect-fade";
 import PreviewImageItem from "./PreviewImageItem";
 import SwiperPrevButton from "./SwiperPrevButton";
 import SwiperNextButton from "./SwiperNextButton";
@@ -24,7 +24,7 @@ const Preview = ({ files, setFiles }: Props) => {
 
   return (
     <Swiper
-      className="flex justify-center items-center  z-10 w-full h-full mt-5 rounded-lg overflow-hidden border border-primary"
+      className="z-10 mt-5 flex  h-full w-full items-center justify-center overflow-hidden rounded-lg border border-primary"
       effect="fade"
       allowTouchMove={false}
       modules={[Pagination, Navigation, EffectFade]}

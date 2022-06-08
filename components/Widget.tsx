@@ -1,7 +1,7 @@
-import Rect from 'react';
+import Rect from "react";
 
 const Widget = () => {
-  return <div>widget</div>
-}
+  return <div>widget</div>;
+};
 
 export default Widget;

@@ -85,12 +85,12 @@ const DropZone = ({ formik }: Props) => {
 
   return (
     <>
-      <section className="relative mt-5 hover:cursor-pointer hover:bg-black/10 transition duration-200 rounded-lg">
+      <section className="relative mt-5 rounded-lg transition duration-200 hover:cursor-pointer hover:bg-black/10">
         <div className={dragAreaClasses} {...getRootProps()}>
           <input {...getInputProps()} />
           <div className="flex flex-col items-center justify-center space-y-2 py-5">
-            <HiOutlineUpload className="w-6 h-6 text-gray-500" />
-            <p className="text-base text-primary text-center">
+            <HiOutlineUpload className="h-6 w-6 text-gray-500" />
+            <p className="text-center text-base text-primary">
               Drag 'n' drop some files here, or click to select files
             </p>
           </div>
@@ -98,12 +98,11 @@ const DropZone = ({ formik }: Props) => {
       </section>
       {/* Error */}
       {fileRejections.length > 0 && (
-        <div className="text-sm text-warning mt-2">
+        <div className="mt-2 text-sm text-warning">
           {fileRejections[0].errors[0].message}
         </div>
       )}
       {/* Preview */}
-      {JSON.stringify(files, null, 4)}
       {files.length > 0 && <Preview files={files} setFiles={setFiles} />}
     </>
   );

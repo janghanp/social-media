@@ -60,16 +60,16 @@ const PostModal = ({ setIsOpen }: Props) => {
   return (
     <>
       {/* Fade away background */}
-      <div className="fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"></div>
+      <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
 
-      <div className="absolute flex w-full mx-auto min-h-screen justify-center items-center">
-        <div className="bg-white fixed top-10 z-40 w-5/6 sm:w-[600px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
-          <h3 className="font-bold text-xl sm:text-2xl mb-5">
+      <div className="absolute mx-auto flex min-h-screen w-full items-center justify-center">
+        <div className="fixed top-10 z-40 h-auto w-5/6 rounded-md border-2 border-primary bg-white p-7 shadow-lg sm:w-[600px] sm:p-10">
+          <h3 className="mb-5 text-xl font-bold sm:text-2xl">
             What's on your mind?
           </h3>
           <button
             onClick={cancelHandler}
-            className={`btn btn-sm btn-circle btn-outline border-2 absolute right-5 top-5 ${
+            className={`btn btn-outline btn-circle btn-sm absolute right-5 top-5 border-2 ${
               isLoading && "btn-disabled"
             }`}
           >
@@ -84,10 +84,10 @@ const PostModal = ({ setIsOpen }: Props) => {
               value={formik.values.body}
               className={`textarea border-2 ${
                 formik.errors.body ? "textarea-warning" : "textarea-primary"
-              } w-full h-40 text-lg`}
+              } h-40 w-full text-lg`}
             ></textarea>
             {formik.errors.body && (
-              <span className="text-red-500 text-sm">{formik.errors.body}</span>
+              <span className="text-sm text-red-500">{formik.errors.body}</span>
             )}
             {/* Drop zone */}
             {toggleDropZone && <DropZone formik={formik} />}
@@ -98,7 +98,7 @@ const PostModal = ({ setIsOpen }: Props) => {
                 className="h-8 w-8 hover:cursor-pointer"
               />
             </div>
-            <div className="flex flex-row space-x-5 mt-5">
+            <div className="mt-5 flex flex-row space-x-5">
               <button
                 type="submit"
                 className={`btn btn-outline border-2 ${

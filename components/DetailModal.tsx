@@ -56,13 +56,13 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
   return (
     <>
       {/* Fade away background */}
-      <div className="fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"></div>
+      <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
 
-      <div className="absolute inset-0 flex flex-col mx-auto justify-center items-center z-40">
-        <div className="bg-white fixed top-10 z-40 w-5/6 sm:w-[1200px] h-auto p-7 sm:p-10 border-2 border-primary shadow-lg rounded-md">
+      <div className="absolute inset-0 z-40 mx-auto flex flex-col items-center justify-center">
+        <div className="fixed top-10 z-40 h-auto w-5/6 rounded-md border-2 border-primary bg-white p-7 shadow-lg sm:w-[1200px] sm:p-10">
           <button
             onClick={cancelHandler}
-            className={`btn btn-sm btn-circle btn-outline border-2 absolute right-5 top-5`}
+            className={`btn btn-outline btn-circle btn-sm absolute right-5 top-5 border-2`}
           >
             ✕
           </button>
@@ -70,7 +70,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
           <div className="grid grid-cols-5 space-x-5">
             {/* Images */}
             <Swiper
-              className="flex justify-center items-center relative z-10 w-full h-full col-span-3"
+              className="relative z-10 col-span-3 flex h-full w-full items-center justify-center"
               modules={[Pagination, Navigation]}
               slidesPerView={1}
               navigation={{
@@ -84,7 +84,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
             >
               {post.files!.map((file, index) => (
                 <SwiperSlide key={index}>
-                  <div className="relative w-auto xs:w-[670px] h-[670px]">
+                  <div className="xs:w-[670px] relative h-[670px] w-auto">
                     <Image
                       src={file}
                       layout="fill"
@@ -106,27 +106,27 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
                 />
               </div>
             </Swiper>
-            <div className="col-span-2 relative">
+            <div className="relative col-span-2">
               {/* User info */}
-              <div className="flex items-center space-x-3 p-3 border-b">
-                <div className="avatar rounded-full overflow-hidden">
+              <div className="flex items-center space-x-3 border-b p-3">
+                <div className="avatar overflow-hidden rounded-full">
                   <Image src={post.user.image} width={40} height={40} />
                 </div>
-                <span className="text-gray-500 text-sm">
+                <span className="text-sm text-gray-500">
                   {post.user.name} &nbsp;• &nbsp;{" "}
                   {dayjs().to(dayjs(post.createdAt))}
                 </span>
               </div>
 
               {/* Comments */}
-              <div className="flex felx-col justify-start items-center p-3">
-                <div className="flex flex-row justify-center items-center gap-x-2">
-                  <div className="avatar rounded-full overflow-hidden">
+              <div className="felx-col flex items-center justify-start p-3">
+                <div className="flex flex-row items-center justify-center gap-x-2">
+                  <div className="avatar overflow-hidden rounded-full">
                     <Image src={post.user.image} width={40} height={40} />
                   </div>
                   <div className="flex flex-col">
                     <div>
-                      <span className="font-bold text-sm mr-3">
+                      <span className="mr-3 text-sm font-bold">
                         {post.user.name}
                       </span>
                       <span className="text-sm">{post.body}</span>
@@ -141,16 +141,16 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
               {/* Input field */}
               <div className="absolute bottom-0 w-full border-t">
                 <form className="w-full">
-                  <div className="flex justify-center items-center">
+                  <div className="flex items-center justify-center">
                     <textarea
                       placeholder="Add a comment..."
                       onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                         setBody(e.target.value);
                       }}
-                      className="outline-none border-none w-full p-2 resize-none h-[50px]"
+                      className="h-[50px] w-full resize-none border-none p-2 outline-none"
                     ></textarea>
                     <button
-                      className={`font-semibold text-primary disabled:text-gray-500 disabled:cursor-not-allowed`}
+                      className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
                       disabled={body.length === 0}
                       onClick={submitHandler}
                     >

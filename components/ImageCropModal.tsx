@@ -111,10 +111,10 @@ const ImageCropModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed top-1/2 left-1/2 w-[95%] lg:w-[1000px] h-full -translate-x-1/2 -translate-y-1/2 bg-white border-2 border-primary z-40 p-7 shadow-lg rounded-md"
+          className="fixed top-1/2 left-1/2 z-40 h-full w-[95%] -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-7 shadow-lg lg:w-[1000px]"
         >
           <RiArrowGoBackFill
-            className="w-10 h-10 hover:cursor-pointer hover:bg-black/30 p-2 rounded-md transition duration-200 relative z-40 bg-black/60 text-white"
+            className="relative z-40 h-10 w-10 rounded-md bg-black/60 p-2 text-white transition duration-200 hover:cursor-pointer hover:bg-black/30"
             onClick={() => setImageCropModal(false)}
           />
           {/* Image crop */}
@@ -129,9 +129,9 @@ const ImageCropModal = ({
           />
 
           {/* Controls */}
-          <div className="flex flex-col justify-center items-center w-full gap-y-5 absolute z-40 left-1/2 -translate-x-1/2  bottom-10 ">
+          <div className="absolute left-1/2 bottom-10 z-40 flex w-full -translate-x-1/2 flex-col items-center justify-center  gap-y-5 ">
             {/* Range */}
-            <div className="w-full flex justify-center items-center gap-x-5">
+            <div className="flex w-full items-center justify-center gap-x-5">
               <input
                 className="range range-xs w-1/3"
                 type="range"
@@ -159,21 +159,21 @@ const ImageCropModal = ({
               </select>
             </div>
             {/* Button groups */}
-            <div className="flex justify-center items-center w-full gap-x-10">
+            <div className="flex w-full items-center justify-center gap-x-10">
               <button
-                className="btn btn-ghost bg-black/60 hover:bg-black/30 text-white"
+                className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
                 onClick={() => setImageCropModal(false)}
               >
                 cancel
               </button>
               <button
-                className="btn btn-ghost bg-black/60 hover:bg-black/30 text-white"
+                className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
                 onClick={onReset}
               >
                 reset
               </button>
               <button
-                className="btn btn-ghost bg-black/60 hover:bg-black/30 text-white"
+                className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
                 onClick={onCrop}
               >
                 crop

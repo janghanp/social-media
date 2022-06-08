@@ -9,7 +9,7 @@ interface Props {
 
 const PostsList = ({ posts }: Props) => {
   return (
-    <div className="flex flex-col justify-center items-center gap-y-40 w-full">
+    <div className="flex w-full flex-col items-center justify-center gap-y-40">
       {posts.map((post) => (
         <PostItem key={post.id} post={post} />
       ))}
