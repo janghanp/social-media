@@ -5,9 +5,9 @@ module.exports = {
   ],
   theme: {
     extends: {
-      // screens: {
-      //   xs: "470px",
-      // },
+      zIndex: {
+        100: "100",
+      },
     },
   },
   plugins: [require("daisyui")],

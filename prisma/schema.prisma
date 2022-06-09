@@ -37,10 +37,15 @@ model User {
   posts    Post[]
 }
 
+type File {
+  url    String
+  aspect Int
+}
+
 model Post {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   body      String
-  files     String[]
+  files     File[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

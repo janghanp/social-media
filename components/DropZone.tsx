@@ -103,6 +103,7 @@ const DropZone = ({ formik }: Props) => {
         </div>
       )}
       {/* Preview */}
+      {/* {JSON.stringify(files, null, 4)} */}
       {files.length > 0 && <Preview files={files} setFiles={setFiles} />}
     </>
   );
