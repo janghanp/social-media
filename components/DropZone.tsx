@@ -10,6 +10,7 @@ import Preview from "./Preview";
 export interface CustomFile extends File {
   preview: string;
   croppedPreview?: string;
+  croppedImage?: Blob;
   zoomInit?: number;
   cropInit?: { x: number; y: number };
   aspectInit?: { value: number; text: string };

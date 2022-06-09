@@ -28,7 +28,7 @@ const ImageCropModal = ({
 }: Props) => {
   const isVideo = file.type.includes("video");
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(file.zoomInit || 1);
   const [crop, setCrop] = useState<Point>(file.cropInit || { x: 0, y: 0 });
   const [aspect, setAspect] = useState<{ value: number; text: string }>(
@@ -56,6 +56,7 @@ const ImageCropModal = ({
           f.cropInit = undefined;
           f.aspectInit = undefined;
           f.croppedPreview = undefined;
+          f.croppedImage = undefined;
 
           URL.revokeObjectURL(f.croppedPreview!);
 
@@ -104,18 +105,19 @@ const ImageCropModal = ({
       return;
     }
 
-    const croppedImageUrl: any = await getCroppedImg(
+    const { croppedImageUrl, croppedImageFile }: any = await getCroppedImg(
       file.preview,
       croppedAreaPixels
     );
 
-    //Set created croppedImageUrl into associated file.
+    //Update state with cropped file and url.
     setFiles((prevState) => {
       const newFiles = prevState.map((f) => {
         if (f === file) {
           f.zoomInit = zoom;
           f.cropInit = crop;
           f.aspectInit = aspect;
+          f.croppedImage = croppedImageFile;
           f.croppedPreview = croppedImageUrl;
 
           return f;
@@ -132,10 +134,10 @@ const ImageCropModal = ({
     setImageCropModal(false);
   };
 
-  return (
+  return ReactDom.createPortal(
     <>
       {imageCropModal && (
-        <div className="fixed top-1/2 left-1/2 z-40 h-full w-full -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-7 shadow-lg">
+        <div className="fixed top-1/2 left-1/2 z-40 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-white p-7 shadow-lg">
           {/* Image crop */}
           <Cropper
             image={isVideo ? undefined : file.preview}
@@ -149,7 +151,7 @@ const ImageCropModal = ({
           />
 
           {/* Controls */}
-          <div className="absolute left-1/2 bottom-10 z-40 flex w-full -translate-x-1/2 flex-col items-center justify-center gap-y-5">
+          <div className="absolute left-1/2 bottom-10 z-40 flex -translate-x-1/2 flex-col items-center justify-center gap-y-5">
             {/* Range */}
             <div className="flex w-full items-center justify-center gap-x-5">
               {!isVideo && (
@@ -204,8 +206,7 @@ const ImageCropModal = ({
               </div>
             )}
           </div>
-          <div className="fixed top-1/2 -translate-x-1/2">
-            {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"> */}
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <FadeLoader
               loading={isLoading}
               color="#ffffff"
@@ -217,7 +218,8 @@ const ImageCropModal = ({
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.getElementById("image-crop-portal")!
   );
 };
 

@@ -39,7 +39,7 @@ model User {
 
 type File {
   url    String
-  aspect Int
+  ratio Float
 }
 
 model Post {
