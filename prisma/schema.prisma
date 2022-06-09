@@ -38,7 +38,7 @@ model User {
 }
 
 type File {
-  url    String
+  url   String
   ratio Float
 }
 
