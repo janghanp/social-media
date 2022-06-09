@@ -13,7 +13,7 @@ export interface User {
 
 export interface File {
   url: string;
-  aspect: number;
+  ratio: number;
 }
 
 export interface Post {
@@ -49,7 +49,7 @@ const Home: NextPage<Props> = ({ posts }: Props) => {
   return (
     <div className="container mx-auto mt-16 flex max-w-4xl flex-row border pt-10 lg:px-0">
       <section className="w-full lg:w-3/5">
-        <PostsList posts={posts} />
+        {/* <PostsList posts={posts} /> */}
       </section>
       <section className="hidden w-2/5 lg:block">
         <Widget />

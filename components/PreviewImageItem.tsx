@@ -1,5 +1,6 @@
-import { useState, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import Image from "next/image";
+import axios from "axios";
 import { MdClose, MdOutlineModeEdit } from "react-icons/md";
 
 import { CustomFile } from "./DropZone";
@@ -32,6 +33,39 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
       width = "w-[546px]";
       height = "h-[546px]";
   }
+
+  useEffect(() => {
+    const uploadFile = async () => {
+      //Create a getSignedUrl.
+      const { data } = await axios.post("/api/getSignedUrl", {
+        type: file.type,
+      });
+
+      //Upload an image to the bucket(PUT method) with the url created above.
+      await axios.put(data.uploadURL, file.croppedImage || file, {
+        headers: {
+          "Content-type": file.type,
+          "Access-Control-Allow-Otigin": "*",
+        },
+      });
+
+      //Update state.
+      setFiles((prevState) =>
+        prevState.map((f) => {
+          if (f === file) {
+            f.Key = data.Key;
+            f.uploaded = true;
+
+            return f;
+          }
+
+          return f;
+        })
+      );
+    };
+
+    uploadFile();
+  }, [file.croppedImage]);
 
   const [imageCropModal, setImageCropModal] = useState<boolean>(false);
 

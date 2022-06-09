@@ -20,7 +20,7 @@ const copyObject = async (key: string) => {
     ACL: "public-read",
   };
 
-  //Copy images in use into another directory
+  //Copy images in use into post directory
   const command = new CopyObjectCommand(input);
   await s3.send(command);
 };
@@ -37,20 +37,26 @@ export default async function handler(
     }
 
     try {
-      const { body, Keys }: { body: string; Keys: string[] } = req.body;
+      const {
+        body,
+        fileInfos,
+      }: { body: string; fileInfos: { Key: string; ratio: number }[] } =
+        req.body;
+
       //Copy objects from temp to posts.
-      await Promise.all(Keys.map((key) => copyObject(key)));
+      await Promise.all(fileInfos.map((fileInfo) => copyObject(fileInfo.Key)));
 
-      const fileUrls = Keys.map(
-        (key) => `${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${key}`
-      );
+      const files = fileInfos.map((fileInfo) => ({
+        url: `${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${fileInfo.Key}`,
+        ratio: fileInfo.ratio,
+      }));
 
-      //Store fileUrls and body into the mongodb.
+      //Store file's info(url and aspect) and body into the mongodb.
       await prisma.post.create({
         data: {
-          userId: jwt!.sub,
-          body: body,
-          files: fileUrls,
+          userId: jwt.sub,
+          body,
+          files,
         },
       });
 
