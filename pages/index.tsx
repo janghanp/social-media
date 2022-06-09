@@ -11,10 +11,15 @@ export interface User {
   image: string;
 }
 
+export interface File {
+  url: string;
+  aspect: number;
+}
+
 export interface Post {
   id: string;
   body: string;
-  files?: string[];
+  files?: File[];
   createdAt: Date;
   updatedAt: Date;
   userId: string;

@@ -1,4 +1,5 @@
 import { useState, memo } from "react";
+import Image from "next/image";
 import { MdClose, MdOutlineModeEdit } from "react-icons/md";
 
 import { CustomFile } from "./DropZone";
@@ -10,6 +11,28 @@ type Props = {
 };
 
 const PreviewImageItem = ({ file, setFiles }: Props) => {
+  let width;
+  let height;
+
+  //Depending on the asepct value width and height should be different.
+  switch (file.aspectInit?.value) {
+    case 1 / 1:
+      width = "w-[546px]";
+      height = "h-[546px]";
+      break;
+    case 4 / 5:
+      width = "w-[436px]";
+      height = "h-[546px]";
+      break;
+    case 16 / 9:
+      width = "w-[546px]";
+      height = "h-[307px]";
+      break;
+    default:
+      width = "w-[546px]";
+      height = "h-[546px]";
+  }
+
   const [imageCropModal, setImageCropModal] = useState<boolean>(false);
 
   const deleteHandler = () => {
@@ -21,18 +44,23 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
     <>
       {file.type.includes("video") ? (
         <>
-          <video className="h-80 w-full object-cover">
+          <video
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  ${height} ${width} object-cover`}
+          >
             <source src={file.preview} type={file.type} />
           </video>
         </>
       ) : (
-        <>
-          <img
-            className="h-80 w-full object-cover"
+        <div
+          className={`absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 ${height} ${width} object-cover`}
+        >
+          <Image
             src={file.croppedPreview || file.preview}
+            layout="fill"
+            objectFit="cover"
             alt={file.name}
           />
-        </>
+        </div>
       )}
     </>
   );
@@ -54,7 +82,7 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="absolute top-3 left-3 flex flex-row items-center justify-center rounded-md bg-black/50 p-2 text-white hover:cursor-pointer hover:bg-black/30"
+          className="absolute top-3 left-3 z-10 flex flex-row items-center justify-center rounded-md bg-black/50 p-2 text-white hover:cursor-pointer hover:bg-black/30"
           onClick={() => setImageCropModal(true)}
         >
           <MdOutlineModeEdit className="mr-1 h-6 w-6 self-center stroke-0 text-center" />

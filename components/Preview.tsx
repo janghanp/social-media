@@ -24,7 +24,7 @@ const Preview = ({ files, setFiles }: Props) => {
 
   return (
     <Swiper
-      className="z-10 mt-5 flex  h-full w-full items-center justify-center overflow-hidden rounded-lg border border-primary"
+      className="z-10 mx-0 mt-5 flex h-[546px] w-[546px] items-center justify-center overflow-hidden rounded-lg border border-primary"
       effect="fade"
       allowTouchMove={false}
       modules={[Pagination, Navigation, EffectFade]}
@@ -39,7 +39,7 @@ const Preview = ({ files, setFiles }: Props) => {
       }}
     >
       {files.map((file, index) => (
-        <SwiperSlide key={index}>
+        <SwiperSlide className="bg-white" key={index}>
           <PreviewImageItem file={file} setFiles={setFiles} />
         </SwiperSlide>
       ))}

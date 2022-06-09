@@ -1,10 +1,8 @@
 import { memo, useState, useCallback } from "react";
 import ReactDom from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import Cropper from "react-easy-crop";
 import { Point, Area } from "react-easy-crop/types";
-
-import { RiArrowGoBackFill } from "react-icons/ri";
+import FadeLoader from "react-spinners/FadeLoader";
 
 import { CustomFile } from "./DropZone";
 import getCroppedImg from "../lib/cropImage";
@@ -28,6 +26,9 @@ const ImageCropModal = ({
   setFiles,
   imageCropModal,
 }: Props) => {
+  const isVideo = file.type.includes("video");
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [zoom, setZoom] = useState<number>(file.zoomInit || 1);
   const [crop, setCrop] = useState<Point>(file.cropInit || { x: 0, y: 0 });
   const [aspect, setAspect] = useState<{ value: number; text: string }>(
@@ -81,6 +82,28 @@ const ImageCropModal = ({
   };
 
   const onCrop = async () => {
+    setIsLoading(true);
+    //If the file is a video type, just set an aspect value.
+    if (isVideo) {
+      setFiles((prevState) => {
+        const newFiles = prevState.map((f) => {
+          if (f === file) {
+            f.aspectInit = aspect;
+
+            return f;
+          } else {
+            return f;
+          }
+        });
+
+        return newFiles;
+      });
+
+      setImageCropModal(false);
+
+      return;
+    }
+
     const croppedImageUrl: any = await getCroppedImg(
       file.preview,
       croppedAreaPixels
@@ -90,7 +113,11 @@ const ImageCropModal = ({
     setFiles((prevState) => {
       const newFiles = prevState.map((f) => {
         if (f === file) {
+          f.zoomInit = zoom;
+          f.cropInit = crop;
+          f.aspectInit = aspect;
           f.croppedPreview = croppedImageUrl;
+
           return f;
         } else {
           return f;
@@ -100,28 +127,21 @@ const ImageCropModal = ({
       return newFiles;
     });
 
+    setIsLoading(false);
     //Close modal.
     setImageCropModal(false);
   };
 
-  return ReactDom.createPortal(
-    <AnimatePresence exitBeforeEnter>
+  return (
+    <>
       {imageCropModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed top-1/2 left-1/2 z-40 h-full w-[95%] -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-7 shadow-lg lg:w-[1000px]"
-        >
-          <RiArrowGoBackFill
-            className="relative z-40 h-10 w-10 rounded-md bg-black/60 p-2 text-white transition duration-200 hover:cursor-pointer hover:bg-black/30"
-            onClick={() => setImageCropModal(false)}
-          />
+        <div className="fixed top-1/2 left-1/2 z-40 h-full w-full -translate-x-1/2 -translate-y-1/2 rounded-md bg-white p-7 shadow-lg">
           {/* Image crop */}
           <Cropper
-            image={file.preview}
-            zoom={zoom}
-            crop={crop}
+            image={isVideo ? undefined : file.preview}
+            video={isVideo ? file.preview : undefined}
+            zoom={isVideo ? undefined : zoom}
+            crop={isVideo ? { x: 0, y: 0 } : crop}
             aspect={aspect.value}
             onCropChange={setCrop}
             onZoomChange={setZoom}
@@ -129,20 +149,22 @@ const ImageCropModal = ({
           />
 
           {/* Controls */}
-          <div className="absolute left-1/2 bottom-10 z-40 flex w-full -translate-x-1/2 flex-col items-center justify-center  gap-y-5 ">
+          <div className="absolute left-1/2 bottom-10 z-40 flex w-full -translate-x-1/2 flex-col items-center justify-center gap-y-5">
             {/* Range */}
             <div className="flex w-full items-center justify-center gap-x-5">
-              <input
-                className="range range-xs w-1/3"
-                type="range"
-                min={1}
-                max={3}
-                step={0.1}
-                value={zoom}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setZoom(+e.target.value);
-                }}
-              />
+              {!isVideo && (
+                <input
+                  className="range range-xs w-1/3"
+                  type="range"
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  value={zoom}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setZoom(+e.target.value);
+                  }}
+                />
+              )}
               {/* Ratios */}
               <select
                 className="select select-bordered select-xs max-w-xs"
@@ -159,31 +181,43 @@ const ImageCropModal = ({
               </select>
             </div>
             {/* Button groups */}
-            <div className="flex w-full items-center justify-center gap-x-10">
-              <button
-                className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
-                onClick={() => setImageCropModal(false)}
-              >
-                cancel
-              </button>
-              <button
-                className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
-                onClick={onReset}
-              >
-                reset
-              </button>
-              <button
-                className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
-                onClick={onCrop}
-              >
-                crop
-              </button>
-            </div>
+            {!isLoading && (
+              <div className="flex w-full items-center justify-center gap-x-10">
+                <button
+                  className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
+                  onClick={onCrop}
+                >
+                  crop
+                </button>
+                <button
+                  className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
+                  onClick={onReset}
+                >
+                  reset
+                </button>
+                <button
+                  className="btn btn-ghost bg-black/60 text-white hover:bg-black/30"
+                  onClick={() => setImageCropModal(false)}
+                >
+                  cancel
+                </button>
+              </div>
+            )}
           </div>
-        </motion.div>
+          <div className="fixed top-1/2 -translate-x-1/2">
+            {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"> */}
+            <FadeLoader
+              loading={isLoading}
+              color="#ffffff"
+              height={15}
+              width={5}
+              radius={2}
+              margin={2}
+            />
+          </div>
+        </div>
       )}
-    </AnimatePresence>,
-    document.getElementById("image-crop-portal")!
+    </>
   );
 };
 
