@@ -48,7 +48,7 @@ const PostItem = ({ post }: { post: Post }) => {
 
   return (
     <>
-      <div className="relative w-full max-w-[470px] overflow-hidden rounded-md border border-primary bg-base-100 shadow-xl">
+      <div className="relative box-content h-auto w-[470px] rounded-md border border-primary shadow-xl">
         {/* User info */}
         <div className="flex items-center space-x-3 p-3">
           <div className="avatar overflow-hidden rounded-full">
@@ -59,8 +59,8 @@ const PostItem = ({ post }: { post: Post }) => {
             {dayjs().to(dayjs(post.createdAt))}
           </span>
         </div>
+        {/* Images */}
         <Swiper
-          className="relative z-10 flex h-auto w-full items-center justify-center"
           modules={[Pagination, Navigation]}
           slidesPerView={1}
           navigation={{
@@ -72,13 +72,40 @@ const PostItem = ({ post }: { post: Post }) => {
             setCurrentIndex(slide.activeIndex);
           }}
         >
-          {post.files?.map((file, index) => (
-            <SwiperSlide key={index}>
-              <div className="xs:w-[470px] relative h-[470px] w-auto">
-                <Image src={file} layout="fill" objectFit="cover" alt="image" />
-              </div>
-            </SwiperSlide>
-          ))}
+          {post.files?.map((file, index) => {
+            let width;
+            let height;
+
+            if (file.ratio === 1) {
+              width = "w-[470px]";
+              height = "h-[470px]";
+            } else if (file.ratio > 1) {
+              width = "w-[470px]";
+              height = "h-[265px]";
+            } else if (file.ratio < 1) {
+              width = "w-[376px]";
+              height = "h-[470px]";
+            } else {
+              width = "w-[470px]";
+              height = "h-[470px]";
+            }
+
+            return (
+              <SwiperSlide
+                className="flex !h-[470px] !w-[470px] flex-col items-center justify-center "
+                key={index}
+              >
+                <div className={`relative ${height} ${width}`}>
+                  <Image
+                    src={file.url}
+                    layout="fill"
+                    objectFit="cover"
+                    alt="image"
+                  />
+                </div>
+              </SwiperSlide>
+            );
+          })}
           <div>
             <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
             <SwiperNextButton
