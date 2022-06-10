@@ -3,7 +3,7 @@ import { CustomFile } from "./DropZone";
 import { Pagination, Navigation, EffectFade } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import "swiper/css";
+// import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-fade";
@@ -23,34 +23,35 @@ const Preview = ({ files, setFiles }: Props) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   return (
-    <Swiper
-      className="z-10 mx-0 mt-5 flex h-[546px] w-full items-center justify-center overflow-hidden rounded-lg border border-primary sm:w-[546px]"
-      effect="fade"
-      allowTouchMove={false}
-      modules={[Pagination, Navigation, EffectFade]}
-      slidesPerView={1}
-      navigation={{
-        prevEl: prevRef.current!,
-        nextEl: nextRef.current!,
-      }}
-      pagination={{ clickable: true }}
-      onSlideChange={(slide) => {
-        setCurrentIndex(slide.activeIndex);
-      }}
-    >
-      {files.map((file, index) => (
-        <SwiperSlide className="bg-white" key={index}>
-          <PreviewImageItem file={file} setFiles={setFiles} />
-        </SwiperSlide>
-      ))}
-      {/* custom prev and next buttons */}
-      <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
-      <SwiperNextButton
-        nextRef={nextRef}
-        currentIndex={currentIndex}
-        fileLength={files.length}
-      />
-    </Swiper>
+    <div className="mt-5 box-content h-auto w-auto overflow-hidden rounded-md border border-primary">
+      <Swiper
+        effect="fade"
+        allowTouchMove={false}
+        modules={[Pagination, Navigation, EffectFade]}
+        slidesPerView={1}
+        navigation={{
+          prevEl: prevRef.current!,
+          nextEl: nextRef.current!,
+        }}
+        pagination={{ clickable: true }}
+        onSlideChange={(slide) => {
+          setCurrentIndex(slide.activeIndex);
+        }}
+      >
+        {files.map((file, index) => (
+          <SwiperSlide key={index}>
+            <PreviewImageItem file={file} setFiles={setFiles} />
+          </SwiperSlide>
+        ))}
+        {/* custom prev and next buttons */}
+        <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
+        <SwiperNextButton
+          nextRef={nextRef}
+          currentIndex={currentIndex}
+          fileLength={files.length}
+        />
+      </Swiper>
+    </div>
   );
 };
 

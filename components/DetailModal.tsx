@@ -86,7 +86,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
                 <SwiperSlide key={index}>
                   <div className="xs:w-[670px] relative h-[670px] w-auto">
                     <Image
-                      src={file}
+                      src={file.url}
                       layout="fill"
                       objectFit="cover"
                       alt="image"
