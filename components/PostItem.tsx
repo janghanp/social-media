@@ -48,7 +48,7 @@ const PostItem = ({ post }: { post: Post }) => {
 
   return (
     <>
-      <div className="relative box-content h-auto w-[470px] rounded-md border border-primary shadow-xl">
+      <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary shadow-xl">
         {/* User info */}
         <div className="flex items-center space-x-3 p-3">
           <div className="avatar overflow-hidden rounded-full">
@@ -73,32 +73,38 @@ const PostItem = ({ post }: { post: Post }) => {
           }}
         >
           {post.files?.map((file, index) => {
-            let width;
-            let height;
+            let width, height, px, py;
 
             if (file.ratio === 1) {
-              width = "w-[470px]";
-              height = "h-[470px]";
+              width = 470;
+              height = 470;
+              px = "px-0";
+              py = "py-0";
             } else if (file.ratio > 1) {
-              width = "w-[470px]";
-              height = "h-[265px]";
+              width = 470;
+              height = 265;
+              px = "px-0";
+              py = "py-[21.9%]";
             } else if (file.ratio < 1) {
-              width = "w-[376px]";
-              height = "h-[470px]";
+              width = 376;
+              height = 470;
+              px = "px-[10%]";
+              py = "py-0";
             } else {
-              width = "w-[470px]";
-              height = "h-[470px]";
+              width = 470;
+              height = 470;
+              px = "px-0";
+              py = "py-0";
             }
 
             return (
-              <SwiperSlide
-                className="flex !h-[470px] !w-[470px] flex-col items-center justify-center "
-                key={index}
-              >
-                <div className={`relative ${height} ${width}`}>
+              <SwiperSlide key={index}>
+                <div className={`h-auto w-auto ${px} ${py}`}>
                   <Image
                     src={file.url}
-                    layout="fill"
+                    width={width}
+                    height={height}
+                    layout="responsive"
                     objectFit="cover"
                     alt="image"
                   />
