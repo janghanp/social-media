@@ -11,6 +11,17 @@ export interface User {
   image: string;
 }
 
+export interface Comment {
+  id: String;
+  comment: String;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: String;
+  user: User;
+  postId: String;
+  parentId: String;
+}
+
 export interface File {
   url: string;
   ratio: number;
@@ -24,6 +35,7 @@ export interface Post {
   updatedAt: Date;
   userId: string;
   user: User;
+  comments: Comment[];
 }
 
 interface Props {
@@ -37,6 +49,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
     include: {
       user: true,
+      comments: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
+import { getToken } from "next-auth/jwt";
 
 AWS.config.update({
   region: process.env.AWS_REGION,
@@ -12,9 +13,18 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ mesage: "Method not allowed" });
+  }
+
+  const jwt = await getToken({ req, secret: process.env.SECRET });
+
+  if (!jwt) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
@@ -39,4 +49,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       .status(500)
       .json({ message: "Something went wrong please try again..." });
   }
-};
+}
