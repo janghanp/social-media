@@ -15,6 +15,7 @@ export interface CustomFile extends File {
   cropInit?: { x: number; y: number };
   aspectInit?: { value: number; text: string };
   uploaded: boolean;
+  isUploading: boolean;
   Key?: string;
 }
 
@@ -36,12 +37,13 @@ const DropZone = ({ formik }: Props) => {
         return;
       }
 
-      //set preview images
+      //Set preview images
       setFiles((prevState) => {
         const newAddedFiles = acceptedFiles.map((file) => {
           return Object.assign(file, {
             preview: URL.createObjectURL(file),
             uploaded: false,
+            isUploading: false,
           });
         });
 

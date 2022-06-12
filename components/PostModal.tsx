@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormikHelpers, useFormik } from "formik";
 import { HiOutlinePhotograph } from "react-icons/hi";
 import axios from "axios";
+import FadeLoader from "react-spinners/FadeLoader";
 
 import { PostValidationSchema } from "../lib/validation";
 import DropZone from "./DropZone";
@@ -21,8 +22,32 @@ export interface formikValues {
 const PostModal = ({ setIsOpen }: Props) => {
   const router = useRouter();
 
+  const [isSubmited, setIsSubmitted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toggleDropZone, setToggleDropZone] = useState<boolean>(false);
+
+  const copyObjectsInUse = async (files: CustomFile[], body: string) => {
+    const fileInfos = files.map((file) => ({
+      Key: file.Key,
+      ratio: file.aspectInit?.value || 1,
+    }));
+
+    await axios.post("/api/post", {
+      body,
+      fileInfos,
+    });
+
+    setIsLoading(false);
+    setIsOpen(false);
+
+    router.reload();
+  };
+
+  const stillUploading = (files: CustomFile[]) => {
+    const loadings = files.map((file) => file.isUploading);
+
+    return loadings.includes(true);
+  };
 
   const formik = useFormik<formikValues>({
     initialValues: {
@@ -36,26 +61,29 @@ const PostModal = ({ setIsOpen }: Props) => {
       values: formikValues,
       _formikHelpers: FormikHelpers<formikValues>
     ) => {
+      const { files, body } = values;
+
       setIsLoading(true);
 
-      //Check whether each file uploadings still uplading or not.
+      //If there is still a file uploading exit this function out and deligate submition to useEffect.
+      if (stillUploading(files)) {
+        setIsSubmitted(true);
+        return;
+      }
 
-      const fileInfos = values.files.map((file) => ({
-        Key: file.Key,
-        ratio: file.aspectInit?.value || 1,
-      }));
-
-      await axios.post("/api/post", {
-        body: values.body,
-        fileInfos,
-      });
-
-      setIsLoading(false);
-      setIsOpen(false);
-
-      router.reload();
+      //Process for when files are not uploading.
+      copyObjectsInUse(files, body);
     },
   });
+
+  useEffect(() => {
+    const { files, body } = formik.values;
+
+    //Detect isUploading values and a user has clicked the post button When every value is false send http request.
+    if (!stillUploading(files) && isSubmited) {
+      copyObjectsInUse(files, body);
+    }
+  }, [formik.values.files]);
 
   const cancelHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -66,7 +94,21 @@ const PostModal = ({ setIsOpen }: Props) => {
     <>
       {/* Fade away background */}
       <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
-
+      {/* FadeLoader When loading */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 bg-black/30">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <FadeLoader
+              loading={isLoading}
+              color="#ffffff"
+              height={15}
+              width={5}
+              radius={2}
+              margin={2}
+            />
+          </div>
+        </div>
+      )}
       <div
         className={`fixed top-10 ${
           formik.values.files.length === 0 ? "bottom-auto" : "bottom-10"

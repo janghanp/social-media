@@ -42,6 +42,18 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
   }
 
   useEffect(() => {
+    setFiles((prevState) =>
+      prevState.map((f) => {
+        if (f === file) {
+          f.isUploading = true;
+
+          return f;
+        }
+
+        return f;
+      })
+    );
+
     const uploadFile = async () => {
       //Create a getSignedUrl.
       const { data } = await axios.post("/api/getSignedUrl", {
@@ -62,6 +74,7 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
           if (f === file) {
             f.Key = data.Key;
             f.uploaded = true;
+            f.isUploading = false;
 
             return f;
           }
