@@ -36,11 +36,6 @@ const PostModal = ({ setIsOpen }: Props) => {
       body,
       fileInfos,
     });
-
-    setIsLoading(false);
-    setIsOpen(false);
-
-    router.reload();
   };
 
   const stillUploading = (files: CustomFile[]) => {
@@ -72,17 +67,31 @@ const PostModal = ({ setIsOpen }: Props) => {
       }
 
       //Process for when files are not uploading.
-      copyObjectsInUse(files, body);
+      await copyObjectsInUse(files, body);
+
+      setIsLoading(false);
+      setIsOpen(false);
+
+      router.reload();
     },
   });
 
   useEffect(() => {
-    const { files, body } = formik.values;
+    const checkUploading = async () => {
+      const { files, body } = formik.values;
 
-    //Detect isUploading values and a user has clicked the post button When every value is false send http request.
-    if (!stillUploading(files) && isSubmited) {
-      copyObjectsInUse(files, body);
-    }
+      //Detect isUploading values and a user has clicked the post button When every value is false send http request.
+      if (!stillUploading(files) && isSubmited) {
+        await copyObjectsInUse(files, body);
+
+        setIsLoading(false);
+        setIsOpen(false);
+
+        router.reload();
+      }
+    };
+
+    checkUploading();
   }, [formik.values.files]);
 
   const cancelHandler = (e: React.MouseEvent<HTMLButtonElement>) => {

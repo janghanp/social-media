@@ -46,6 +46,8 @@ const PostItem = ({ post }: { post: Post }) => {
     return name.split(" ")[0];
   };
 
+  console.log(post);
+
   return (
     <>
       <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary shadow-xl">
@@ -143,6 +145,23 @@ const PostItem = ({ post }: { post: Post }) => {
             </span>
             <span>{post.body}</span>
           </div>
+          {/* Comments */}
+          {post.comments.length > 0 && (
+            <div className="mt-5">
+              <ul>
+                {post.comments.map((comment) => (
+                  <li key={+comment.id}>
+                    <div>
+                      <span className="mr-3 text-sm font-bold text-primary">
+                        {comment.user.name}
+                      </span>
+                      <span>{comment.comment}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
       {/* Detail Modal */}

@@ -5,6 +5,7 @@ import { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import axios from "axios";
 
 import { Post } from "../pages/index";
 import SwiperPrevButton from "./SwiperPrevButton";
@@ -25,7 +26,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [customButtons, setCustomButtons] = useState<boolean>(false);
-  const [body, setBody] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
 
   useEffect(() => {
     //Re-render to activate the custom prev and next buttons.
@@ -47,10 +48,13 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
     setIsOpen(false);
   };
 
-  const submitHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const submitHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(body);
-    console.log("submit");
+
+    await axios.post("/api/comment", {
+      postId: post.id,
+      comment,
+    });
   };
 
   return (
@@ -59,7 +63,8 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
       <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
 
       <div className="fixed left-1/2 top-1/2 z-40 h-auto w-4/5 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg">
-        <div className="flex w-full items-center justify-end">
+        {/* X button */}
+        <div className="mb-2 flex w-full items-center justify-end">
           <button
             onClick={cancelHandler}
             className={`btn btn-outline btn-circle btn-sm border-2`}
@@ -131,19 +136,21 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
               />
             </div>
           </Swiper>
-          <div className="col-span-5 block md:hidden">
+          {/* Input field */}
+          <div className="col-span-5 mt-3 block border-t md:hidden">
             <form className="w-full">
               <div className="flex items-center justify-center">
                 <textarea
                   placeholder="Add a comment..."
+                  value={comment}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                    setBody(e.target.value);
+                    setComment(e.target.value);
                   }}
-                  className="h-[50px] w-full resize-none border-none p-2 leading-8"
+                  className="h-[50px] w-full resize-none border-none p-2 leading-8 outline-none"
                 ></textarea>
                 <button
                   className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
-                  disabled={body.length === 0}
+                  disabled={comment.length === 0}
                   onClick={submitHandler}
                 >
                   post
@@ -164,7 +171,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
             </div>
 
             {/* Comments */}
-            <div className="felx-col flex items-center justify-start p-3">
+            <div className="flex flex-col items-start justify-center p-3 gap-y-5">
               <div className="flex flex-row items-center justify-center gap-x-2">
                 <div className="avatar overflow-hidden rounded-full">
                   <Image src={post.user.image} width={40} height={40} />
@@ -181,6 +188,28 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
                   </span>
                 </div>
               </div>
+
+              {post.comments.map((comment) => (
+                <div
+                  key={+comment.id}
+                  className="flex flex-row items-center justify-center gap-x-2"
+                >
+                  <div className="avatar overflow-hidden rounded-full">
+                    <Image src={comment.user.image} width={40} height={40} />
+                  </div>
+                  <div className="flex flex-col">
+                    <div>
+                      <span className="mr-3 text-sm font-bold">
+                        {comment.user.name}
+                      </span>
+                      <span className="text-sm">{comment.comment}</span>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      {dayjs().to(dayjs(comment.createdAt))}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Input field */}
@@ -189,14 +218,15 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
                 <div className="flex items-center justify-center">
                   <textarea
                     placeholder="Add a comment..."
+                    value={comment}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                      setBody(e.target.value);
+                      setComment(e.target.value);
                     }}
                     className="h-[50px] w-full resize-none border-none p-2 leading-8 outline-none"
                   ></textarea>
                   <button
                     className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
-                    disabled={body.length === 0}
+                    disabled={comment.length === 0}
                     onClick={submitHandler}
                   >
                     post
