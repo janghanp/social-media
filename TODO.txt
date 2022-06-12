@@ -1,4 +1,1 @@
-**
-- How to handle the situation that a user clicks the post button while images are being uploaded.
-    -> The Key value in fileInfos obeject is going be undefined.
 
