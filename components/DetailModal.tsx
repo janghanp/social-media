@@ -13,12 +13,12 @@ import SwiperNextButton from "./SwiperNextButton";
 
 interface Props {
   post: Post;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setToggleDetailModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 dayjs.extend(relativeTime);
 
-const DetailModal = ({ post, setIsOpen }: Props) => {
+const DetailModal = ({ post, setToggleDetailModal }: Props) => {
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +45,7 @@ const DetailModal = ({ post, setIsOpen }: Props) => {
 
   const cancelHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setIsOpen(false);
+    setToggleDetailModal(false);
   };
 
   const submitHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {

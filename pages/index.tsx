@@ -12,14 +12,14 @@ export interface User {
 }
 
 export interface Comment {
-  id: String;
-  comment: String;
+  id: string;
+  comment: string;
   createdAt: Date;
   updatedAt: Date;
-  userId: String;
+  userId: string;
   user: User;
-  postId: String;
-  parentId: String;
+  postId: string;
+  parentId: string;
 }
 
 export interface File {
