@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 import { useSession, getSession } from "next-auth/react";
 import { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,6 +16,7 @@ import {
 import { Post } from "../pages/index";
 import DetailModal from "./DetailModal";
 import ControlMenu from "./ControlMenu";
+import PostModal from "./PostModal";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -23,6 +26,8 @@ import SwiperNextButton from "./SwiperNextButton";
 dayjs.extend(relativeTime);
 
 const PostItem = ({ post }: { post: Post }) => {
+  const router = useRouter();
+
   const { data: session } = useSession();
 
   const prevRef = useRef<HTMLDivElement>(null);
@@ -32,6 +37,7 @@ const PostItem = ({ post }: { post: Post }) => {
   const [customButtons, setCustomButtons] = useState<boolean>(false);
   const [toggleDetailModal, setToggleDetailModal] = useState<boolean>(false);
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
+  const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
 
   useEffect(() => {
     //Re-render to activate the custom prev and next buttons.
@@ -52,6 +58,21 @@ const PostItem = ({ post }: { post: Post }) => {
 
   const trimName = (name: string) => {
     return name.split(" ")[0];
+  };
+
+  const deleteHandler = async () => {
+    await axios.delete("/api/post", {
+      data: {
+        postId: post.id,
+      },
+    });
+
+    router.reload();
+  };
+
+  const editHandler = async () => {
+    setToggleControlMenu(false);
+    setTogglePostModal(true);
   };
 
   return (
@@ -181,14 +202,27 @@ const PostItem = ({ post }: { post: Post }) => {
         </div>
       </div>
 
-      {/* Control Menu */}
-      {toggleControlMenu && (
-        <ControlMenu post={post} setToggleControlMenu={setToggleControlMenu} />
-      )}
-
       {/* Detail Modal */}
       {toggleDetailModal && (
         <DetailModal post={post} setToggleDetailModal={setToggleDetailModal} />
+      )}
+
+      {/* Control Menu */}
+      {toggleControlMenu && (
+        <ControlMenu
+          setToggleControlMenu={setToggleControlMenu}
+          deleteHandler={deleteHandler}
+          editHandler={editHandler}
+        />
+      )}
+
+      {/* Post Modal */}
+      {togglePostModal && (
+        <PostModal
+          setIsOpen={setTogglePostModal}
+          initialBody={post.body}
+          initialFiles={post.files}
+        />
       )}
     </>
   );

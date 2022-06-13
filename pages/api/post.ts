@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
-import { S3Client, CopyObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  CopyObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 
 import { prisma } from "../../lib/prisma";
 
@@ -21,28 +25,39 @@ const copyObject = async (key: string) => {
   };
 
   //Copy images in use into post directory
-  const command = new CopyObjectCommand(input);
-  await s3.send(command);
+  const copyCommand = new CopyObjectCommand(input);
+  await s3.send(copyCommand);
+};
+
+const deleteObject = (key: string) => {
+  console.log(key);
+
+  const input = {
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: `posts/${key}`,
+  };
+
+  const deleteCommand = new DeleteObjectCommand(input);
+  s3.send(deleteCommand);
 };
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === "POST") {
-    const jwt = await getToken({ req, secret: process.env.SECRET });
+  const jwt = await getToken({ req, secret: process.env.SECRET });
 
-    if (!jwt) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+  if (!jwt) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  if (req.method === "POST") {
+    const {
+      body,
+      fileInfos,
+    }: { body: string; fileInfos: { Key: string; ratio: number }[] } = req.body;
 
     try {
-      const {
-        body,
-        fileInfos,
-      }: { body: string; fileInfos: { Key: string; ratio: number }[] } =
-        req.body;
-
       //Copy objects from temp to posts.
       await Promise.all(fileInfos.map((fileInfo) => copyObject(fileInfo.Key)));
 
@@ -60,12 +75,38 @@ export default async function handler(
         },
       });
 
-      res.status(201).json({ message: "Successfully posted!" });
+      return res.status(201).json({ message: "Successfully created!" });
     } catch (err) {
       console.log(err);
-      res
-        .status(500)
-        .json({ message: "Something went wrong please try again..." });
+      return res.status(500).json({ message: "Something went wrong..." });
+    }
+  }
+
+  if (req.method === "DELETE") {
+    const { postId }: { postId: string } = req.body;
+
+    try {
+      //Delete the post
+      const post = await prisma.post.delete({
+        where: {
+          id: postId,
+        },
+      });
+
+      //Delete images that are associated with the post in the bucket.
+      post.files.map((fileInfo) => {
+        const stringArr = fileInfo.url.split("/");
+
+        const key = stringArr[stringArr.length - 1];
+
+        deleteObject(key);
+      });
+
+      return res.status(200).json({ message: "Successfully deleted" });
+    } catch (err) {
+      console.log(err);
+
+      return res.status(500).json({ message: "Something went wrong..." });
     }
   }
 }
