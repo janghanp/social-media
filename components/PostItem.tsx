@@ -1,14 +1,19 @@
 import { useState, useEffect, useRef } from "react";
+import { useSession, getSession } from "next-auth/react";
 import { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
+import {
+  AiOutlineHeart,
+  AiOutlineMessage,
+  AiOutlineEllipsis,
+} from "react-icons/ai";
 
 import { Post } from "../pages/index";
 import DetailModal from "./DetailModal";
-
+import ControlMenu from "./ControlMenu";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -18,12 +23,15 @@ import SwiperNextButton from "./SwiperNextButton";
 dayjs.extend(relativeTime);
 
 const PostItem = ({ post }: { post: Post }) => {
+  const { data: session } = useSession();
+
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [customButtons, setCustomButtons] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [toggleDetailModal, setToggleDetailModal] = useState<boolean>(false);
+  const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
 
   useEffect(() => {
     //Re-render to activate the custom prev and next buttons.
@@ -33,33 +41,41 @@ const PostItem = ({ post }: { post: Post }) => {
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
+    if (toggleDetailModal || toggleControlMenu) {
       document.body.style.overflowY = "hidden";
       document.body.style.height = "100%";
     } else {
       document.body.style.overflow = "auto";
       document.body.style.height = "auto";
     }
-  }, [isOpen]);
+  }, [toggleDetailModal, toggleControlMenu]);
 
   const trimName = (name: string) => {
     return name.split(" ")[0];
   };
 
-  console.log(post);
-
   return (
     <>
       <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary shadow-xl">
         {/* User info */}
-        <div className="flex items-center space-x-3 p-3">
-          <div className="avatar overflow-hidden rounded-full">
-            <Image src={post.user.image} width={40} height={40} />
+        <div className="flex items-center justify-between p-3">
+          <div className="flex items-center justify-center gap-x-3">
+            <div className="avatar overflow-hidden rounded-full">
+              <Image src={post.user.image} width={40} height={40} />
+            </div>
+            <span className="text-sm lowercase text-gray-500">
+              {trimName(post.user.name!)} &nbsp;• &nbsp;{" "}
+              {dayjs().to(dayjs(post.createdAt))}
+            </span>
           </div>
-          <span className="text-sm lowercase text-gray-500">
-            {trimName(post.user.name!)} &nbsp;• &nbsp;{" "}
-            {dayjs().to(dayjs(post.createdAt))}
-          </span>
+          {session?.user.id === post.userId && (
+            <div
+              className="hover:cursor-pointer"
+              onClick={() => setToggleControlMenu(true)}
+            >
+              <AiOutlineEllipsis className="h-6 w-6" />
+            </div>
+          )}
         </div>
         {/* Images */}
         <Swiper
@@ -131,7 +147,7 @@ const PostItem = ({ post }: { post: Post }) => {
               <span>100</span>
             </div>
             <div
-              onClick={() => setIsOpen(true)}
+              onClick={() => setToggleDetailModal(true)}
               className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
             >
               <AiOutlineMessage className="h-6 w-6" />
@@ -150,7 +166,7 @@ const PostItem = ({ post }: { post: Post }) => {
             <div className="mt-5">
               <ul>
                 {post.comments.map((comment) => (
-                  <li key={+comment.id}>
+                  <li key={comment.id}>
                     <div>
                       <span className="mr-3 text-sm font-bold text-primary">
                         {comment.user.name}
@@ -164,8 +180,16 @@ const PostItem = ({ post }: { post: Post }) => {
           )}
         </div>
       </div>
+
+      {/* Control Menu */}
+      {toggleControlMenu && (
+        <ControlMenu post={post} setToggleControlMenu={setToggleControlMenu} />
+      )}
+
       {/* Detail Modal */}
-      {isOpen && <DetailModal post={post} setIsOpen={setIsOpen} />}
+      {toggleDetailModal && (
+        <DetailModal post={post} setToggleDetailModal={setToggleDetailModal} />
+      )}
     </>
   );
 };
