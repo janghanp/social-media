@@ -15,52 +15,46 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
   let width, height, px, py;
 
   //Depending on the asepct value width and height should be different.
-  switch (file.aspectInit?.value) {
-    case 1 / 1:
-      width = 564;
-      height = 564;
-      px = "px-0";
-      py = "py-0";
-      break;
-    case 4 / 5:
-      width = 451;
-      height = 564;
-      px = "px-[10%]";
-      py = "py-0";
-      break;
-    case 16 / 9:
-      width = 564;
-      height = 317;
-      px = "px-0";
-      py = "py-[21.9%]";
-      break;
-    default:
-      width = 564;
-      height = 564;
-      px = "px-0";
-      py = "py-0";
+  if (file.aspectInit?.value === 1) {
+    width = 564;
+    height = 564;
+    px = "px-0";
+    py = "py-0";
+  } else if (file.aspectInit && file.aspectInit.value < 1) {
+    width = 451;
+    height = 564;
+    px = "px-[10%]";
+    py = "py-0";
+  } else if (file.aspectInit && file.aspectInit.value > 1) {
+    width = 564;
+    height = 317;
+    px = "px-0";
+    py = "py-[21.9%]";
+  } else {
+    width = 564;
+    height = 564;
+    px = "px-0";
+    py = "py-0";
   }
 
   useEffect(() => {
-    setFiles((prevState) =>
-      prevState.map((f) => {
-        if (f === file) {
-          f.isUploading = true;
+    const uploadFile = async () => {
+      setFiles((prevState) =>
+        prevState.map((f) => {
+          if (f === file) {
+            f.isUploading = true;
+
+            return f;
+          }
 
           return f;
-        }
+        })
+      );
 
-        return f;
-      })
-    );
-
-    const uploadFile = async () => {
-      //Create a getSignedUrl.
       const { data } = await axios.post("/api/getSignedUrl", {
         type: file.type,
       });
 
-      //Upload an image to the bucket(PUT method) with the url created above.
       await axios.put(data.uploadURL, file.croppedImage || file, {
         headers: {
           "Content-type": file.type,
@@ -68,7 +62,6 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
         },
       });
 
-      //Update state.
       setFiles((prevState) =>
         prevState.map((f) => {
           if (f === file) {
@@ -132,7 +125,7 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
             width={width}
             height={height}
             src={file.croppedPreview || file.preview}
-            alt={file.name}
+            alt="image"
           />
         </div>
       )}

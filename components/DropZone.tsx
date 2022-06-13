@@ -7,15 +7,16 @@ import { HiOutlineUpload } from "react-icons/hi";
 import { formikValues } from "./PostModal";
 import Preview from "./Preview";
 
-export interface CustomFile extends File {
+export interface CustomFile {
   preview: string;
+  uploaded: boolean;
+  isUploading: boolean;
+  type: string;
   croppedPreview?: string;
   croppedImage?: Blob;
   zoomInit?: number;
   cropInit?: { x: number; y: number };
   aspectInit?: { value: number; text: string };
-  uploaded: boolean;
-  isUploading: boolean;
   Key?: string;
 }
 
@@ -27,7 +28,7 @@ const DropZone = ({ formik }: Props) => {
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   useEffect(() => {
-    //Set files value in formik
+    //Set files value in formik. This effect function is for when creating a post at first.
     formik.setFieldValue("files", files, false);
   }, [files]);
 
@@ -85,6 +86,8 @@ const DropZone = ({ formik }: Props) => {
     "border-warning": fileRejections.length > 0,
     "border-gray-500": fileRejections.length === 0,
   });
+
+  console.log("DropZone render");
 
   return (
     <>
