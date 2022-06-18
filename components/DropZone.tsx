@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { useDropzone, FileRejection } from "react-dropzone";
 import classNames from "classnames";
 import { FormikProps } from "formik";
@@ -7,7 +7,7 @@ import { HiOutlineUpload } from "react-icons/hi";
 import { formikValues } from "./PostModal";
 import Preview from "./Preview";
 
-export interface CustomFile {
+export interface CustomFile extends File {
   preview: string;
   uploaded: boolean;
   isUploading: boolean;
@@ -22,14 +22,20 @@ export interface CustomFile {
 
 interface Props {
   formik: FormikProps<formikValues>;
+  isEditing: boolean;
 }
 
-const DropZone = ({ formik }: Props) => {
-  const [files, setFiles] = useState<CustomFile[]>([]);
+const DropZone = ({ formik, isEditing }: Props) => {
+  const firstRender = useRef<boolean>(true);
+
+  const [files, setFiles] = useState<CustomFile[]>(formik.values.files);
 
   useEffect(() => {
-    //Set files value in formik. This effect function is for when creating a post at first.
-    formik.setFieldValue("files", files, false);
+    if (firstRender.current) {
+      firstRender.current = false;
+    } else {
+      formik.setFieldValue("files", files, false);
+    }
   }, [files]);
 
   const onDropHandler = useCallback(
@@ -38,7 +44,6 @@ const DropZone = ({ formik }: Props) => {
         return;
       }
 
-      //Set preview images
       setFiles((prevState) => {
         const newAddedFiles = acceptedFiles.map((file) => {
           return Object.assign(file, {
@@ -87,8 +92,6 @@ const DropZone = ({ formik }: Props) => {
     "border-gray-500": fileRejections.length === 0,
   });
 
-  console.log("DropZone render");
-
   return (
     <>
       <section className="relative mt-5 rounded-lg transition duration-200 hover:cursor-pointer hover:bg-black/10">
@@ -102,15 +105,14 @@ const DropZone = ({ formik }: Props) => {
           </div>
         </div>
       </section>
-      {/* Error */}
       {fileRejections.length > 0 && (
         <div className="mt-2 text-sm text-warning">
           {fileRejections[0].errors[0].message}
         </div>
       )}
-      {/* Preview */}
-      {/* {JSON.stringify(files, null, 4)} */}
-      {files.length > 0 && <Preview files={files} setFiles={setFiles} />}
+      {files.length > 0 && (
+        <Preview files={files} setFiles={setFiles} isEditing={isEditing} />
+      )}
     </>
   );
 };

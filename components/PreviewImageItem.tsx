@@ -9,12 +9,18 @@ import ImageCropModal from "./ImageCropModal";
 type Props = {
   file: CustomFile;
   setFiles: React.Dispatch<React.SetStateAction<CustomFile[]>>;
+  isEditing: boolean;
+  editInitialized: boolean;
 };
 
-const PreviewImageItem = ({ file, setFiles }: Props) => {
+const PreviewImageItem = ({
+  file,
+  setFiles,
+  isEditing,
+  editInitialized,
+}: Props) => {
   let width, height, px, py;
 
-  //Depending on the asepct value width and height should be different.
   if (file.aspectInit?.value === 1) {
     width = 564;
     height = 564;
@@ -37,6 +43,8 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
     py = "py-0";
   }
 
+  const [imageCropModal, setImageCropModal] = useState<boolean>(false);
+
   useEffect(() => {
     const uploadFile = async () => {
       setFiles((prevState) =>
@@ -51,16 +59,10 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
         })
       );
 
-      const { data } = await axios.post("/api/getSignedUrl", {
-        type: file.type,
-      });
+      const formData = new FormData();
+      formData.append("file", file.croppedImage || file);
 
-      await axios.put(data.uploadURL, file.croppedImage || file, {
-        headers: {
-          "Content-type": file.type,
-          "Access-Control-Allow-Otigin": "*",
-        },
-      });
+      const { data } = await axios.post("/api/upload", formData);
 
       setFiles((prevState) =>
         prevState.map((f) => {
@@ -77,10 +79,12 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
       );
     };
 
-    uploadFile();
+    if (isEditing && !editInitialized) {
+      return;
+    } else {
+      uploadFile();
+    }
   }, [file.croppedImage]);
-
-  const [imageCropModal, setImageCropModal] = useState<boolean>(false);
 
   const deleteHandler = () => {
     URL.revokeObjectURL(file.preview);
@@ -89,21 +93,18 @@ const PreviewImageItem = ({ file, setFiles }: Props) => {
 
   return (
     <>
-      {/* Image crop modal */}
       <ImageCropModal
         imageCropModal={imageCropModal}
         setImageCropModal={setImageCropModal}
         file={file}
         setFiles={setFiles}
       />
-      {/* close button */}
       <div
         onClick={deleteHandler}
         className="btn btn-circle btn-sm absolute top-3 right-3 z-10 border-none bg-black/50 hover:bg-black/30"
       >
         <MdClose />
       </div>
-      {/* edit button  */}
       <div
         className="absolute top-3 left-3 z-10 flex flex-row items-center justify-center rounded-md bg-black/50 p-2 text-white hover:cursor-pointer hover:bg-black/30"
         onClick={() => setImageCropModal(true)}

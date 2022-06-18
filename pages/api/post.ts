@@ -2,9 +2,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
 import {
   S3Client,
+  PutObjectCommand,
   CopyObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
+import Formidable from "formidable";
+import fs from "fs";
 
 import { prisma } from "../../lib/prisma";
 
@@ -24,14 +27,11 @@ const copyObject = async (key: string) => {
     ACL: "public-read",
   };
 
-  //Copy images in use into post directory
   const copyCommand = new CopyObjectCommand(input);
   await s3.send(copyCommand);
 };
 
 const deleteObject = (key: string) => {
-  console.log(key);
-
   const input = {
     Bucket: process.env.AWS_S3_BUCKET,
     Key: `posts/${key}`,
@@ -58,15 +58,13 @@ export default async function handler(
     }: { body: string; fileInfos: { Key: string; ratio: number }[] } = req.body;
 
     try {
-      //Copy objects from temp to posts.
       await Promise.all(fileInfos.map((fileInfo) => copyObject(fileInfo.Key)));
 
       const files = fileInfos.map((fileInfo) => ({
-        url: `${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${fileInfo.Key}`,
         ratio: fileInfo.ratio,
+        Key: fileInfo.Key,
       }));
 
-      //Store file's info(url and aspect) and body into the mongodb.
       await prisma.post.create({
         data: {
           userId: jwt.sub,
@@ -86,20 +84,14 @@ export default async function handler(
     const { postId }: { postId: string } = req.body;
 
     try {
-      //Delete the post
       const post = await prisma.post.delete({
         where: {
           id: postId,
         },
       });
 
-      //Delete images that are associated with the post in the bucket.
-      post.files.map((fileInfo) => {
-        const stringArr = fileInfo.url.split("/");
-
-        const key = stringArr[stringArr.length - 1];
-
-        deleteObject(key);
+      post.files.map((file) => {
+        deleteObject(file.Key);
       });
 
       return res.status(200).json({ message: "Successfully deleted" });
@@ -108,5 +100,80 @@ export default async function handler(
 
       return res.status(500).json({ message: "Something went wrong..." });
     }
+  }
+
+  if (req.method === "PUT") {
+    const {
+      postId,
+      body,
+      fileInfos: newFiles,
+    }: {
+      postId: string;
+      body: string;
+      fileInfos: { Key: string; ratio: number }[];
+    } = req.body;
+
+    const post = await prisma.post.findFirst({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) {
+      return res.status(400).json({ mesasge: "Bad request" });
+    }
+
+    const currentFiles = post.files.map((file) => ({
+      Key: file.Key,
+      ratio: file.ratio,
+    }));
+
+    console.log("newFiles: ", newFiles);
+    console.log("currentFiles: ", currentFiles);
+
+    const currentkeys = currentFiles.map((currentFile) => currentFile.Key);
+
+    const intersectionFiles = newFiles.filter((newFile) =>
+      currentkeys.includes(newFile.Key)
+    );
+
+    console.log("intersectionFiles: ", intersectionFiles);
+
+    const intersectionKeys = intersectionFiles.map(
+      (interFile) => interFile.Key
+    );
+
+    const filesToDelete = currentFiles.filter(
+      (currentFile) => !intersectionKeys.includes(currentFile.Key)
+    );
+
+    const filesToCopy = newFiles.filter(
+      (newFile) => !intersectionKeys.includes(newFile.Key)
+    );
+
+    console.log("filesToDelete:", filesToDelete);
+    console.log("filesToCopy: ", filesToCopy);
+
+    // //Copy object
+    await Promise.all(filesToCopy.map((file) => copyObject(file.Key)));
+
+    //Delete object
+    filesToDelete.map((file) => deleteObject(file.Key));
+
+    //Update with newrly created files info. - what about ratio?.
+    const newPost = await prisma.post.update({
+      where: {
+        id: postId,
+      },
+
+      data: {
+        body,
+        files: newFiles,
+      },
+    });
+
+    console.log("newPost: ", newPost);
+
+    return res.status(204).json({ message: "Succesfully updated" });
   }
 }
