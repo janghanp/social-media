@@ -140,7 +140,7 @@ const PostItem = ({ post }: { post: Post }) => {
               <SwiperSlide key={index}>
                 <div className={`h-auto w-auto ${px} ${py}`}>
                   <Image
-                    src={file.url}
+                    src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`}
                     width={width}
                     height={height}
                     layout="responsive"
@@ -222,6 +222,7 @@ const PostItem = ({ post }: { post: Post }) => {
           setIsOpen={setTogglePostModal}
           initialBody={post.body}
           initialFiles={post.files}
+          postId={post.id}
         />
       )}
     </>

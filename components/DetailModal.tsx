@@ -116,7 +116,7 @@ const DetailModal = ({ post, setToggleDetailModal }: Props) => {
                 <SwiperSlide key={index}>
                   <div className={`h-auto w-auto ${px} ${py}`}>
                     <Image
-                      src={file.url}
+                      src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`}
                       width={width}
                       height={height}
                       layout="responsive"
@@ -171,7 +171,7 @@ const DetailModal = ({ post, setToggleDetailModal }: Props) => {
             </div>
 
             {/* Comments */}
-            <div className="flex flex-col items-start justify-center p-3 gap-y-5">
+            <div className="flex flex-col items-start justify-center gap-y-5 p-3">
               <div className="flex flex-row items-center justify-center gap-x-2">
                 <div className="avatar overflow-hidden rounded-full">
                   <Image src={post.user.image} width={40} height={40} />

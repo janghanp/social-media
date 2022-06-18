@@ -23,8 +23,8 @@ export interface Comment {
 }
 
 export interface File {
-  url: string;
   ratio: number;
+  Key: string;
 }
 
 export interface Post {
