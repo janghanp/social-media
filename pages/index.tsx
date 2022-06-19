@@ -19,7 +19,7 @@ export interface Comment {
   userId: string;
   user: User;
   postId: string;
-  parentId: string;
+  parentId?: string;
 }
 
 export interface File {
@@ -36,6 +36,7 @@ export interface Post {
   userId: string;
   user: User;
   comments: Comment[];
+  _count: { comments: number };
 }
 
 interface Props {
@@ -49,7 +50,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
     include: {
       user: true,
+      _count: {
+        select: { comments: true },
+      },
       comments: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 20,
         include: {
           user: true,
         },
