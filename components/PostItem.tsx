@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
@@ -22,6 +22,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import SwiperPrevButton from "./SwiperPrevButton";
 import SwiperNextButton from "./SwiperNextButton";
+import { Comment } from "../pages/index";
 
 dayjs.extend(relativeTime);
 
@@ -38,9 +39,12 @@ const PostItem = ({ post }: { post: Post }) => {
   const [toggleDetailModal, setToggleDetailModal] = useState<boolean>(false);
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
   const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
+  const [comments, setComments] = useState<Comment[]>(post.comments);
+  const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
+    post._count.comments
+  );
 
   useEffect(() => {
-    //Re-render to activate the custom prev and next buttons.
     if (!customButtons) {
       setCustomButtons(true);
     }
@@ -78,7 +82,6 @@ const PostItem = ({ post }: { post: Post }) => {
   return (
     <>
       <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary shadow-xl">
-        {/* User info */}
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center justify-center gap-x-3">
             <div className="avatar overflow-hidden rounded-full">
@@ -98,7 +101,6 @@ const PostItem = ({ post }: { post: Post }) => {
             </div>
           )}
         </div>
-        {/* Images */}
         <Swiper
           modules={[Pagination, Navigation]}
           slidesPerView={1}
@@ -161,7 +163,6 @@ const PostItem = ({ post }: { post: Post }) => {
           </div>
         </Swiper>
         <div className="p-3">
-          {/* Reactions */}
           <div className="flex items-center justify-start space-x-1">
             <div className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50">
               <AiOutlineHeart className="h-6 w-6" />
@@ -172,18 +173,41 @@ const PostItem = ({ post }: { post: Post }) => {
               className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
             >
               <AiOutlineMessage className="h-6 w-6" />
-              <span>50</span>
+              <span>{totalCommentsCount}</span>
             </div>
           </div>
-          {/* Post body */}
           <div className="mt-5">
             <span className="mr-3 text-sm font-bold text-primary">
               {post.user.name}
             </span>
             <span>{post.body}</span>
           </div>
-          {/* Comments */}
-          {post.comments.length > 0 && (
+          {comments.length >= 2 ? (
+            <>
+              <div className="mt-5">
+                <ul>
+                  {comments.slice(0, 2).map((comment) => (
+                    <li key={comment.id}>
+                      <div>
+                        <span className="mr-3 text-sm font-bold text-primary">
+                          {comment.user.name}
+                        </span>
+                        <span>{comment.comment}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div
+                onClick={() => setToggleDetailModal(true)}
+                className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
+              >
+                View {totalCommentsCount === 1 ? "" : "all"}{" "}
+                {totalCommentsCount}{" "}
+                {totalCommentsCount === 1 ? "comment" : "comments"}
+              </div>
+            </>
+          ) : (
             <div className="mt-5">
               <ul>
                 {post.comments.map((comment) => (
@@ -202,12 +226,17 @@ const PostItem = ({ post }: { post: Post }) => {
         </div>
       </div>
 
-      {/* Detail Modal */}
       {toggleDetailModal && (
-        <DetailModal post={post} setToggleDetailModal={setToggleDetailModal} />
+        <DetailModal
+          post={post}
+          comments={comments}
+          totalCommentsCount={totalCommentsCount}
+          setToggleDetailModal={setToggleDetailModal}
+          setComments={setComments}
+          setTotalCommentsCount={setTotalCommentsCount}
+        />
       )}
 
-      {/* Control Menu */}
       {toggleControlMenu && (
         <ControlMenu
           setToggleControlMenu={setToggleControlMenu}
@@ -216,7 +245,6 @@ const PostItem = ({ post }: { post: Post }) => {
         />
       )}
 
-      {/* Post Modal */}
       {togglePostModal && (
         <PostModal
           setIsOpen={setTogglePostModal}
