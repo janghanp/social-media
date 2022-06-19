@@ -1,4 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next";
+import { useSession } from "next-auth/react";
 import { prisma } from "../lib/prisma";
 
 import PostsList from "../components/PostsList";
@@ -36,7 +37,8 @@ export interface Post {
   userId: string;
   user: User;
   comments: Comment[];
-  _count: { comments: number };
+  _count: { comments: number; likedBy: number };
+  likedByIds: string[];
 }
 
 interface Props {
@@ -51,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     include: {
       user: true,
       _count: {
-        select: { comments: true },
+        select: { comments: true, likedBy: true },
       },
       comments: {
         orderBy: {

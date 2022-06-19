@@ -43,6 +43,12 @@ const PostItem = ({ post }: { post: Post }) => {
   const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
     post._count.comments
   );
+  const [isLiked, setIsLiked] = useState<boolean>(
+    session ? post.likedByIds.includes(session!.user.id) : false
+  );
+  const [totalLikesCount, setTotlaLikesCount] = useState<number>(
+    post._count.likedBy
+  );
 
   useEffect(() => {
     if (!customButtons) {
@@ -79,9 +85,32 @@ const PostItem = ({ post }: { post: Post }) => {
     setTogglePostModal(true);
   };
 
+  const likeHandler = async () => {
+    if (!session) {
+      router.push("/login");
+
+      return;
+    }
+
+    setIsLiked((prevState) => !prevState);
+    setTotlaLikesCount((prevState) => {
+      if (isLiked) {
+        return prevState - 1;
+      }
+
+      return prevState + 1;
+    });
+
+    await axios.post("/api/like", {
+      userId: session!.user.id,
+      postId: post.id,
+      dislike: isLiked,
+    });
+  };
+
   return (
     <>
-      <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary shadow-xl">
+      <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary bg-white shadow-xl">
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center justify-center gap-x-3">
             <div className="avatar overflow-hidden rounded-full">
@@ -148,6 +177,7 @@ const PostItem = ({ post }: { post: Post }) => {
                     layout="responsive"
                     objectFit="cover"
                     alt="image"
+                    priority
                   />
                 </div>
               </SwiperSlide>
@@ -164,9 +194,14 @@ const PostItem = ({ post }: { post: Post }) => {
         </Swiper>
         <div className="p-3">
           <div className="flex items-center justify-start space-x-1">
-            <div className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50">
-              <AiOutlineHeart className="h-6 w-6" />
-              <span>100</span>
+            <div
+              onClick={likeHandler}
+              className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
+            >
+              <AiOutlineHeart
+                className={`h-6 w-6 ${isLiked ? "fill-red-500" : ""}`}
+              />
+              <span>{totalLikesCount}</span>
             </div>
             <div
               onClick={() => setToggleDetailModal(true)}
@@ -187,12 +222,12 @@ const PostItem = ({ post }: { post: Post }) => {
               <div className="mt-5">
                 <ul>
                   {comments.slice(0, 2).map((comment) => (
-                    <li key={comment.id}>
+                    <li key={comment.id} className="mt-2">
                       <div>
                         <span className="mr-3 text-sm font-bold text-primary">
                           {comment.user.name}
                         </span>
-                        <span>{comment.comment}</span>
+                        <span className="break-all">{comment.comment}</span>
                       </div>
                     </li>
                   ))}
@@ -211,7 +246,7 @@ const PostItem = ({ post }: { post: Post }) => {
             <div className="mt-5">
               <ul>
                 {post.comments.map((comment) => (
-                  <li key={comment.id}>
+                  <li key={comment.id} className="mt-2">
                     <div>
                       <span className="mr-3 text-sm font-bold text-primary">
                         {comment.user.name}

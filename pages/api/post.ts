@@ -6,8 +6,6 @@ import {
   CopyObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
-import Formidable from "formidable";
-import fs from "fs";
 
 import { prisma } from "../../lib/prisma";
 

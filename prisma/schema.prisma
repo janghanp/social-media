@@ -21,7 +21,7 @@ model Account {
   id_token          String? @db.String
   session_state     String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation("UserAndAccounts", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -32,10 +32,15 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  likedPostsIds String[]  @db.ObjectId
 
-  accounts Account[]
-  posts    Post[]
-  comments Comment[]
+  accounts Account[] @relation("UserAndAccounts")
+
+  posts Post[] @relation("UserAndPosts")
+
+  comments Comment[] @relation("UserAndComments")
+
+  likedPosts Post[] @relation("UsersLikePosts", fields: [likedPostsIds], references: [id])
 }
 
 type File {
@@ -44,31 +49,35 @@ type File {
 }
 
 model Post {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  body      String
-  files     File[]
-  comments  Comment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  body       String
+  files      File[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     String   @db.ObjectId
+  likedByIds String[] @db.ObjectId
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
+  user User @relation("UserAndPosts", fields: [userId], references: [id])
+
+  comments Comment[] @relation("PostAndComments")
+
+  likedBy User[] @relation("UsersLikePosts", fields: [likedByIds], references: [id])
 }
 
-//Comment should be cascaded it to by itself.
 model Comment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String   @db.ObjectId
+  postId    String   @db.ObjectId
+  parentId  String?  @db.ObjectId
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
+  user User @relation("UserAndComments", fields: [userId], references: [id])
 
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId String @db.ObjectId
+  post Post @relation("PostAndComments", fields: [postId], references: [id], onDelete: Cascade)
 
-  parent   Comment?  @relation("CommentandComments", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+  parent Comment? @relation("CommentandComments", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
   children Comment[] @relation("CommentandComments")
-  parentId String?   @db.ObjectId
 }
