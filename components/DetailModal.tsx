@@ -8,6 +8,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import axios from "axios";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import SyncLoader from "react-spinners/SyncLoader";
+import { useSession } from "next-auth/react";
 
 import { Post } from "../pages/index";
 import SwiperPrevButton from "./SwiperPrevButton";
@@ -34,6 +35,8 @@ const DetailModal = ({
   totalCommentsCount,
   setTotalCommentsCount,
 }: Props) => {
+  const { data: session } = useSession();
+
   const router = useRouter();
 
   const prevRef = useRef<HTMLDivElement>(null);
@@ -171,27 +174,29 @@ const DetailModal = ({
               />
             </div>
           </Swiper>
-          <div className="col-span-5 mt-3 block border-t md:hidden">
-            <form className="w-full">
-              <div className="flex items-center justify-center">
-                <textarea
-                  placeholder="Add a comment..."
-                  value={commentInput}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                    setCommentInput(e.target.value);
-                  }}
-                  className="h-[50px] w-full resize-none border-none p-2 leading-8 outline-none"
-                ></textarea>
-                <button
-                  className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
-                  disabled={commentInput.length === 0}
-                  onClick={submitHandler}
-                >
-                  post
-                </button>
-              </div>
-            </form>
-          </div>
+          {session && (
+            <div className="col-span-5 mt-3 block border-t md:hidden">
+              <form className="w-full">
+                <div className="flex items-center justify-center">
+                  <textarea
+                    placeholder="Add a comment..."
+                    value={commentInput}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                      setCommentInput(e.target.value);
+                    }}
+                    className="h-[50px] w-full resize-none border-none p-2 leading-8 outline-none"
+                  ></textarea>
+                  <button
+                    className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
+                    disabled={commentInput.length === 0}
+                    onClick={submitHandler}
+                  >
+                    post
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
           <div className="relative col-span-2 hidden max-h-max md:flex md:flex-col md:justify-between">
             <div className="flex items-center space-x-3 border-b p-3">
               <div className="avatar overflow-hidden rounded-full">
@@ -204,7 +209,7 @@ const DetailModal = ({
             </div>
             <div className="relative flex-1 overflow-scroll">
               <div className="absolute flex h-auto w-full flex-col items-start justify-center gap-y-5 p-3">
-                <div className="flex flex-row items-center justify-center gap-x-2">
+                <div className="mb-5 flex flex-row items-center justify-center gap-x-2">
                   <div className="avatar overflow-hidden rounded-full">
                     <Image src={post.user.image} width={40} height={40} />
                   </div>
@@ -258,27 +263,29 @@ const DetailModal = ({
                 </div>
               </div>
             </div>
-            <div className="bottom-0 z-30 w-full border-t bg-white">
-              <form className="w-full">
-                <div className="flex items-center justify-center">
-                  <textarea
-                    placeholder="Add a comment..."
-                    value={commentInput}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                      setCommentInput(e.target.value);
-                    }}
-                    className="h-[50px] w-full resize-none border-none p-2 leading-8 outline-none"
-                  ></textarea>
-                  <button
-                    className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
-                    disabled={commentInput.length === 0}
-                    onClick={submitHandler}
-                  >
-                    post
-                  </button>
-                </div>
-              </form>
-            </div>
+            {session && (
+              <div className="bottom-0 z-30 w-full border-t bg-white">
+                <form className="w-full">
+                  <div className="flex items-center justify-center">
+                    <textarea
+                      placeholder="Add a comment..."
+                      value={commentInput}
+                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                        setCommentInput(e.target.value);
+                      }}
+                      className="h-[50px] w-full resize-none border-none p-2 leading-8 outline-none"
+                    ></textarea>
+                    <button
+                      className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
+                      disabled={commentInput.length === 0}
+                      onClick={submitHandler}
+                    >
+                      post
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       </div>
