@@ -17,7 +17,7 @@ type Props = {
   postId?: string;
 };
 
-export interface formikValues {
+interface formikValues {
   body: string;
   files: CustomFile[];
 }
