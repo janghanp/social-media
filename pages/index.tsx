@@ -1,5 +1,4 @@
 import type { NextPage, GetServerSideProps } from "next";
-import { getToken } from "next-auth/jwt";
 
 import { prisma } from "../lib/prisma";
 import PostsList from "../components/PostsList";
@@ -47,25 +46,6 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const jwt = await getToken({ req: context.req, secret: process.env.SECRET });
-
-  if (jwt) {
-    const user = await prisma.user.findFirst({
-      where: {
-        id: jwt.sub,
-      },
-    });
-
-    if (!user!.username) {
-      return {
-        redirect: {
-          destination: "/welcome",
-          permanent: false,
-        },
-      };
-    }
-  }
-
   const posts = await prisma.post.findMany({
     orderBy: {
       createdAt: "desc",
