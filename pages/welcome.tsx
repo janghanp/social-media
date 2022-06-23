@@ -2,23 +2,33 @@ import type { NextPage, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { getToken } from "next-auth/jwt";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useFormik, FormikHelpers } from "formik";
 import { UserNameValidationSchema } from "../lib/validation";
 import FadeLoader from "react-spinners/FadeLoader";
 
 import { prisma } from "../lib/prisma";
+import { useUserContext } from "../context/user";
 
 interface formikValue {
   userName: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const jwt = await getToken({ req: context.req });
+  const jwt = await getToken({ req: context.req, secret: process.env.SECRET });
+
+  if (!jwt) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
   const user = await prisma.user.findFirst({
     where: {
-      id: jwt?.sub,
+      id: jwt.sub,
     },
   });
 
@@ -39,6 +49,8 @@ const Welcome: NextPage = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { setUsername } = useUserContext();
+
   const formik = useFormik<formikValue>({
     initialValues: {
       userName: "",
@@ -55,17 +67,16 @@ const Welcome: NextPage = () => {
       setIsLoading(true);
 
       try {
-        const { data } = await axios.post("/api/username", { userName });
+        await axios.post("/api/username", { userName });
 
         setIsLoading(false);
+        setUsername(userName);
+
         router.push("/");
       } catch (err) {
         if (axios.isAxiosError(err)) {
           if (err?.response?.status === 409) {
-            formik.setFieldError(
-              "userName",
-              "The user name was already taken."
-            );
+            formik.setFieldError("userName", "The username was already taken.");
             setIsLoading(false);
           }
         }
@@ -74,7 +85,7 @@ const Welcome: NextPage = () => {
   });
 
   return (
-    <div className="fixed inset-0 z-30 bg-black/50">
+    <div className="fixed inset-0 z-30 bg-black/80">
       <div className="absolute top-1/2 left-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-10 shadow-lg sm:w-[500px]">
         <h1 className="text-center text-2xl font-semibold ">
           Welcome to social media!

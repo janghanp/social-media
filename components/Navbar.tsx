@@ -5,11 +5,14 @@ import { HiOutlinePlus } from "react-icons/hi";
 
 import Avatar from "./Avatar";
 import PostModal from "./PostModal";
+import { useUserContext } from "../context/user";
 
 const Navbar = () => {
   const { data: session } = useSession();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const { username } = useUserContext();
 
   useEffect(() => {
     if (isOpen) {
@@ -40,7 +43,11 @@ const Navbar = () => {
                   onClick={() => setIsOpen(true)}
                   className="h-8 w-8 hover:cursor-pointer"
                 />
-                <Avatar image={session.user.image} signout={signOut} />
+                <Avatar
+                  image={session.user.image}
+                  username={username}
+                  signout={signOut}
+                />
               </div>
             ) : (
               <div className="flex flex-row">

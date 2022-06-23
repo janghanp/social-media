@@ -2,10 +2,11 @@ import Image from "next/image";
 
 type Props = {
   image: string;
+  username: string;
   signout: () => {};
 };
 
-const Avatar = ({ image, signout }: Props) => {
+const Avatar = ({ image, username, signout }: Props) => {
   return (
     <div className="dropdown dropdown-end">
       <div tabIndex={0} className="avatar ml-5 mt-1 hover:cursor-pointer">
@@ -17,6 +18,9 @@ const Avatar = ({ image, signout }: Props) => {
         tabIndex={0}
         className="dropdown-content menu rounded-box w-52 border-2 border-primary bg-base-100 p-2 shadow"
       >
+        <li>
+          <div className="text-gray-500">@{username}</div>
+        </li>
         <li>
           <button onClick={() => signout()}>Sign Out</button>
         </li>
