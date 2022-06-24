@@ -94,7 +94,7 @@ export default async function handler(
       req.body;
 
     try {
-      const updatedComment = await prisma.comment.update({
+      await prisma.comment.update({
         where: {
           id: commentId,
         },

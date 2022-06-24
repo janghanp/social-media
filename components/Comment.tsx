@@ -86,6 +86,7 @@ const Comment = ({
           deleteHandler={deleteHandler}
           editHandler={editHandler}
           type="comment"
+          isOwner={session?.user.id === comment.userId}
         />
       )}
     </div>
