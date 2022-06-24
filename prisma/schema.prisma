@@ -34,6 +34,7 @@ model User {
   emailVerified DateTime?
   image         String?
   likedPostsIds String[]  @db.ObjectId
+  likedCommentsIds String[] @db.ObjectId
 
   accounts Account[] @relation("UserAndAccounts")
 
@@ -42,6 +43,7 @@ model User {
   comments Comment[] @relation("UserAndComments")
 
   likedPosts Post[] @relation("UsersLikePosts", fields: [likedPostsIds], references: [id])
+  likedComments Comment[] @relation("UsersLikeComments", fields: [likedCommentsIds], references: [id])
 }
 
 type File {
@@ -73,6 +75,7 @@ model Comment {
   userId    String   @db.ObjectId
   postId    String   @db.ObjectId
   parentId  String?  @db.ObjectId
+  likedByIds String[] @db.ObjectId
 
   user User @relation("UserAndComments", fields: [userId], references: [id])
 
@@ -80,4 +83,6 @@ model Comment {
 
   parent   Comment?  @relation("CommentandComments", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   children Comment[] @relation("CommentandComments")
+
+  likedBy User[] @relation("UsersLikeComments", fields: [likedByIds], references: [id])
 }

@@ -97,7 +97,7 @@ const PostItem = ({ post }: { post: Post }) => {
       return prevState + 1;
     });
 
-    await axios.post("/api/like", {
+    await axios.post("/api/likePost", {
       userId: session!.user.id,
       postId: post.id,
       dislike: isLiked,
