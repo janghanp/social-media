@@ -5,12 +5,14 @@ interface Props {
   type: "post" | "comment";
   deleteHandler: () => {};
   editHandler: () => {};
+  isOwner: boolean;
 }
 
 const ControlMenu = ({
   setToggleControlMenu,
   deleteHandler,
   editHandler,
+  isOwner,
   type,
 }: Props) => {
   const [toggleConfirm, setToggleConfirm] = useState<boolean>(false);
@@ -43,12 +45,14 @@ const ControlMenu = ({
           </div>
         ) : (
           <ul className="menu w-4/5 max-w-md rounded-md border border-primary bg-base-100 shadow-md">
-            <li
-              onClick={editHandler}
-              className="border-b p-3 text-center transition duration-200 hover:cursor-pointer hover:bg-gray-200"
-            >
-              edit
-            </li>
+            {isOwner && (
+              <li
+                onClick={editHandler}
+                className="border-b p-3 text-center transition duration-200 hover:cursor-pointer hover:bg-gray-200"
+              >
+                edit
+              </li>
+            )}
             <li
               onClick={() => setToggleConfirm(true)}
               className="border-b p-3 text-center font-semibold text-warning transition duration-200 hover:cursor-pointer hover:bg-gray-200"
