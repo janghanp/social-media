@@ -274,6 +274,7 @@ const PostItem = ({ post }: { post: Post }) => {
           deleteHandler={deleteHandler}
           editHandler={editHandler}
           type="post"
+          isOwner={session?.user.id === post.userId}
         />
       )}
 
