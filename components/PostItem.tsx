@@ -66,10 +66,6 @@ const PostItem = ({ post }: { post: Post }) => {
     }
   }, [toggleDetailModal, toggleControlMenu]);
 
-  const trimName = (name: string) => {
-    return name.split(" ")[0];
-  };
-
   const deleteHandler = async () => {
     await axios.delete("/api/post", {
       data: {
@@ -117,13 +113,13 @@ const PostItem = ({ post }: { post: Post }) => {
               <Image src={post.user.image} width={40} height={40} />
             </div>
             <span className="text-sm lowercase text-gray-500">
-              {trimName(post.user.name!)} &nbsp;• &nbsp;{" "}
+              {post.user.username} &nbsp;• &nbsp;{" "}
               {dayjs().to(dayjs(post.createdAt))}
             </span>
           </div>
           {session?.user.id === post.userId && (
             <div
-              className="hover:cursor-pointer"
+              className="rounded-full p-1 transition duration-300 hover:cursor-pointer hover:bg-gray-200/50"
               onClick={() => setToggleControlMenu(true)}
             >
               <AiOutlineEllipsis className="h-6 w-6" />
@@ -177,7 +173,7 @@ const PostItem = ({ post }: { post: Post }) => {
                     layout="responsive"
                     objectFit="cover"
                     alt="image"
-                    priority
+                    priority={true}
                   />
                 </div>
               </SwiperSlide>
@@ -213,7 +209,7 @@ const PostItem = ({ post }: { post: Post }) => {
           </div>
           <div className="mt-5">
             <span className="mr-3 text-sm font-bold text-primary">
-              {post.user.name}
+              {post.user.username}
             </span>
             <span>{post.body}</span>
           </div>
@@ -225,7 +221,7 @@ const PostItem = ({ post }: { post: Post }) => {
                     <li key={comment.id} className="mt-2">
                       <div>
                         <span className="mr-3 text-sm font-bold text-primary">
-                          {comment.user.name}
+                          {comment.user.username}
                         </span>
                         <span className="break-all">{comment.comment}</span>
                       </div>
@@ -245,7 +241,7 @@ const PostItem = ({ post }: { post: Post }) => {
           ) : (
             <div className="mt-5">
               <ul>
-                {post.comments.map((comment) => (
+                {comments.map((comment) => (
                   <li key={comment.id} className="mt-2">
                     <div>
                       <span className="mr-3 text-sm font-bold text-primary">
@@ -277,6 +273,7 @@ const PostItem = ({ post }: { post: Post }) => {
           setToggleControlMenu={setToggleControlMenu}
           deleteHandler={deleteHandler}
           editHandler={editHandler}
+          type="post"
         />
       )}
 

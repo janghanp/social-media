@@ -2,12 +2,14 @@ interface Props {
   commentInput: string;
   setCommentInput: React.Dispatch<React.SetStateAction<string>>;
   submitHandler: (e: React.MouseEvent<HTMLButtonElement>) => {};
+  isEdit: boolean;
 }
 
 const CommentInputBox = ({
   commentInput,
   setCommentInput,
   submitHandler,
+  isEdit,
 }: Props) => {
   return (
     <form className="w-full">
@@ -25,7 +27,7 @@ const CommentInputBox = ({
           disabled={commentInput.length === 0}
           onClick={submitHandler}
         >
-          post
+          {isEdit ? "Edit" : "Post"}
         </button>
       </div>
     </form>

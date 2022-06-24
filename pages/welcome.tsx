@@ -11,7 +11,7 @@ import { prisma } from "../lib/prisma";
 import { useUserContext } from "../context/user";
 
 interface formikValue {
-  userName: string;
+  userNameInput: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -49,11 +49,11 @@ const Welcome: NextPage = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { setUsername } = useUserContext();
+  const { setCurrentUser } = useUserContext();
 
   const formik = useFormik<formikValue>({
     initialValues: {
-      userName: "",
+      userNameInput: "",
     },
     validationSchema: UserNameValidationSchema,
     validateOnBlur: true,
@@ -62,21 +62,21 @@ const Welcome: NextPage = () => {
       values: formikValue,
       _formikHelpers: FormikHelpers<formikValue>
     ) => {
-      const { userName } = values;
+      const { userNameInput } = values;
 
       setIsLoading(true);
 
       try {
-        await axios.post("/api/username", { userName });
+        await axios.post("/api/username", { userNameInput });
 
         setIsLoading(false);
-        setUsername(userName);
+        setCurrentUser({username: userNameInput});
 
         router.push("/");
       } catch (err) {
         if (axios.isAxiosError(err)) {
           if (err?.response?.status === 409) {
-            formik.setFieldError("userName", "The username was already taken.");
+            formik.setFieldError("userNameInput", "The username was already taken.");
             setIsLoading(false);
           }
         }
@@ -99,15 +99,15 @@ const Welcome: NextPage = () => {
         >
           <input
             disabled={isLoading}
-            id="userName"
-            name="userName"
+            id="userNameInput"
+            name="userNameInput"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.userName}
+            value={formik.values.userNameInput}
             type="text"
             placeholder="Type here"
             className={`input input-bordered input-primary w-full ${
-              formik.errors.userName ? "input-warning" : ""
+              formik.errors.userNameInput ? "input-warning" : ""
             }`}
           />
           {isLoading ? (
@@ -118,8 +118,8 @@ const Welcome: NextPage = () => {
             </button>
           )}
         </form>
-        {formik.errors.userName && (
-          <span className="text-sm text-red-500">{formik.errors.userName}</span>
+        {formik.errors.userNameInput && (
+          <span className="text-sm text-red-500">{formik.errors.userNameInput}</span>
         )}
       </div>
     </div>

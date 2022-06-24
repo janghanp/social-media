@@ -2,6 +2,7 @@ import { useState } from "react";
 
 interface Props {
   setToggleControlMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  type: "post" | "comment";
   deleteHandler: () => {};
   editHandler: () => {};
 }
@@ -10,6 +11,7 @@ const ControlMenu = ({
   setToggleControlMenu,
   deleteHandler,
   editHandler,
+  type,
 }: Props) => {
   const [toggleConfirm, setToggleConfirm] = useState<boolean>(false);
 
@@ -19,7 +21,7 @@ const ControlMenu = ({
         {toggleConfirm ? (
           <div className="h-auto w-4/5 max-w-md rounded-md  border border-primary bg-base-100 p-10 shadow-md">
             <div className="text-center text-lg font-semibold">
-              Are you sure you want to delete this post?
+              Are you sure you want to delete this {type}?
             </div>
             <div className="mt-5 flex items-center justify-center gap-x-3">
               <button
