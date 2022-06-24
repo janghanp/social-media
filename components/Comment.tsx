@@ -50,9 +50,9 @@ const Comment = ({
   };
 
   return (
-    <div className="group flex w-full flex-row items-center justify-between gap-x-2">
+    <div className="group my-1 flex w-full flex-row items-center justify-between gap-x-2 break-all">
       <div className="flex flex-row items-center justify-center gap-x-2 ">
-        <div className="avatar overflow-hidden rounded-full">
+        <div className="avatar flex-none overflow-hidden rounded-full">
           <Image src={comment.user.image} width={40} height={40} />
         </div>
         <div className="flex flex-col">
@@ -62,24 +62,24 @@ const Comment = ({
             </span>
             <span className="text-sm">{comment.comment}</span>
           </div>
-          <div className="flex gap-x-5 text-xs text-gray-500">
+          <div className="mt-1 flex h-5 gap-x-2 text-xs text-gray-500">
+            <span>{dayjs().to(dayjs(comment.createdAt))}</span>
             <div className="flex gap-x-3 font-semibold">
               <span className="hover:cursor-pointer">Like</span>
               <span className="hover:cursor-pointer">Reply</span>
+              {(session?.user.id === comment.userId ||
+                session?.user.id === postAuthorId) && (
+                <div
+                  onClick={() => setToggleControlMenu(true)}
+                  className="hidden hover:cursor-pointer group-hover:block"
+                >
+                  <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
+                </div>
+              )}
             </div>
-            <span>{dayjs().to(dayjs(comment.createdAt))}</span>
           </div>
         </div>
       </div>
-      {(session?.user.id === comment.userId ||
-        session?.user.id === postAuthorId) && (
-        <div
-          onClick={() => setToggleControlMenu(true)}
-          className="hidden rounded-full p-1 transition duration-300 hover:cursor-pointer hover:bg-gray-200/50 group-hover:block"
-        >
-          <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
-        </div>
-      )}
       {toggleControlMenu && (
         <ControlMenu
           setToggleControlMenu={setToggleControlMenu}

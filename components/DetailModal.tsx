@@ -5,6 +5,7 @@ import { Pagination, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
 import axios from "axios";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import SyncLoader from "react-spinners/SyncLoader";
@@ -18,7 +19,44 @@ import { Comment as CommentType } from "../pages/index";
 import Comment from "./Comment";
 import CommentInputBox from "./CommentInputBox";
 
-dayjs.extend(relativeTime);
+const thresholds = [
+  { l: "s", r: 1 },
+  { l: "m", r: 1 },
+  { l: "mm", r: 59, d: "minute" },
+  { l: "h", r: 1 },
+  { l: "hh", r: 23, d: "hour" },
+  { l: "d", r: 1 },
+  { l: "dd", r: 29, d: "day" },
+  { l: "M", r: 1 },
+  { l: "MM", r: 11, d: "month" },
+  { l: "y" },
+  { l: "yy", d: "year" },
+];
+
+const config = {
+  thresholds,
+};
+
+dayjs.extend(relativeTime, config);
+dayjs.extend(updateLocale);
+
+dayjs.updateLocale("en", {
+  relativeTime: {
+    future: "in %s",
+    past: "%s",
+    s: "%ds",
+    m: "1m",
+    mm: "%dm",
+    h: "1h",
+    hh: "%dh",
+    d: "1d",
+    dd: "%ddays",
+    M: "1M",
+    MM: "%dM",
+    y: "1y",
+    yy: "%dy",
+  },
+});
 
 interface Props {
   post: Post;
@@ -139,7 +177,7 @@ const DetailModal = ({
     <>
       <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
 
-      <div className="fixed left-1/2 top-1/2 z-40 h-auto w-4/5 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg">
+      <div className="fixed left-1/2 top-1/2 z-40 h-auto w-full max-w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg">
         <div className="mb-2 flex w-full items-center justify-end">
           <button
             onClick={cancelHandler}
