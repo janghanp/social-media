@@ -10,6 +10,8 @@ export interface User {
   username: string;
   email?: string;
   image: string;
+  likedPostsIds: string[];
+  likedCommentsIds: string[];
 }
 
 export interface Comment {
@@ -21,6 +23,8 @@ export interface Comment {
   user: User;
   postId: string;
   parentId?: string;
+  likedByIds: string[];
+  _count: { likedBy: number };
 }
 
 export interface File {
@@ -62,6 +66,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         take: 20,
         include: {
           user: true,
+          _count: {
+            select: { likedBy: true },
+          },
         },
       },
     },
