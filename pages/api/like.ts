@@ -58,7 +58,7 @@ export default async function handler(
           },
         });
 
-        return res.status(200).json({ mesasge: "Successfully updated" });
+        return res.status(204).json({ mesasge: "Successfully updated" });
       }
 
       const user = await prisma.user.update({
@@ -87,7 +87,7 @@ export default async function handler(
 
       console.log(post);
 
-      return res.status(200).json({ mesasge: "Successfully updated" });
+      return res.status(204).json({ mesasge: "Successfully updated" });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Something went wrong..." });

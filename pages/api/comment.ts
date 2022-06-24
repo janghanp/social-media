@@ -66,8 +66,46 @@ export default async function handler(
 
       return res
         .status(201)
-        .json({ message: "Succesfully created!", commentWithUser });
+        .json({ message: "Successfully created!", commentWithUser });
     } catch (err) {
+      return res.status(500).json({ message: "Something went wrong..." });
+    }
+  }
+
+  if (req.method === "DELETE") {
+    const { commentId }: { commentId: string } = req.body;
+
+    try {
+      await prisma.comment.delete({
+        where: {
+          id: commentId,
+        },
+      });
+
+      return res.status(200).json({ message: "Successfully deleted" });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Something went wrong..." });
+    }
+  }
+
+  if (req.method === "PUT") {
+    const { commentId, comment }: { commentId: string; comment: string } =
+      req.body;
+
+    try {
+      const updatedComment = await prisma.comment.update({
+        where: {
+          id: commentId,
+        },
+        data: {
+          comment,
+        },
+      });
+
+      return res.status(204).json({ message: "Successfully updated" });
+    } catch (err) {
+      console.log(err);
       return res.status(500).json({ message: "Something went wrong..." });
     }
   }

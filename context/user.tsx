@@ -10,20 +10,31 @@ type Props = {
   children: React.ReactNode;
 };
 
-type userContextType = {
+type currentUserType = {
   username: string;
-  setUsername: Dispatch<SetStateAction<string>>;
 };
 
-const defaultValue: userContextType = { username: "", setUsername: () => {} };
+type userContextType = {
+  currentUser: currentUserType;
+  setCurrentUser: Dispatch<SetStateAction<currentUserType>>;
+};
+
+const defaultValue: userContextType = {
+  currentUser: {
+    username: "",
+  },
+  setCurrentUser: () => {},
+};
 
 const userContext = createContext(defaultValue);
 
 export function UserProvider({ children }: Props) {
-  const [username, setUsername] = useState<string>("");
+  const [currentUser, setCurrentUser] = useState<currentUserType>({
+    username: "",
+  });
 
   return (
-    <userContext.Provider value={{ username, setUsername }}>
+    <userContext.Provider value={{ currentUser, setCurrentUser }}>
       {children}
     </userContext.Provider>
   );

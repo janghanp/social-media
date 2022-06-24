@@ -12,7 +12,7 @@ const Navbar = () => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { username } = useUserContext();
+  const { currentUser } = useUserContext();
 
   useEffect(() => {
     if (isOpen) {
@@ -45,7 +45,7 @@ const Navbar = () => {
                 />
                 <Avatar
                   image={session.user.image}
-                  username={username}
+                  username={currentUser.username}
                   signout={signOut}
                 />
               </div>

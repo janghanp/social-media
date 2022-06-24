@@ -49,6 +49,10 @@ const DetailModal = ({
   const [commentInput, setCommentInput] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | undefined>(
+    ""
+  );
 
   useEffect(() => {
     if (!customButtons) {
@@ -69,6 +73,30 @@ const DetailModal = ({
 
   const submitHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (isEdit) {
+      await axios.put("/api/comment", {
+        commentId: editingCommentId,
+        comment: commentInput,
+      });
+
+      setCommentInput("");
+      setIsEdit(false);
+      setComments((prevState) => {
+        const updatedComments = prevState.map((comment) => {
+          if (comment.id === editingCommentId) {
+            comment.comment = commentInput;
+            return comment;
+          } else {
+            return comment;
+          }
+        });
+
+        return updatedComments;
+      });
+
+      return;
+    }
 
     const {
       data: { commentWithUser: newComment },
@@ -98,6 +126,13 @@ const DetailModal = ({
     setComments((prevState) => [...prevState, ...comments]);
 
     setIsLoading(false);
+  };
+
+  const deleteComment = async (commentId: string) => {
+    setComments((prevState) =>
+      prevState.filter((comment) => comment.id !== commentId)
+    );
+    setTotalCommentsCount((prevState) => prevState - 1);
   };
 
   return (
@@ -182,6 +217,7 @@ const DetailModal = ({
                 commentInput={commentInput}
                 setCommentInput={setCommentInput}
                 submitHandler={submitHandler}
+                isEdit={isEdit}
               />
             </div>
           )}
@@ -191,7 +227,7 @@ const DetailModal = ({
                 <Image src={post.user.image} width={40} height={40} />
               </div>
               <span className="text-sm text-gray-500">
-                {post.user.name} &nbsp;• &nbsp;{" "}
+                {post.user.username} &nbsp;• &nbsp;{" "}
                 {dayjs().to(dayjs(post.createdAt))}
               </span>
             </div>
@@ -204,7 +240,7 @@ const DetailModal = ({
                   <div className="flex flex-col">
                     <div>
                       <span className="mr-3 text-sm font-bold">
-                        {post.user.name}
+                        {post.user.username}
                       </span>
                       <span className="text-sm">{post.body}</span>
                     </div>
@@ -214,7 +250,15 @@ const DetailModal = ({
                   </div>
                 </div>
                 {comments.map((comment) => (
-                  <Comment key={comment.id} comment={comment} />
+                  <Comment
+                    key={comment.id}
+                    comment={comment}
+                    postAuthorId={post.userId}
+                    deleteComment={deleteComment}
+                    setCommentInput={setCommentInput}
+                    setIsEdit={setIsEdit}
+                    setEditingCommentId={setEditingCommentId}
+                  />
                 ))}
                 <div className="flex w-full items-center justify-center">
                   {totalCommentsCount > 20 &&
@@ -239,6 +283,7 @@ const DetailModal = ({
                   commentInput={commentInput}
                   setCommentInput={setCommentInput}
                   submitHandler={submitHandler}
+                  isEdit={isEdit}
                 />
               </div>
             )}

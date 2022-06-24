@@ -19,7 +19,7 @@ const Layout = ({ children }: Props) => {
 
   const userNameCheckedRef = useRef<boolean>(false);
 
-  const { setUsername } = useUserContext();
+  const { setCurrentUser } = useUserContext();
 
   const { status } = useSession();
 
@@ -27,16 +27,16 @@ const Layout = ({ children }: Props) => {
 
   useEffect(() => {
     if (data) {
-      setUsername(data.user.username);
+      setCurrentUser({ username: data.user.username });
     }
   }, [data]);
 
-  if (error) {
-    return <div>An error has ocuurred...</div>;
-  }
-
   if (status === "loading" || !data) {
     return <></>;
+  }
+
+  if (error) {
+    return <div>An error has ocuurred...</div>;
   }
 
   if (!userNameCheckedRef.current && data.user && !data.user.username) {
