@@ -17,7 +17,10 @@ interface Props {
   deleteComment: (commentdId: string) => {};
   setCommentInput: React.Dispatch<SetStateAction<string>>;
   setIsEdit: React.Dispatch<SetStateAction<boolean>>;
+  setIsReply: React.Dispatch<SetStateAction<boolean>>;
   setEditingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
+  commentInputRef: React.RefObject<HTMLTextAreaElement>;
+  setReplyingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
 }
 
 const Comment = ({
@@ -27,11 +30,19 @@ const Comment = ({
   setCommentInput,
   setIsEdit,
   setEditingCommentId,
+  commentInputRef,
+  setIsReply,
+  setReplyingCommentId,
 }: Props) => {
   const { data: session } = useSession();
 
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
-  const [likesCount, setLikesCount] = useState<number>(comment._count.likedBy);
+  const [likesCount, setLikesCount] = useState<number>(
+    comment._count ? comment._count.likedBy : 0
+  );
+  const [childrenCount, setChildrenCount] = useState<number>(
+    comment._count ? comment._count.children : 0
+  );
   const [isLiked, setIsLiked] = useState<boolean>(
     session && comment.likedByIds.includes(session.user.id) ? true : false
   );
@@ -71,6 +82,13 @@ const Comment = ({
     });
   };
 
+  const replyHandler = async () => {
+    setCommentInput(`@${comment.user.username} `);
+    setIsReply(true);
+    setReplyingCommentId(comment.id);
+    commentInputRef.current?.focus();
+  };
+
   return (
     <div className="group my-1 flex w-full flex-row items-center justify-between gap-x-2 break-all">
       <div className="flex flex-row items-center justify-center gap-x-2 ">
@@ -84,7 +102,7 @@ const Comment = ({
             </span>
             <span className="text-sm">{comment.comment}</span>
           </div>
-          <div className="mt-1 flex h-5 gap-x-2 text-xs text-gray-500">
+          <div className="mt-1 flex h-5 gap-x-2 border text-xs text-gray-500">
             <span>{dayjs().to(dayjs(comment.createdAt))}</span>
             {likesCount > 0 && (
               <span>
@@ -101,7 +119,9 @@ const Comment = ({
                 >
                   Like
                 </span>
-                <span className="hover:cursor-pointer">Reply</span>
+                <span onClick={replyHandler} className="hover:cursor-pointer">
+                  Reply
+                </span>
                 {(session?.user.id === comment.userId ||
                   session?.user.id === postAuthorId) && (
                   <div
@@ -114,6 +134,7 @@ const Comment = ({
               </div>
             )}
           </div>
+          <div>{childrenCount > 0 && <span>{childrenCount}</span>}</div>
         </div>
       </div>
       {toggleControlMenu && (

@@ -81,6 +81,7 @@ const DetailModal = ({
 
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
+  const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [customButtons, setCustomButtons] = useState<boolean>(false);
@@ -88,9 +89,13 @@ const DetailModal = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isReply, setIsReply] = useState<boolean>(false);
   const [editingCommentId, setEditingCommentId] = useState<string | undefined>(
     ""
   );
+  const [replyingCommentId, setReplyingCommentId] = useState<
+    string | undefined
+  >("");
 
   useEffect(() => {
     if (!customButtons) {
@@ -111,6 +116,30 @@ const DetailModal = ({
 
   const submitHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (isReply) {
+      const commentInputChunks = commentInput.split(" ");
+
+      const metinoedUser = commentInputChunks.shift()?.replace("@", "");
+      const comment = commentInputChunks.join(" ");
+
+      //Who is replying? -> session.user.id
+      //who is getting mentioned? -> commentInput.split(" ")[0] -> can be used later
+      //What is the body -> commentInput.spilt(" ")[rest of the elements]
+      // postId -> post.id
+      //parrentId -> replyingCommentId
+
+      await axios.post("/api/reply", {
+        userId: session?.user.id,
+        comment,
+        postId: post.id,
+        parentId: replyingCommentId,
+      });
+
+      setCommentInput("");
+
+      return;
+    }
 
     if (isEdit) {
       await axios.put("/api/comment", {
@@ -256,6 +285,8 @@ const DetailModal = ({
                 setCommentInput={setCommentInput}
                 submitHandler={submitHandler}
                 isEdit={isEdit}
+                commentInputRef={commentInputRef}
+                setIsReply={setIsReply}
               />
             </div>
           )}
@@ -295,7 +326,10 @@ const DetailModal = ({
                     deleteComment={deleteComment}
                     setCommentInput={setCommentInput}
                     setIsEdit={setIsEdit}
+                    setIsReply={setIsReply}
                     setEditingCommentId={setEditingCommentId}
+                    commentInputRef={commentInputRef}
+                    setReplyingCommentId={setReplyingCommentId}
                   />
                 ))}
                 <div className="flex w-full items-center justify-center">
@@ -322,6 +356,8 @@ const DetailModal = ({
                   setCommentInput={setCommentInput}
                   submitHandler={submitHandler}
                   isEdit={isEdit}
+                  commentInputRef={commentInputRef}
+                  setIsReply={setIsReply}
                 />
               </div>
             )}
