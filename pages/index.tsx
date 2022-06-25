@@ -24,7 +24,7 @@ export interface Comment {
   postId: string;
   parentId?: string;
   likedByIds: string[];
-  _count: { likedBy: number };
+  _count: { likedBy: number, children: number };
 }
 
 export interface File {
@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         include: {
           user: true,
           _count: {
-            select: { likedBy: true },
+            select: { likedBy: true, children: true },
           },
         },
       },
