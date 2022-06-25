@@ -102,7 +102,7 @@ const Comment = ({
             </span>
             <span className="text-sm">{comment.comment}</span>
           </div>
-          <div className="mt-1 flex h-5 gap-x-2 border text-xs text-gray-500">
+          <div className="mt-1 flex h-5 gap-x-2 text-xs text-gray-500">
             <span>{dayjs().to(dayjs(comment.createdAt))}</span>
             {likesCount > 0 && (
               <span>

@@ -1,4 +1,5 @@
 import type { NextPage, GetServerSideProps } from "next";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "../lib/prisma";
 import PostsList from "../components/PostsList";
@@ -24,7 +25,7 @@ export interface Comment {
   postId: string;
   parentId?: string;
   likedByIds: string[];
-  _count: { likedBy: number, children: number };
+  _count: { likedBy: number; children: number };
 }
 
 export interface File {
@@ -50,6 +51,7 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  //How to get commentsCount with parentId and without parentId.
   const posts = await prisma.post.findMany({
     orderBy: {
       createdAt: "desc",
@@ -60,6 +62,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         select: { comments: true, likedBy: true },
       },
       comments: {
+        where: {
+          parent: null,
+        },
         orderBy: {
           createdAt: "desc",
         },
@@ -80,6 +85,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Home: NextPage<Props> = ({ posts }: Props) => {
+  console.log(posts);
+
   return (
     <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row border px-2 pt-10 lg:px-0">
       <section className="w-full lg:w-3/5">

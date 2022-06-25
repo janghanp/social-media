@@ -23,6 +23,9 @@ export default async function handler(
         },
         include: {
           comments: {
+            where: {
+              parent: null,
+            },
             orderBy: {
               createdAt: "desc",
             },
@@ -34,6 +37,8 @@ export default async function handler(
           },
         },
       });
+
+      console.log(post?.comments.length);
 
       return res.status(200).json({ comments: post?.comments });
     } catch (err) {

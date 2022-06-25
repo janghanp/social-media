@@ -43,6 +43,9 @@ const PostItem = ({ post }: { post: Post }) => {
   const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
     post._count.comments
   );
+  // const [totalCommentsWithoutParentId, SetTotalCommentsWithoutParentId] = useState<number>(
+
+  // )
   const [isLiked, setIsLiked] = useState<boolean>(
     session ? post.likedByIds.includes(session!.user.id) : false
   );
