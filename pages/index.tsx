@@ -44,6 +44,7 @@ export interface Post {
   comments: Comment[];
   _count: { comments: number; likedBy: number };
   likedByIds: string[];
+  parentCommentsCount: number;
 }
 
 interface Props {
@@ -85,8 +86,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Home: NextPage<Props> = ({ posts }: Props) => {
-  console.log(posts);
-
   return (
     <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row border px-2 pt-10 lg:px-0">
       <section className="w-full lg:w-3/5">
