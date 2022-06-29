@@ -33,19 +33,19 @@ const PostItem = ({ post }: { post: Post }) => {
 
   const prevRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLDivElement>(null);
+  const parentCommentsCountRef = useRef<number>(post.parentCommentsCount);
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [customButtons, setCustomButtons] = useState<boolean>(false);
   const [toggleDetailModal, setToggleDetailModal] = useState<boolean>(false);
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
   const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
-  const [comments, setComments] = useState<Comment[]>(post.comments);
+  const [currentComments, setCurrentComments] = useState<Comment[]>(
+    post.comments
+  );
   const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
     post._count.comments
   );
-  // const [totalCommentsWithoutParentId, SetTotalCommentsWithoutParentId] = useState<number>(
-
-  // )
   const [isLiked, setIsLiked] = useState<boolean>(
     session ? post.likedByIds.includes(session!.user.id) : false
   );
@@ -216,11 +216,11 @@ const PostItem = ({ post }: { post: Post }) => {
             </span>
             <span>{post.body}</span>
           </div>
-          {comments.length >= 2 ? (
+          {currentComments.length >= 2 ? (
             <>
               <div className="mt-5">
                 <ul>
-                  {comments.slice(0, 2).map((comment) => (
+                  {currentComments.slice(0, 2).map((comment) => (
                     <li key={comment.id} className="mt-2">
                       <div>
                         <span className="mr-3 text-sm font-bold text-primary">
@@ -244,7 +244,7 @@ const PostItem = ({ post }: { post: Post }) => {
           ) : (
             <div className="mt-5">
               <ul>
-                {comments.map((comment) => (
+                {currentComments.map((comment) => (
                   <li key={comment.id} className="mt-2">
                     <div>
                       <span className="mr-3 text-sm font-bold text-primary">
@@ -263,10 +263,10 @@ const PostItem = ({ post }: { post: Post }) => {
       {toggleDetailModal && (
         <DetailModal
           post={post}
-          comments={comments}
-          totalCommentsCount={totalCommentsCount}
+          currentComments={currentComments}
+          parentCommentsCountRef={parentCommentsCountRef}
           setToggleDetailModal={setToggleDetailModal}
-          setComments={setComments}
+          setCurrentComments={setCurrentComments}
           setTotalCommentsCount={setTotalCommentsCount}
         />
       )}

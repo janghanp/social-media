@@ -61,19 +61,19 @@ dayjs.updateLocale("en", {
 interface Props {
   post: Post;
   setToggleDetailModal: React.Dispatch<React.SetStateAction<boolean>>;
-  comments: CommentType[];
-  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>;
-  totalCommentsCount: number;
+  currentComments: CommentType[];
+  setCurrentComments: React.Dispatch<React.SetStateAction<CommentType[]>>;
   setTotalCommentsCount: React.Dispatch<React.SetStateAction<number>>;
+  parentCommentsCountRef: React.MutableRefObject<number>;
 }
 
 const DetailModal = ({
   post,
+  currentComments,
   setToggleDetailModal,
-  comments,
-  setComments,
-  totalCommentsCount,
+  setCurrentComments,
   setTotalCommentsCount,
+  parentCommentsCountRef,
 }: Props) => {
   const { data: session } = useSession();
 
@@ -109,6 +109,12 @@ const DetailModal = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (parentCommentsCountRef.current === 0) {
+      parentCommentsCountRef.current = post.parentCommentsCount;
+    }
+  }, []);
+
   const cancelHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setToggleDetailModal(false);
@@ -123,12 +129,6 @@ const DetailModal = ({
       const metinoedUser = commentInputChunks.shift()?.replace("@", "");
       const comment = commentInputChunks.join(" ");
 
-      //Who is replying? -> session.user.id
-      //who is getting mentioned? -> commentInput.split(" ")[0] -> can be used later
-      //What is the body -> commentInput.spilt(" ")[rest of the elements]
-      // postId -> post.id
-      //parrentId -> replyingCommentId
-
       await axios.post("/api/reply", {
         userId: session?.user.id,
         comment,
@@ -137,6 +137,17 @@ const DetailModal = ({
       });
 
       setCommentInput("");
+      setTotalCommentsCount((prevState) => prevState + 1);
+      setCurrentComments((prevState) => {
+        return prevState.map((currentComment) => {
+          if (currentComment.id === replyingCommentId) {
+            currentComment._count.children++;
+            return currentComment;
+          } else {
+            return currentComment;
+          }
+        });
+      });
 
       return;
     }
@@ -149,7 +160,7 @@ const DetailModal = ({
 
       setCommentInput("");
       setIsEdit(false);
-      setComments((prevState) => {
+      setCurrentComments((prevState) => {
         const updatedComments = prevState.map((comment) => {
           if (comment.id === editingCommentId) {
             comment.comment = commentInput;
@@ -173,7 +184,8 @@ const DetailModal = ({
     });
 
     setCommentInput("");
-    setComments((prevState) => [newComment, ...prevState]);
+    setCurrentComments((prevState) => [newComment, ...prevState]);
+    parentCommentsCountRef.current++;
     setTotalCommentsCount((prevState) => prevState + 1);
   };
 
@@ -190,16 +202,25 @@ const DetailModal = ({
     });
 
     setCurrentPage((prevState) => prevState + 1);
-    setComments((prevState) => [...prevState, ...comments]);
-
+    setCurrentComments((prevState) => [...prevState, ...comments]);
     setIsLoading(false);
   };
 
   const deleteComment = async (commentId: string) => {
-    setComments((prevState) =>
+    let deleteChildrenCount: number;
+
+    currentComments.forEach((currentComment) => {
+      if (currentComment.id == commentId) {
+        deleteChildrenCount = currentComment._count.children;
+      }
+    });
+
+    setCurrentComments((prevState) =>
       prevState.filter((comment) => comment.id !== commentId)
     );
-    setTotalCommentsCount((prevState) => prevState - 1);
+    //Assume that this is the only case when a parent comment is deleted.
+    parentCommentsCountRef.current--;
+    setTotalCommentsCount((prevState) => prevState - (1 + deleteChildrenCount));
   };
 
   return (
@@ -318,7 +339,7 @@ const DetailModal = ({
                     </span>
                   </div>
                 </div>
-                {comments.map((comment) => (
+                {currentComments.map((comment) => (
                   <Comment
                     key={comment.id}
                     comment={comment}
@@ -330,11 +351,12 @@ const DetailModal = ({
                     setEditingCommentId={setEditingCommentId}
                     commentInputRef={commentInputRef}
                     setReplyingCommentId={setReplyingCommentId}
+                    setCurrentComments={setCurrentComments}
                   />
                 ))}
                 <div className="flex w-full items-center justify-center">
-                  {totalCommentsCount > 20 &&
-                    comments.length < totalCommentsCount && (
+                  {parentCommentsCountRef.current > 20 &&
+                    currentComments.length < parentCommentsCountRef.current && (
                       <>
                         {isLoading ? (
                           <SyncLoader color="gray" size={10} margin={2} />

@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useState, memo } from "react";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -21,18 +21,20 @@ interface Props {
   setEditingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
   commentInputRef: React.RefObject<HTMLTextAreaElement>;
   setReplyingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
+  setCurrentComments: React.Dispatch<SetStateAction<CommentType[]>>;
 }
 
 const Comment = ({
   comment,
+  commentInputRef,
   postAuthorId,
   deleteComment,
   setCommentInput,
   setIsEdit,
   setEditingCommentId,
-  commentInputRef,
   setIsReply,
   setReplyingCommentId,
+  setCurrentComments,
 }: Props) => {
   const { data: session } = useSession();
 
@@ -40,17 +42,17 @@ const Comment = ({
   const [likesCount, setLikesCount] = useState<number>(
     comment._count ? comment._count.likedBy : 0
   );
-  const [childrenCount, setChildrenCount] = useState<number>(
-    comment._count ? comment._count.children : 0
-  );
   const [isLiked, setIsLiked] = useState<boolean>(
     session && comment.likedByIds.includes(session.user.id) ? true : false
   );
+
+  const childrenCount = comment._count ? comment._count.children : 0;
 
   const deleteHandler = async () => {
     await axios.delete("/api/comment", {
       data: {
         commentId: comment.id,
+        postId: comment.postId,
       },
     });
 
@@ -66,13 +68,29 @@ const Comment = ({
 
   const likeCommentHandler = async () => {
     setIsLiked((prevState) => !prevState);
-
     setLikesCount((prevState) => {
       if (isLiked) {
         return prevState - 1;
       } else {
         return prevState + 1;
       }
+    });
+    setCurrentComments((prevState) => {
+      return prevState.map((currentComment) => {
+        if (currentComment.id === comment.id) {
+          if (isLiked) {
+            currentComment.likedByIds = currentComment.likedByIds.filter(
+              (likeById) => likeById !== session!.user.id
+            );
+            return currentComment;
+          } else {
+            currentComment.likedByIds.push(session!.user.id);
+            return currentComment;
+          }
+        } else {
+          return currentComment;
+        }
+      });
     });
 
     await axios.post("/api/likeComment", {
@@ -91,11 +109,11 @@ const Comment = ({
 
   return (
     <div className="group my-1 flex w-full flex-row items-center justify-between gap-x-2 break-all">
-      <div className="flex flex-row items-center justify-center gap-x-2 ">
+      <div className="flex flex-row items-start justify-center gap-x-2">
         <div className="avatar flex-none overflow-hidden rounded-full">
           <Image src={comment.user.image} width={40} height={40} />
         </div>
-        <div className="flex flex-col">
+        <div className="-mt-2 flex flex-col">
           <div>
             <span className="mr-3 text-sm font-bold">
               {comment.user.username}
@@ -134,7 +152,13 @@ const Comment = ({
               </div>
             )}
           </div>
-          <div>{childrenCount > 0 && <span>{childrenCount}</span>}</div>
+          <div>
+            {childrenCount > 0 && (
+              <span className="text-sm font-semibold text-gray-400 hover:cursor-pointer">
+                View replies ({childrenCount})
+              </span>
+            )}
+          </div>
         </div>
       </div>
       {toggleControlMenu && (
@@ -150,4 +174,4 @@ const Comment = ({
   );
 };
 
-export default Comment;
+export default memo(Comment);

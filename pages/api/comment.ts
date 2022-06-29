@@ -38,8 +38,6 @@ export default async function handler(
         },
       });
 
-      console.log(post?.comments.length);
-
       return res.status(200).json({ comments: post?.comments });
     } catch (err) {
       console.log(err);
@@ -60,12 +58,28 @@ export default async function handler(
         },
       });
 
+      await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          parentCommentsCount: {
+            increment: 1,
+          },
+        },
+      });
+
       const commentWithUser = await prisma.comment.findUnique({
         where: {
           id: comment.id,
         },
         include: {
           user: true,
+          _count: {
+            select: {
+              children: true,
+            },
+          },
         },
       });
 
@@ -78,12 +92,30 @@ export default async function handler(
   }
 
   if (req.method === "DELETE") {
-    const { commentId }: { commentId: string } = req.body;
+    const { commentId, postId }: { commentId: string; postId: string } =
+      req.body;
 
     try {
+      await prisma.comment.deleteMany({
+        where: {
+          parentId: commentId,
+        },
+      });
+
       await prisma.comment.delete({
         where: {
           id: commentId,
+        },
+      });
+
+      await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          parentCommentsCount: {
+            decrement: 1,
+          },
         },
       });
 
