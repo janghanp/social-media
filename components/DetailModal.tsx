@@ -50,7 +50,7 @@ dayjs.updateLocale("en", {
     h: "1h",
     hh: "%dh",
     d: "1d",
-    dd: "%ddays",
+    dd: "%dd",
     M: "1M",
     MM: "%dM",
     y: "1y",
@@ -129,7 +129,9 @@ const DetailModal = ({
       const metinoedUser = commentInputChunks.shift()?.replace("@", "");
       const comment = commentInputChunks.join(" ");
 
-      await axios.post("/api/reply", {
+      const {
+        data: { newCommentWithUser: newReply },
+      } = await axios.post("/api/reply", {
         userId: session?.user.id,
         comment,
         postId: post.id,
@@ -139,14 +141,20 @@ const DetailModal = ({
       setCommentInput("");
       setTotalCommentsCount((prevState) => prevState + 1);
       setCurrentComments((prevState) => {
-        return prevState.map((currentComment) => {
+        const newCurrentComments = prevState.map((currentComment) => {
           if (currentComment.id === replyingCommentId) {
             currentComment._count.children++;
-            return currentComment;
+            currentComment.children.push(newReply);
+
+            return { ...currentComment };
           } else {
             return currentComment;
           }
         });
+
+        console.log(newCurrentComments);
+
+        return newCurrentComments;
       });
 
       return;
@@ -161,12 +169,12 @@ const DetailModal = ({
       setCommentInput("");
       setIsEdit(false);
       setCurrentComments((prevState) => {
-        const updatedComments = prevState.map((comment) => {
-          if (comment.id === editingCommentId) {
-            comment.comment = commentInput;
-            return comment;
+        const updatedComments = prevState.map((currentComment) => {
+          if (currentComment.id === editingCommentId) {
+            currentComment.comment = commentInput;
+            return { ...currentComment };
           } else {
-            return comment;
+            return currentComment;
           }
         });
 
@@ -227,7 +235,7 @@ const DetailModal = ({
     <>
       <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
 
-      <div className="fixed left-1/2 top-1/2 z-40 h-auto w-full max-w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg">
+      <div className="fixed left-1/2 top-1/2 z-40 h-auto w-full max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg xl:max-w-[80%]">
         <div className="mb-2 flex w-full items-center justify-end">
           <button
             onClick={cancelHandler}

@@ -23,7 +23,7 @@ export default async function hanlder(
       req.body;
 
     try {
-      await prisma.comment.create({
+      const newComment = await prisma.comment.create({
         data: {
           userId,
           comment,
@@ -32,7 +32,16 @@ export default async function hanlder(
         },
       });
 
-      return res.status(201).json({ message: "Successfully created" });
+      const newCommentWithUser = await prisma.comment.findFirst({
+        where: {
+          id: newComment.id,
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      return res.status(201).json({ message: "Successfully created", newCommentWithUser });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Something went wrong..." });

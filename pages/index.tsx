@@ -1,5 +1,4 @@
 import type { NextPage, GetServerSideProps } from "next";
-import { Prisma } from "@prisma/client";
 
 import { prisma } from "../lib/prisma";
 import PostsList from "../components/PostsList";
@@ -26,6 +25,7 @@ export interface Comment {
   parentId?: string;
   likedByIds: string[];
   _count: { likedBy: number; children: number };
+  children: Comment[];
 }
 
 export interface File {
@@ -72,6 +72,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         take: 20,
         include: {
           user: true,
+          children: {
+            include: {
+              user: true,
+            },
+          },
           _count: {
             select: { likedBy: true, children: true },
           },
