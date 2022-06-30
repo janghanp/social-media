@@ -1,13 +1,15 @@
-import { SetStateAction, useState, memo } from "react";
+import { SetStateAction, useState, useEffect, memo } from "react";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { AiOutlineEllipsis } from "react-icons/ai";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import SyncLoader from "react-spinners/SyncLoader";
 
 import { Comment as CommentType } from "../pages/index";
 import ControlMenu from "./ControlMenu";
+import ChildrenComment from "./ChildrenComment";
 
 dayjs.extend(relativeTime);
 
@@ -45,6 +47,13 @@ const Comment = ({
   const [isLiked, setIsLiked] = useState<boolean>(
     session && comment.likedByIds.includes(session.user.id) ? true : false
   );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [childrenComments, setChildrenComments] = useState<CommentType[]>([]);
+  const [toggleChildren, setToggleChildren] = useState<boolean>(false);
+
+  useEffect(() => {
+    setChildrenComments(comment.children);
+  }, [comment.children]);
 
   const childrenCount = comment._count ? comment._count.children : 0;
 
@@ -107,60 +116,114 @@ const Comment = ({
     commentInputRef.current?.focus();
   };
 
+  const showChildernHandler = async () => {
+    if (childrenComments.length > 0) {
+      setToggleChildren(true);
+      return;
+    }
+
+    setToggleChildren(true);
+    setIsLoading(true);
+
+    const { data } = await axios.get(`/api/children?parentId=${comment.id}`);
+
+    setChildrenComments(data.commentWithChildren.children);
+
+    setIsLoading(false);
+  };
+
+  const toggleChildrenHandler = () => {
+    if (!toggleChildren && childrenComments.length === 0) {
+      showChildernHandler();
+      return;
+    }
+
+    if (!toggleChildren && childrenComments.length > 0) {
+      setToggleChildren(true);
+      return;
+    }
+
+    setToggleChildren(false);
+  };
+
   return (
-    <div className="group my-1 flex w-full flex-row items-center justify-between gap-x-2 break-all">
-      <div className="flex flex-row items-start justify-center gap-x-2">
-        <div className="avatar flex-none overflow-hidden rounded-full">
-          <Image src={comment.user.image} width={40} height={40} />
-        </div>
-        <div className="-mt-2 flex flex-col">
-          <div>
-            <span className="mr-3 text-sm font-bold">
-              {comment.user.username}
-            </span>
-            <span className="text-sm">{comment.comment}</span>
+    <>
+      <div className="group my-1 flex w-full flex-row items-center justify-between gap-x-2 break-all">
+        <div className="flex w-full flex-row items-start justify-start gap-x-2">
+          <div className="avatar flex-none overflow-hidden rounded-full">
+            <Image src={comment.user.image} width={40} height={40} />
           </div>
-          <div className="mt-1 flex h-5 gap-x-2 text-xs text-gray-500">
-            <span>{dayjs().to(dayjs(comment.createdAt))}</span>
-            {likesCount > 0 && (
-              <span>
-                {likesCount} {likesCount === 1 ? "Like" : "Likes"}
+          <div className="-mt-2 flex flex-col">
+            <div>
+              <span className="mr-3 text-sm font-bold">
+                {comment.user.username}
               </span>
-            )}
-            {session && (
-              <div className="flex gap-x-3 font-semibold">
-                <span
-                  onClick={likeCommentHandler}
-                  className={`hover:cursor-pointer ${
-                    isLiked && "text-red-400"
-                  }`}
-                >
-                  Like
+              <span className="text-sm">{comment.comment}</span>
+            </div>
+            <div className="mt-2 flex h-5 gap-x-2 text-xs text-gray-500">
+              <span>{dayjs().to(dayjs(comment.createdAt))}</span>
+              {likesCount > 0 && (
+                <span>
+                  {likesCount} {likesCount === 1 ? "Like" : "Likes"}
                 </span>
-                <span onClick={replyHandler} className="hover:cursor-pointer">
-                  Reply
-                </span>
-                {(session?.user.id === comment.userId ||
-                  session?.user.id === postAuthorId) && (
-                  <div
-                    onClick={() => setToggleControlMenu(true)}
-                    className="hidden hover:cursor-pointer group-hover:block"
+              )}
+              {session && (
+                <div className="flex gap-x-3 font-semibold">
+                  <span
+                    onClick={likeCommentHandler}
+                    className={`hover:cursor-pointer ${
+                      isLiked && "text-red-400"
+                    }`}
                   >
-                    <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div>
+                    Like
+                  </span>
+                  <span onClick={replyHandler} className="hover:cursor-pointer">
+                    Reply
+                  </span>
+                  {(session?.user.id === comment.userId ||
+                    session?.user.id === postAuthorId) && (
+                    <div
+                      onClick={() => setToggleControlMenu(true)}
+                      className="hidden hover:cursor-pointer group-hover:block"
+                    >
+                      <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             {childrenCount > 0 && (
-              <span className="text-sm font-semibold text-gray-400 hover:cursor-pointer">
-                View replies ({childrenCount})
-              </span>
+              <div className="mt-2 flex items-center before:mr-2 before:w-7 before:border before:content-['']">
+                <span
+                  onClick={toggleChildrenHandler}
+                  className="text-sm font-semibold text-gray-400 hover:cursor-pointer"
+                >
+                  {!toggleChildren
+                    ? `View replies (${childrenCount})`
+                    : "Hide replies"}
+                  {isLoading && (
+                    <span className="relative -top-1 ml-2">
+                      <SyncLoader size={4} color="gray" margin={2} />
+                    </span>
+                  )}
+                </span>
+              </div>
             )}
           </div>
         </div>
       </div>
+      {toggleChildren && (
+        <div className="flex w-full flex-col gap-y-5 pl-12">
+          {childrenComments.map((childrenCommnet) => {
+            return (
+              <ChildrenComment
+                key={childrenCommnet.id}
+                childrenComment={childrenCommnet}
+              />
+            );
+          })}
+        </div>
+      )}
       {toggleControlMenu && (
         <ControlMenu
           setToggleControlMenu={setToggleControlMenu}
@@ -170,8 +233,14 @@ const Comment = ({
           isOwner={session?.user.id === comment.userId}
         />
       )}
-    </div>
+    </>
   );
 };
 
-export default memo(Comment);
+export default memo(Comment, (prevProps, nextprops) => {
+  if (prevProps.comment === nextprops.comment) {
+    return true;
+  }
+
+  return false;
+});

@@ -33,6 +33,12 @@ export default async function handler(
             take: 20,
             include: {
               user: true,
+              _count: {
+                select: {
+                  children: true,
+                  likedBy: true,
+                },
+              },
             },
           },
         },
@@ -75,9 +81,11 @@ export default async function handler(
         },
         include: {
           user: true,
+          children: true,
           _count: {
             select: {
               children: true,
+              likedBy: true,
             },
           },
         },
