@@ -19,16 +19,33 @@ export default async function hanlder(
       parentId,
       comment,
       postId,
-    }: { userId: string; parentId: string; comment: string; postId: string } =
-      req.body;
+      mentionUser,
+    }: {
+      userId: string;
+      parentId: string;
+      comment: string;
+      postId: string;
+      mentionUser: string;
+    } = req.body;
 
     try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: mentionUser,
+        },
+      });
+
+      if (!user) {
+        return res.status(400).json({ message: "Couldn't find the user" });
+      }
+
       const newComment = await prisma.comment.create({
         data: {
           userId,
           comment,
           parentId,
           postId,
+          mentionUser,
         },
       });
 
@@ -41,7 +58,9 @@ export default async function hanlder(
         },
       });
 
-      return res.status(201).json({ message: "Successfully created", newCommentWithUser });
+      return res
+        .status(201)
+        .json({ message: "Successfully created", newCommentWithUser });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Something went wrong..." });

@@ -1,10 +1,10 @@
 import Image from "next/image";
 
-type Props = {
+interface Props {
   image: string;
   username: string;
   signout: () => {};
-};
+}
 
 const Avatar = ({ image, username, signout }: Props) => {
   return (

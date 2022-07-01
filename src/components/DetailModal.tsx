@@ -11,11 +11,9 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import SyncLoader from "react-spinners/SyncLoader";
 import { useSession } from "next-auth/react";
 
-import { Post } from "../pages/index";
+import { Post, Comment as CommentType } from "../types";
 import SwiperPrevButton from "./SwiperPrevButton";
 import SwiperNextButton from "./SwiperNextButton";
-
-import { Comment as CommentType } from "../pages/index";
 import Comment from "./Comment";
 import CommentInputBox from "./CommentInputBox";
 
@@ -126,7 +124,7 @@ const DetailModal = ({
     if (isReply) {
       const commentInputChunks = commentInput.split(" ");
 
-      const metinoedUser = commentInputChunks.shift()?.replace("@", "");
+      const mentionUser = commentInputChunks.shift()?.replace("@", "");
       const comment = commentInputChunks.join(" ");
 
       const {
@@ -136,6 +134,7 @@ const DetailModal = ({
         comment,
         postId: post.id,
         parentId: replyingCommentId,
+        mentionUser,
       });
 
       setCommentInput("");
@@ -144,15 +143,14 @@ const DetailModal = ({
         const newCurrentComments = prevState.map((currentComment) => {
           if (currentComment.id === replyingCommentId) {
             currentComment._count.children++;
-            currentComment.children.push(newReply);
+
+            currentComment.newChildren = newReply;
 
             return { ...currentComment };
           } else {
             return currentComment;
           }
         });
-
-        console.log(newCurrentComments);
 
         return newCurrentComments;
       });

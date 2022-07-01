@@ -4,7 +4,7 @@ import Cropper from "react-easy-crop";
 import { Point, Area } from "react-easy-crop/types";
 import FadeLoader from "react-spinners/FadeLoader";
 
-import { CustomFile } from "./DropZone";
+import { CustomFile } from "../types";
 import getCroppedImg from "../lib/cropImage";
 
 interface Props {

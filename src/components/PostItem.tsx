@@ -13,7 +13,7 @@ import {
   AiOutlineEllipsis,
 } from "react-icons/ai";
 
-import { Post } from "../pages/index";
+import { Post, Comment as CommentType } from "../types";
 import DetailModal from "./DetailModal";
 import ControlMenu from "./ControlMenu";
 import PostModal from "./PostModal";
@@ -22,9 +22,36 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import SwiperPrevButton from "./SwiperPrevButton";
 import SwiperNextButton from "./SwiperNextButton";
-import { Comment } from "../pages/index";
 
 dayjs.extend(relativeTime);
+
+const calculateRatio = (ratio: number) => {
+  let width, height, px, py;
+
+  if (ratio === 1) {
+    width = 470;
+    height = 470;
+    px = "px-0";
+    py = "py-0";
+  } else if (ratio > 1) {
+    width = 470;
+    height = 265;
+    px = "px-0";
+    py = "py-[21.9%]";
+  } else if (ratio < 1) {
+    width = 376;
+    height = 470;
+    px = "px-[10%]";
+    py = "py-0";
+  } else {
+    width = 470;
+    height = 470;
+    px = "px-0";
+    py = "py-0";
+  }
+
+  return { width, height, px, py };
+};
 
 const PostItem = ({ post }: { post: Post }) => {
   const router = useRouter();
@@ -40,7 +67,7 @@ const PostItem = ({ post }: { post: Post }) => {
   const [toggleDetailModal, setToggleDetailModal] = useState<boolean>(false);
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
   const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
-  const [currentComments, setCurrentComments] = useState<Comment[]>(
+  const [currentComments, setCurrentComments] = useState<CommentType[]>(
     post.comments
   );
   const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
@@ -69,7 +96,7 @@ const PostItem = ({ post }: { post: Post }) => {
     }
   }, [toggleDetailModal, toggleControlMenu]);
 
-  const deleteHandler = async () => {
+  const deletePostHandler = async () => {
     await axios.delete("/api/post", {
       data: {
         postId: post.id,
@@ -79,15 +106,14 @@ const PostItem = ({ post }: { post: Post }) => {
     router.reload();
   };
 
-  const editHandler = async () => {
+  const editPostHandler = async () => {
     setToggleControlMenu(false);
     setTogglePostModal(true);
   };
 
-  const likeHandler = async () => {
+  const likePostHandler = async () => {
     if (!session) {
       router.push("/login");
-
       return;
     }
 
@@ -142,29 +168,7 @@ const PostItem = ({ post }: { post: Post }) => {
           }}
         >
           {post.files?.map((file, index) => {
-            let width, height, px, py;
-
-            if (file.ratio === 1) {
-              width = 470;
-              height = 470;
-              px = "px-0";
-              py = "py-0";
-            } else if (file.ratio > 1) {
-              width = 470;
-              height = 265;
-              px = "px-0";
-              py = "py-[21.9%]";
-            } else if (file.ratio < 1) {
-              width = 376;
-              height = 470;
-              px = "px-[10%]";
-              py = "py-0";
-            } else {
-              width = 470;
-              height = 470;
-              px = "px-0";
-              py = "py-0";
-            }
+            const { width, height, px, py } = calculateRatio(file.ratio);
 
             return (
               <SwiperSlide key={index}>
@@ -194,7 +198,7 @@ const PostItem = ({ post }: { post: Post }) => {
         <div className="p-3">
           <div className="flex items-center justify-start space-x-1">
             <div
-              onClick={likeHandler}
+              onClick={likePostHandler}
               className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
             >
               <AiOutlineHeart
@@ -248,7 +252,7 @@ const PostItem = ({ post }: { post: Post }) => {
                   <li key={comment.id} className="mt-2">
                     <div>
                       <span className="mr-3 text-sm font-bold text-primary">
-                        {comment.user.name}
+                        {comment.user.username}
                       </span>
                       <span>{comment.comment}</span>
                     </div>
@@ -274,8 +278,8 @@ const PostItem = ({ post }: { post: Post }) => {
       {toggleControlMenu && (
         <ControlMenu
           setToggleControlMenu={setToggleControlMenu}
-          deleteHandler={deleteHandler}
-          editHandler={editHandler}
+          deletePostHandler={deletePostHandler}
+          editPostHandler={editPostHandler}
           type="post"
           isOwner={session?.user.id === post.userId}
         />

@@ -7,9 +7,9 @@ import axios from "axios";
 import Navbar from "./Navbar";
 import { useUserContext } from "../context/user";
 
-type Props = {
+interface Props {
   children: React.ReactNode;
-};
+}
 
 const fetcher = (url: string) =>
   axios.get(url).then((response) => response.data);
