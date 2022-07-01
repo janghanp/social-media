@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
-import { CustomFile } from "./DropZone";
 import { Pagination, Navigation, EffectFade } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import { CustomFile } from "../types";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-fade";
@@ -10,11 +10,11 @@ import PreviewImageItem from "./PreviewImageItem";
 import SwiperPrevButton from "./SwiperPrevButton";
 import SwiperNextButton from "./SwiperNextButton";
 
-type Props = {
+interface Props {
   files: CustomFile[];
   setFiles: React.Dispatch<React.SetStateAction<CustomFile[]>>;
   isEditing: boolean;
-};
+}
 
 const Preview = ({ files, setFiles, isEditing }: Props) => {
   const prevRef = useRef<HTMLDivElement>(null);

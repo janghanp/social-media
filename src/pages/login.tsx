@@ -1,4 +1,4 @@
-import type { NextPage, GetServerSideProps } from "next";
+import { NextPage, GetServerSideProps } from "next";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { signIn, getSession } from "next-auth/react";

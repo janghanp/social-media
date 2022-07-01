@@ -5,21 +5,15 @@ import { HiOutlinePhotograph } from "react-icons/hi";
 import axios from "axios";
 import FadeLoader from "react-spinners/FadeLoader";
 
+import { CustomFile, formikValues } from "../types";
 import { PostValidationSchema } from "../lib/validation";
 import DropZone from "./DropZone";
 
-import { CustomFile } from "./DropZone";
-
-type Props = {
+interface Props {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   initialFiles?: { Key: string; ratio: number }[];
   initialBody?: string;
   postId?: string;
-};
-
-interface formikValues {
-  body: string;
-  files: CustomFile[];
 }
 
 const PostModal = ({ setIsOpen, initialFiles, initialBody, postId }: Props) => {

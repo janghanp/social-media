@@ -3,15 +3,15 @@ import Image from "next/image";
 import axios from "axios";
 import { MdClose, MdOutlineModeEdit } from "react-icons/md";
 
-import { CustomFile } from "./DropZone";
+import { CustomFile } from "../types";
 import ImageCropModal from "./ImageCropModal";
 
-type Props = {
+interface Props {
   file: CustomFile;
   setFiles: React.Dispatch<React.SetStateAction<CustomFile[]>>;
   isEditing: boolean;
   editInitialized: boolean;
-};
+}
 
 const PreviewImageItem = ({
   file,

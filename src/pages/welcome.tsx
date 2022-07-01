@@ -1,4 +1,4 @@
-import type { NextPage, GetServerSideProps } from "next";
+import { NextPage, GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { getToken } from "next-auth/jwt";

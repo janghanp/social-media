@@ -1,58 +1,14 @@
-import type { NextPage, GetServerSideProps } from "next";
+import { NextPage, GetServerSideProps } from "next";
 
 import { prisma } from "../lib/prisma";
+import { Post } from "../types";
 import PostsList from "../components/PostsList";
-// import Widget from "../components/Widget";
-
-export interface User {
-  id: string;
-  name?: string;
-  username: string;
-  email?: string;
-  image: string;
-  likedPostsIds: string[];
-  likedCommentsIds: string[];
-}
-
-export interface Comment {
-  id: string;
-  comment: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-  user: User;
-  postId: string;
-  parentId?: string;
-  likedByIds: string[];
-  _count: { likedBy: number; children: number };
-  children: Comment[];
-}
-
-export interface File {
-  ratio: number;
-  Key: string;
-}
-
-export interface Post {
-  id: string;
-  body: string;
-  files?: File[];
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-  user: User;
-  comments: Comment[];
-  _count: { comments: number; likedBy: number };
-  likedByIds: string[];
-  parentCommentsCount: number;
-}
 
 interface Props {
   posts: Post[];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  //How to get commentsCount with parentId and without parentId.
   const posts = await prisma.post.findMany({
     orderBy: {
       createdAt: "desc",
@@ -72,11 +28,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         take: 20,
         include: {
           user: true,
-          children: {
-            include: {
-              user: true,
-            },
-          },
           _count: {
             select: { likedBy: true, children: true },
           },

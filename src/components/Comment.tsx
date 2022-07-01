@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import SyncLoader from "react-spinners/SyncLoader";
 
-import { Comment as CommentType } from "../pages/index";
+import { Comment as CommentType } from "../types";
 import ControlMenu from "./ControlMenu";
 import ChildrenComment from "./ChildrenComment";
 
@@ -52,8 +52,14 @@ const Comment = ({
   const [toggleChildren, setToggleChildren] = useState<boolean>(false);
 
   useEffect(() => {
-    setChildrenComments(comment.children);
-  }, [comment.children]);
+    if (childrenComments.length > 0) {
+      setChildrenComments((prevState) => {
+        const newChildrenComments = [...prevState, comment.newChildren!];
+
+        return newChildrenComments;
+      });
+    }
+  }, [comment.newChildren]);
 
   const childrenCount = comment._count ? comment._count.children : 0;
 
@@ -116,7 +122,7 @@ const Comment = ({
     commentInputRef.current?.focus();
   };
 
-  const showChildernHandler = async () => {
+  const fetchChildrenComments = async () => {
     if (childrenComments.length > 0) {
       setToggleChildren(true);
       return;
@@ -134,7 +140,7 @@ const Comment = ({
 
   const toggleChildrenHandler = () => {
     if (!toggleChildren && childrenComments.length === 0) {
-      showChildernHandler();
+      fetchChildrenComments();
       return;
     }
 

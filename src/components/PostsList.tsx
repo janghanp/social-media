@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Post } from "../pages/index";
+import { Post } from "../types";
 import PostItem from "./PostItem";
 
 interface Props {

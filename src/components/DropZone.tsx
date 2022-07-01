@@ -4,21 +4,8 @@ import classNames from "classnames";
 import { FormikProps } from "formik";
 import { HiOutlineUpload } from "react-icons/hi";
 
-import { formikValues } from "./PostModal";
+import { CustomFile, formikValues } from "../types";
 import Preview from "./Preview";
-
-export interface CustomFile extends File {
-  preview: string;
-  uploaded: boolean;
-  isUploading: boolean;
-  type: string;
-  croppedPreview?: string;
-  croppedImage?: Blob;
-  zoomInit?: number;
-  cropInit?: { x: number; y: number };
-  aspectInit?: { value: number; text: string };
-  Key?: string;
-}
 
 interface Props {
   formik: FormikProps<formikValues>;

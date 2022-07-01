@@ -1,7 +1,7 @@
 import Image from "next/image";
 import dayjs from "dayjs";
 
-import { Comment as CommentType } from "../pages/index";
+import { Comment as CommentType } from "../types";
 
 interface Props {
   childrenComment: CommentType;
@@ -17,6 +17,9 @@ const ChildrenComment = ({ childrenComment }: Props) => {
         <div>
           <span className="mr-3 text-sm font-bold">
             {childrenComment.user.username}
+          </span>
+          <span className="mr-2 text-sm text-blue-500 hover:cursor-pointer hover:underline">
+            @{childrenComment.mentionUser}
           </span>
           <span className="text-sm">{childrenComment.comment}</span>
         </div>

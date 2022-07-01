@@ -126,16 +126,11 @@ export default async function handler(
       ratio: file.ratio,
     }));
 
-    console.log("newFiles: ", newFiles);
-    console.log("currentFiles: ", currentFiles);
-
     const currentkeys = currentFiles.map((currentFile) => currentFile.Key);
 
     const intersectionFiles = newFiles.filter((newFile) =>
       currentkeys.includes(newFile.Key)
     );
-
-    console.log("intersectionFiles: ", intersectionFiles);
 
     const intersectionKeys = intersectionFiles.map(
       (interFile) => interFile.Key
@@ -148,9 +143,6 @@ export default async function handler(
     const filesToCopy = newFiles.filter(
       (newFile) => !intersectionKeys.includes(newFile.Key)
     );
-
-    console.log("filesToDelete:", filesToDelete);
-    console.log("filesToCopy: ", filesToCopy);
 
     // //Copy object
     await Promise.all(filesToCopy.map((file) => copyObject(file.Key)));
@@ -169,8 +161,6 @@ export default async function handler(
         files: newFiles,
       },
     });
-
-    console.log("newPost: ", newPost);
 
     return res.status(204).json({ message: "Succesfully updated" });
   }
