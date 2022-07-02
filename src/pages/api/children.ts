@@ -22,7 +22,14 @@ export default async function handler(
           id: parentId as string,
         },
         include: {
-          children: { include: { user: true } },
+          children: {
+            include: {
+              user: true,
+              _count: {
+                select: { likedBy: true },
+              },
+            },
+          },
         },
       });
 
