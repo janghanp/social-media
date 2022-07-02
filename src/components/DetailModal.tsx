@@ -113,7 +113,9 @@ const DetailModal = ({
     }
   }, []);
 
-  const cancelHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const cancelHandler = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
+  ) => {
     e.preventDefault();
     setToggleDetailModal(false);
   };
@@ -231,9 +233,12 @@ const DetailModal = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
+      <div
+        onClick={cancelHandler}
+        className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
+      ></div>
 
-      <div className="fixed left-1/2 top-1/2 z-40 h-auto w-full max-w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg xl:max-w-[80%]">
+      <div className="fixed left-1/2 top-1/2 z-40 h-auto w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg md:w-11/12 lg:w-10/12 xl:w-[1150px]">
         <div className="mb-2 flex w-full items-center justify-end">
           <button
             onClick={cancelHandler}

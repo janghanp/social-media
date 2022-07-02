@@ -133,6 +133,15 @@ const PostItem = ({ post }: { post: Post }) => {
     });
   };
 
+  const toggleDetailModalHandler = () => {
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
+    setToggleDetailModal(true);
+  };
+
   return (
     <>
       <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary bg-white shadow-xl">
@@ -207,7 +216,7 @@ const PostItem = ({ post }: { post: Post }) => {
               <span>{totalLikesCount}</span>
             </div>
             <div
-              onClick={() => setToggleDetailModal(true)}
+              onClick={toggleDetailModalHandler}
               className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
             >
               <AiOutlineMessage className="h-6 w-6" />
@@ -237,7 +246,7 @@ const PostItem = ({ post }: { post: Post }) => {
                 </ul>
               </div>
               <div
-                onClick={() => setToggleDetailModal(true)}
+                onClick={toggleDetailModalHandler}
                 className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
               >
                 View {totalCommentsCount === 1 ? "" : "all"}{" "}
@@ -278,8 +287,8 @@ const PostItem = ({ post }: { post: Post }) => {
       {toggleControlMenu && (
         <ControlMenu
           setToggleControlMenu={setToggleControlMenu}
-          deletePostHandler={deletePostHandler}
-          editPostHandler={editPostHandler}
+          deleteHandler={deletePostHandler}
+          editHandler={editPostHandler}
           type="post"
           isOwner={session?.user.id === post.userId}
         />

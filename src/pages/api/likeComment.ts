@@ -63,7 +63,7 @@ export default async function handler(
         return res.status(204).json({ message: "Successfully updated" });
       }
 
-      const user = await prisma.user.update({
+      await prisma.user.update({
         where: {
           id: userId,
         },
@@ -74,9 +74,7 @@ export default async function handler(
         },
       });
 
-      console.log(user);
-
-      const comment = await prisma.comment.update({
+      await prisma.comment.update({
         where: {
           id: commentId,
         },
@@ -86,8 +84,6 @@ export default async function handler(
           },
         },
       });
-
-      console.log(comment);
 
       return res.status(204).json({ message: "Successfully updated" });
     } catch (err) {

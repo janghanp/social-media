@@ -9,7 +9,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 
 import { Comment as CommentType } from "../types";
 import ControlMenu from "./ControlMenu";
-import ChildrenComment from "./ChildrenComment";
+import ChildComment from "./ChildComment";
 
 dayjs.extend(relativeTime);
 
@@ -63,7 +63,7 @@ const Comment = ({
 
   const childrenCount = comment._count ? comment._count.children : 0;
 
-  const deleteHandler = async () => {
+  const deleteCommentHandler = async () => {
     await axios.delete("/api/comment", {
       data: {
         commentId: comment.id,
@@ -74,7 +74,7 @@ const Comment = ({
     deleteComment(comment.id);
   };
 
-  const editHandler = async () => {
+  const editCommentHandler = async () => {
     setToggleControlMenu(false);
     setEditingCommentId(comment.id);
     setCommentInput(comment.comment);
@@ -100,7 +100,7 @@ const Comment = ({
             return currentComment;
           } else {
             currentComment.likedByIds.push(session!.user.id);
-            return currentComment;
+            return { ...currentComment };
           }
         } else {
           return currentComment;
@@ -115,10 +115,10 @@ const Comment = ({
     });
   };
 
-  const replyHandler = async () => {
-    setCommentInput(`@${comment.user.username} `);
+  const replyHandler = async (metionUser: string, commentId: string) => {
+    setCommentInput(`@${metionUser} `);
     setIsReply(true);
-    setReplyingCommentId(comment.id);
+    setReplyingCommentId(commentId);
     commentInputRef.current?.focus();
   };
 
@@ -183,7 +183,12 @@ const Comment = ({
                   >
                     Like
                   </span>
-                  <span onClick={replyHandler} className="hover:cursor-pointer">
+                  <span
+                    onClick={() =>
+                      replyHandler(comment.user.username, comment.id)
+                    }
+                    className="hover:cursor-pointer"
+                  >
                     Reply
                   </span>
                   {(session?.user.id === comment.userId ||
@@ -218,23 +223,27 @@ const Comment = ({
           </div>
         </div>
       </div>
+
       {toggleChildren && (
         <div className="flex w-full flex-col gap-y-5 pl-12">
-          {childrenComments.map((childrenCommnet) => {
+          {childrenComments.map((childComment) => {
             return (
-              <ChildrenComment
-                key={childrenCommnet.id}
-                childrenComment={childrenCommnet}
+              <ChildComment
+                key={childComment.id}
+                childComment={childComment}
+                replyHandler={replyHandler}
+                setChildrenComments={setChildrenComments}
               />
             );
           })}
         </div>
       )}
+
       {toggleControlMenu && (
         <ControlMenu
           setToggleControlMenu={setToggleControlMenu}
-          deleteHandler={deleteHandler}
-          editHandler={editHandler}
+          deleteHandler={deleteCommentHandler}
+          editHandler={editCommentHandler}
           type="comment"
           isOwner={session?.user.id === comment.userId}
         />
@@ -243,8 +252,8 @@ const Comment = ({
   );
 };
 
-export default memo(Comment, (prevProps, nextprops) => {
-  if (prevProps.comment === nextprops.comment) {
+export default memo(Comment, (prevProps, nextProps) => {
+  if (prevProps.comment === nextProps.comment) {
     return true;
   }
 

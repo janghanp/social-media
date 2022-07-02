@@ -3,15 +3,15 @@ import { useState } from "react";
 interface Props {
   setToggleControlMenu: React.Dispatch<React.SetStateAction<boolean>>;
   type: "post" | "comment";
-  deletePostHandler: () => {};
-  editPostHandler: () => {};
+  deleteHandler: () => {};
+  editHandler: () => {};
   isOwner: boolean;
 }
 
 const ControlMenu = ({
   setToggleControlMenu,
-  deletePostHandler,
-  editPostHandler,
+  deleteHandler,
+  editHandler,
   isOwner,
   type,
 }: Props) => {
@@ -27,7 +27,7 @@ const ControlMenu = ({
             </div>
             <div className="mt-5 flex items-center justify-center gap-x-3">
               <button
-                onClick={deletePostHandler}
+                onClick={deleteHandler}
                 className="btn btn-outline btn-warning"
               >
                 yes
@@ -47,7 +47,7 @@ const ControlMenu = ({
           <ul className="menu w-4/5 max-w-md rounded-md border border-primary bg-base-100 shadow-md">
             {isOwner && (
               <li
-                onClick={editPostHandler}
+                onClick={editHandler}
                 className="border-b p-3 text-center transition duration-200 hover:cursor-pointer hover:bg-gray-200"
               >
                 edit
