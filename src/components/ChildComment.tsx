@@ -5,17 +5,21 @@ import Image from "next/image";
 import dayjs from "dayjs";
 
 import { Comment as CommentType } from "../types";
+import { AiOutlineEllipsis } from "react-icons/ai";
+import ControlMenu from "./ControlMenu";
 
 interface Props {
   childComment: CommentType;
   setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
+  setChildrenCount: React.Dispatch<SetStateAction<number>>;
   replyHandler: (mentionUser: string, commentId: string) => {};
 }
 
 const ChildComment = ({
   childComment,
-  replyHandler,
   setChildrenComments,
+  setChildrenCount,
+  replyHandler,
 }: Props) => {
   const { data: session } = useSession();
 
@@ -25,6 +29,7 @@ const ChildComment = ({
   const [likesCount, setLikesCount] = useState<number>(
     childComment._count ? childComment._count.likedBy : 0
   );
+  const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
 
   const likeCommentHandler = async () => {
     setIsLiked((prevState) => !prevState);
@@ -61,78 +66,94 @@ const ChildComment = ({
     });
   };
 
-  console.log("childComment render");
+  const deleteCommentHandler = async () => {
+    setToggleControlMenu(false);
+    setChildrenComments((prevState) =>
+      prevState.filter((child) => child.id !== childComment.id)
+    );
+    setChildrenCount((prevState) => prevState - 1);
+
+    await axios.delete("/api/comment", {
+      data: {
+        commentId: childComment.id,
+        postId: childComment.postId,
+        isChild: true,
+      },
+    });
+  };
+
+  const editCommentHandler = async () => {
+    console.log("edit");
+  };
 
   return (
-    <div className="flex w-full flex-row items-start justify-start gap-x-2">
-      <div className="avatar flex-none overflow-hidden rounded-full">
-        <Image src={childComment.user.image} width={40} height={40} />
-      </div>
-      <div className="-mt-2 flex flex-col">
-        <div>
-          <span className="mr-3 text-sm font-bold">
-            {childComment.user.username}
-          </span>
-          <span className="mr-1 text-sm text-blue-900 hover:cursor-pointer">
-            @{childComment.mentionUser}
-          </span>
-          <span className="text-sm">{childComment.comment}</span>
+    <>
+      <div className="group flex w-full flex-row items-start justify-start gap-x-2">
+        <div className="avatar flex-none overflow-hidden rounded-full">
+          <Image src={childComment.user.image} width={40} height={40} />
         </div>
-        <div className="mt-2 flex h-5 gap-x-2 text-xs text-gray-500">
-          <span>{dayjs().to(dayjs(childComment.createdAt))}</span>
-          {likesCount > 0 && (
-            <span>
-              {likesCount} {likesCount === 1 ? "Like" : "Likes"}
+        <div className="-mt-2 flex flex-col">
+          <div>
+            <span className="mr-3 text-sm font-bold">
+              {childComment.user.username}
             </span>
-          )}
-          {session && (
-            <div className="flex gap-x-3 font-semibold">
-              <span
-                onClick={likeCommentHandler}
-                className={`hover:cursor-pointer ${isLiked && "text-red-400"}`}
-              >
-                Like
-              </span>
-              <span
-                onClick={() =>
-                  replyHandler(
-                    childComment.user.username,
-                    childComment.parentId!
-                  )
-                }
-                className="hover:cursor-pointer"
-              >
-                Reply
-              </span>
-              {/* {(session?.user.id === childComment.userId ||
-                session?.user.id === postAuthorId) && (
-                <div
-                  onClick={() => setToggleControlMenu(true)}
-                  className="hidden hover:cursor-pointer group-hover:block"
-                >
-                  <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
-                </div>
-              )} }  */}
-            </div>
-          )}
-        </div>
-        {/* {childrenCount > 0 && (
-          <div className="mt-2 flex items-center before:mr-2 before:w-7 before:border before:content-['']">
-            <span
-              onClick={showChildernHandler}
-              className="text-sm font-semibold text-gray-400 hover:cursor-pointer"
-            >
-              View replies ({childrenCount})
-              {isLoading && (
-                <span className="relative -top-1 ml-2">
-                  <SyncLoader size={4} color="gray" margin={2} />
-                </span>
-              )}
+            <span className="mr-1 text-sm text-blue-900 hover:cursor-pointer">
+              @{childComment.mentionUser}
             </span>
+            <span className="text-sm">{childComment.comment}</span>
           </div>
-        )} */}
+          <div className="mt-2 flex h-5 gap-x-2 text-xs text-gray-500">
+            <span>{dayjs().to(dayjs(childComment.createdAt))}</span>
+            {likesCount > 0 && (
+              <span>
+                {likesCount} {likesCount === 1 ? "Like" : "Likes"}
+              </span>
+            )}
+            {session && (
+              <div className="flex gap-x-3 font-semibold">
+                <span
+                  onClick={likeCommentHandler}
+                  className={`hover:cursor-pointer ${
+                    isLiked && "text-red-400"
+                  }`}
+                >
+                  Like
+                </span>
+                <span
+                  onClick={() =>
+                    replyHandler(
+                      childComment.user.username,
+                      childComment.parentId!
+                    )
+                  }
+                  className="hover:cursor-pointer"
+                >
+                  Reply
+                </span>
+                {session?.user.id === childComment.userId && (
+                  <div
+                    onClick={() => setToggleControlMenu(true)}
+                    className="hidden hover:cursor-pointer group-hover:block"
+                  >
+                    <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+
+      {toggleControlMenu && (
+        <ControlMenu
+          setToggleControlMenu={setToggleControlMenu}
+          deleteHandler={deleteCommentHandler}
+          editHandler={editCommentHandler}
+          type="comment"
+          isOwner={session?.user.id === childComment.userId}
+        />
+      )}
+    </>
   );
 };
 
