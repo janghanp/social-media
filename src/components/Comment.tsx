@@ -48,8 +48,11 @@ const Comment = ({
     session && comment.likedByIds.includes(session.user.id) ? true : false
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [childrenComments, setChildrenComments] = useState<CommentType[]>([]);
   const [toggleChildren, setToggleChildren] = useState<boolean>(false);
+  const [childrenComments, setChildrenComments] = useState<CommentType[]>([]);
+  const [childrenCount, setChildrenCount] = useState<number>(
+    comment._count ? comment._count.children : 0
+  );
 
   useEffect(() => {
     if (childrenComments.length > 0) {
@@ -60,8 +63,6 @@ const Comment = ({
       });
     }
   }, [comment.newChildren]);
-
-  const childrenCount = comment._count ? comment._count.children : 0;
 
   const deleteCommentHandler = async () => {
     await axios.delete("/api/comment", {
@@ -233,6 +234,7 @@ const Comment = ({
                 childComment={childComment}
                 replyHandler={replyHandler}
                 setChildrenComments={setChildrenComments}
+                setChildrenCount={setChildrenCount}
               />
             );
           })}

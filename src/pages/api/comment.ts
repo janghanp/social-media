@@ -100,10 +100,23 @@ export default async function handler(
   }
 
   if (req.method === "DELETE") {
-    const { commentId, postId }: { commentId: string; postId: string } =
-      req.body;
+    const {
+      commentId,
+      postId,
+      isChild,
+    }: { commentId: string; postId: string; isChild: boolean } = req.body;
 
     try {
+      if (isChild) {
+        await prisma.comment.delete({
+          where: {
+            id: commentId,
+          },
+        });
+
+        return res.status(200).json({ message: "Successfully deleted" });
+      }
+
       await prisma.comment.deleteMany({
         where: {
           parentId: commentId,
