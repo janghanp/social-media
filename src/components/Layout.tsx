@@ -1,45 +1,36 @@
 import React, { useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import useSWRImmutable from "swr/immutable";
-import axios from "axios";
 
 import Navbar from "./Navbar";
-import { useUserContext } from "../context/user";
+import useUser from "../hooks/useUser";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const fetcher = (url: string) =>
-  axios.get(url).then((response) => response.data);
-
 const Layout = ({ children }: Props) => {
   const router = useRouter();
 
-  const userNameCheckedRef = useRef<boolean>(false);
-
-  const { setCurrentUser } = useUserContext();
-
   const { status } = useSession();
 
-  const { data, error } = useSWRImmutable("/api/user", fetcher);
+  const { currentUser, isError } = useUser();
 
-  useEffect(() => {
-    if (data) {
-      setCurrentUser({ username: data.user.username });
-    }
-  }, [data]);
+  const userNameCheckedRef = useRef<boolean>(false);
 
-  if (status === "loading" || !data) {
+  if (status === "loading" || !currentUser) {
     return <></>;
   }
 
-  if (error) {
+  if (isError) {
     return <div>An error has ocuurred...</div>;
   }
 
-  if (!userNameCheckedRef.current && data.user && !data.user.username) {
+  if (
+    !userNameCheckedRef.current &&
+    currentUser.user &&
+    !currentUser.user.username
+  ) {
     userNameCheckedRef.current = true;
 
     router.push("/welcome");

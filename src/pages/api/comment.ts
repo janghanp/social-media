@@ -29,7 +29,7 @@ export default async function handler(
             orderBy: {
               createdAt: "desc",
             },
-            skip: +currentPage * 20,
+            skip: (+currentPage - 1) * 20,
             take: 20,
             include: {
               user: true,
@@ -44,7 +44,7 @@ export default async function handler(
         },
       });
 
-      return res.status(200).json({ comments: post?.comments });
+      return res.status(200).send(post?.comments);
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Something went wrong..." });

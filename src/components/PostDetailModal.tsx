@@ -50,16 +50,18 @@ dayjs.updateLocale("en", {
 });
 
 interface Props {
-  post: PostType;
   isOpen: boolean;
+  post: PostType;
   parentCommentsCountRef: React.MutableRefObject<number>;
-  setTogglePostDetail: React.Dispatch<React.SetStateAction<boolean>>;
+  setTogglePostDetailModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PostDetailModal = ({ post, isOpen, setTogglePostDetail }: Props) => {
+const PostDetailModal = ({ isOpen, post, setTogglePostDetailModal }: Props) => {
   useEffect(() => {
-    if (!isOpen) {
-      window.history.pushState("state", "title", "/");
+    if (isOpen) {
+      window.history.pushState(null, "", `/posts/${post.id}`);
+    } else {
+      window.history.pushState(null, "", "/");
     }
   }, [isOpen]);
 
@@ -67,7 +69,7 @@ const PostDetailModal = ({ post, isOpen, setTogglePostDetail }: Props) => {
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
   ) => {
     e.preventDefault();
-    setTogglePostDetail(false);
+    setTogglePostDetailModal(false);
   };
 
   if (!isOpen) {
@@ -94,22 +96,19 @@ const PostDetailModal = ({ post, isOpen, setTogglePostDetail }: Props) => {
           <div className="relative z-10 col-span-5 w-full md:col-span-3">
             <ImageSlide files={post.files} />
           </div>
-          <div className="col-span-5 mt-3 block border-t md:hidden">
-            <CommentInputBox postId={post.id} />
-          </div>
-          <div className="relative col-span-2 hidden max-h-max md:flex md:flex-col md:justify-between">
-            <div className="flex items-center space-x-3 border-b p-3">
-              <div className="avatar overflow-hidden rounded-full">
-                <Image src={post.user.image} width={40} height={40} />
+          <div className="relative col-span-5 max-h-max md:col-span-2 md:flex md:flex-col md:justify-between">
+            <div className="hidden max-h-max md:flex md:flex-col md:justify-between">
+              <div className="flex items-center space-x-3 border-b p-3">
+                <div className="avatar overflow-hidden rounded-full">
+                  <Image src={post.user.image} width={40} height={40} />
+                </div>
+                <span className="text-sm text-gray-500">
+                  {post.user.username} &nbsp;• &nbsp;{" "}
+                  {dayjs().to(dayjs(post.createdAt))}
+                </span>
               </div>
-              <span className="text-sm text-gray-500">
-                {post.user.username} &nbsp;• &nbsp;{" "}
-                {dayjs().to(dayjs(post.createdAt))}
-              </span>
-            </div>
-            <div className="relative flex-1 overflow-y-auto">
-              <div className="absolute flex h-auto w-full flex-col items-start justify-center gap-y-5 p-3">
-                <div className="mb-5 flex w-full flex-row items-center justify-start gap-x-2">
+              <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
+                <div className="flex w-full gap-x-2 p-3">
                   <div className="avatar overflow-hidden rounded-full">
                     <Image src={post.user.image} width={40} height={40} />
                   </div>
@@ -125,10 +124,12 @@ const PostDetailModal = ({ post, isOpen, setTogglePostDetail }: Props) => {
                     </span>
                   </div>
                 </div>
-                <CommentsList postId={post.id} postAuthorId={post.user.id} />
+                <CommentsList postId={post.id} />
               </div>
             </div>
-            <CommentInputBox postId={post.id} />
+            <div className="border-t-0 md:border-t">
+              <CommentInputBox postId={post.id} />
+            </div>
           </div>
         </div>
       </div>

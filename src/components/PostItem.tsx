@@ -2,77 +2,37 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { Pagination, Navigation } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {
-  AiOutlineHeart,
-  AiOutlineMessage,
-  AiOutlineEllipsis,
-} from "react-icons/ai";
+import { AiOutlineEllipsis } from "react-icons/ai";
 
 import { Post, Comment as CommentType } from "../types";
-import DetailModal from "./DetailModal";
+import PostDetailModal from "./PostDetailModal";
 import ControlMenu from "./ControlMenu";
 import PostModal from "./PostModal";
+import ImageSlide from "./ImageSlide";
+import { preventScroll } from "../lib/preventScroll";
+import Reaction from "./Reaction";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import SwiperPrevButton from "./SwiperPrevButton";
-import SwiperNextButton from "./SwiperNextButton";
+import PreviewComments from "./PreviewComments";
+import { PostProvider } from "../context/postContext";
 
 dayjs.extend(relativeTime);
-
-const calculateRatio = (ratio: number) => {
-  let width, height, px, py;
-
-  if (ratio === 1) {
-    width = 470;
-    height = 470;
-    px = "px-0";
-    py = "py-0";
-  } else if (ratio > 1) {
-    width = 470;
-    height = 265;
-    px = "px-0";
-    py = "py-[21.9%]";
-  } else if (ratio < 1) {
-    width = 376;
-    height = 470;
-    px = "px-[10%]";
-    py = "py-0";
-  } else {
-    width = 470;
-    height = 470;
-    px = "px-0";
-    py = "py-0";
-  }
-
-  return { width, height, px, py };
-};
 
 const PostItem = ({ post }: { post: Post }) => {
   const router = useRouter();
 
   const { data: session } = useSession();
 
-  const prevRef = useRef<HTMLDivElement>(null);
-  const nextRef = useRef<HTMLDivElement>(null);
   const parentCommentsCountRef = useRef<number>(post.parentCommentsCount);
 
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [customButtons, setCustomButtons] = useState<boolean>(false);
-  const [toggleDetailModal, setToggleDetailModal] = useState<boolean>(false);
+  const [togglePostDetailModal, setTogglePostDetailModal] =
+    useState<boolean>(false);
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
   const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
-  const [currentComments, setCurrentComments] = useState<CommentType[]>(
-    post.comments
-  );
-  const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
-    post._count.comments
-  );
   const [isLiked, setIsLiked] = useState<boolean>(
     session ? post.likedByIds.includes(session!.user.id) : false
   );
@@ -81,20 +41,8 @@ const PostItem = ({ post }: { post: Post }) => {
   );
 
   useEffect(() => {
-    if (!customButtons) {
-      setCustomButtons(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (toggleDetailModal || toggleControlMenu) {
-      document.body.style.overflowY = "hidden";
-      document.body.style.height = "100%";
-    } else {
-      document.body.style.overflow = "auto";
-      document.body.style.height = "auto";
-    }
-  }, [toggleDetailModal, toggleControlMenu]);
+    preventScroll(togglePostDetailModal, toggleControlMenu);
+  }, [togglePostDetailModal, toggleControlMenu]);
 
   const deletePostHandler = async () => {
     await axios.delete("/api/post", {
@@ -133,17 +81,27 @@ const PostItem = ({ post }: { post: Post }) => {
     });
   };
 
-  const toggleDetailModalHandler = () => {
+  const togglePostDetailModalHandler = () => {
     if (!session) {
       router.push("/login");
       return;
     }
 
-    setToggleDetailModal(true);
+    setTogglePostDetailModal(true);
   };
 
+  console.log("PostItem");
+
   return (
-    <>
+    <PostProvider
+      postId={post.id}
+      initialIsLiked={
+        session ? post.likedByIds.includes(session!.user.id) : false
+      }
+      initialLikesCount={post._count.likedBy}
+      initialPreviewComments={post.comments}
+      initialTotalCommentsCount={post._count.comments}
+    >
       <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary bg-white shadow-xl">
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center justify-center gap-x-3">
@@ -164,145 +122,47 @@ const PostItem = ({ post }: { post: Post }) => {
             </div>
           )}
         </div>
-        <Swiper
-          modules={[Pagination, Navigation]}
-          slidesPerView={1}
-          navigation={{
-            prevEl: prevRef.current!,
-            nextEl: nextRef.current!,
-          }}
-          pagination={{ clickable: true }}
-          onSlideChange={(slide) => {
-            setCurrentIndex(slide.activeIndex);
-          }}
-        >
-          {post.files?.map((file, index) => {
-            const { width, height, px, py } = calculateRatio(file.ratio);
-
-            return (
-              <SwiperSlide key={index}>
-                <div className={`h-auto w-auto ${px} ${py}`}>
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`}
-                    width={width}
-                    height={height}
-                    layout="responsive"
-                    objectFit="cover"
-                    alt="image"
-                    priority={true}
-                  />
-                </div>
-              </SwiperSlide>
-            );
-          })}
-          <div>
-            <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
-            <SwiperNextButton
-              nextRef={nextRef}
-              currentIndex={currentIndex}
-              fileLength={post.files ? post.files.length : 0}
-            />
-          </div>
-        </Swiper>
+        <ImageSlide files={post.files} />
         <div className="p-3">
-          <div className="flex items-center justify-start space-x-1">
-            <div
-              onClick={likePostHandler}
-              className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
-            >
-              <AiOutlineHeart
-                className={`h-6 w-6 ${isLiked ? "fill-red-500" : ""}`}
-              />
-              <span>{totalLikesCount}</span>
-            </div>
-            <div
-              onClick={toggleDetailModalHandler}
-              className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
-            >
-              <AiOutlineMessage className="h-6 w-6" />
-              <span>{totalCommentsCount}</span>
-            </div>
-          </div>
+          <Reaction
+            togglePostDetailModalHandler={togglePostDetailModalHandler}
+          />
           <div className="mt-5">
             <span className="mr-3 text-sm font-bold text-primary">
               {post.user.username}
             </span>
             <span>{post.body}</span>
           </div>
-          {currentComments.length >= 2 ? (
-            <>
-              <div className="mt-5">
-                <ul>
-                  {currentComments.slice(0, 2).map((comment) => (
-                    <li key={comment.id} className="mt-2">
-                      <div>
-                        <span className="mr-3 text-sm font-bold text-primary">
-                          {comment.user.username}
-                        </span>
-                        <span className="break-all">{comment.comment}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div
-                onClick={toggleDetailModalHandler}
-                className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
-              >
-                View {totalCommentsCount === 1 ? "" : "all"}{" "}
-                {totalCommentsCount}{" "}
-                {totalCommentsCount === 1 ? "comment" : "comments"}
-              </div>
-            </>
-          ) : (
-            <div className="mt-5">
-              <ul>
-                {currentComments.map((comment) => (
-                  <li key={comment.id} className="mt-2">
-                    <div>
-                      <span className="mr-3 text-sm font-bold text-primary">
-                        {comment.user.username}
-                      </span>
-                      <span>{comment.comment}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <PreviewComments
+            togglePostDetailModalHandler={togglePostDetailModalHandler}
+          />
         </div>
       </div>
 
-      {toggleDetailModal && (
-        <DetailModal
-          post={post}
-          currentComments={currentComments}
-          parentCommentsCountRef={parentCommentsCountRef}
-          setToggleDetailModal={setToggleDetailModal}
-          setCurrentComments={setCurrentComments}
-          setTotalCommentsCount={setTotalCommentsCount}
-        />
-      )}
+      <PostDetailModal
+        isOpen={togglePostDetailModal}
+        post={post}
+        parentCommentsCountRef={parentCommentsCountRef}
+        setTogglePostDetailModal={setTogglePostDetailModal}
+      />
 
-      {toggleControlMenu && (
-        <ControlMenu
-          setToggleControlMenu={setToggleControlMenu}
-          deleteHandler={deletePostHandler}
-          editHandler={editPostHandler}
-          type="post"
-          isOwner={session?.user.id === post.userId}
-        />
-      )}
+      <ControlMenu
+        isOpen={toggleControlMenu}
+        isOwner={session?.user.id === post.userId}
+        type="post"
+        setToggleControlMenu={setToggleControlMenu}
+        deleteHandler={deletePostHandler}
+        editHandler={editPostHandler}
+      />
 
-      {togglePostModal && (
-        <PostModal
-          setIsOpen={setTogglePostModal}
-          initialBody={post.body}
-          initialFiles={post.files}
-          postId={post.id}
-        />
-      )}
-    </>
+      <PostModal
+        isOpen={togglePostModal}
+        setIsOpen={setTogglePostModal}
+        initialBody={post.body}
+        initialFiles={post.files}
+        postId={post.id}
+      />
+    </PostProvider>
   );
 };
 
