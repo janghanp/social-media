@@ -15,29 +15,27 @@ dayjs.extend(relativeTime);
 
 interface Props {
   comment: CommentType;
-  postAuthorId: string;
-  deleteComment: (commentdId: string) => {};
-  setCommentInput: React.Dispatch<SetStateAction<string>>;
-  setIsEdit: React.Dispatch<SetStateAction<boolean>>;
-  setIsReply: React.Dispatch<SetStateAction<boolean>>;
-  setEditingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
-  commentInputRef: React.RefObject<HTMLTextAreaElement>;
-  setReplyingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
-  setCurrentComments: React.Dispatch<SetStateAction<CommentType[]>>;
+  // setCommentInput: React.Dispatch<SetStateAction<string>>;
+  // setIsEdit: React.Dispatch<SetStateAction<boolean>>;
+  // setIsReply: React.Dispatch<SetStateAction<boolean>>;
+  // setEditingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
+  // commentInputRef: React.RefObject<HTMLTextAreaElement>;
+  // setReplyingCommentId: React.Dispatch<SetStateAction<string | undefined>>;
+  // setCurrentComments: React.Dispatch<SetStateAction<CommentType[]>>;
+  // deleteComment: (commentdId: string) => {};
 }
 
 const Comment = ({
   comment,
-  commentInputRef,
-  postAuthorId,
-  deleteComment,
-  setCommentInput,
-  setIsEdit,
-  setEditingCommentId,
-  setIsReply,
-  setReplyingCommentId,
-  setCurrentComments,
-}: Props) => {
+}: // commentInputRef,
+// deleteComment,
+// setCommentInput,
+// setIsEdit,
+// setEditingCommentId,
+// setIsReply,
+// setReplyingCommentId,
+// setCurrentComments,
+Props) => {
   const { data: session } = useSession();
 
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
@@ -54,104 +52,104 @@ const Comment = ({
     comment._count ? comment._count.children : 0
   );
 
-  useEffect(() => {
-    if (childrenComments.length > 0) {
-      setChildrenComments((prevState) => {
-        const newChildrenComments = [...prevState, comment.newChildren!];
+  // useEffect(() => {
+  //   if (childrenComments.length > 0) {
+  //     setChildrenComments((prevState) => {
+  //       const newChildrenComments = [...prevState, comment.newChildren!];
 
-        return newChildrenComments;
-      });
-    }
-  }, [comment.newChildren]);
+  //       return newChildrenComments;
+  //     });
+  //   }
+  // }, [comment.newChildren]);
 
-  const deleteCommentHandler = async () => {
-    await axios.delete("/api/comment", {
-      data: {
-        commentId: comment.id,
-        postId: comment.postId,
-      },
-    });
+  // const deleteCommentHandler = async () => {
+  //   await axios.delete("/api/comment", {
+  //     data: {
+  //       commentId: comment.id,
+  //       postId: comment.postId,
+  //     },
+  //   });
 
-    deleteComment(comment.id);
-  };
+  //   deleteComment(comment.id);
+  // };
 
-  const editCommentHandler = async () => {
-    setToggleControlMenu(false);
-    setEditingCommentId(comment.id);
-    setCommentInput(comment.comment);
-    setIsEdit(true);
-  };
+  // const editCommentHandler = async () => {
+  //   setToggleControlMenu(false);
+  //   setEditingCommentId(comment.id);
+  //   setCommentInput(comment.comment);
+  //   setIsEdit(true);
+  // };
 
-  const likeCommentHandler = async () => {
-    setIsLiked((prevState) => !prevState);
-    setLikesCount((prevState) => {
-      if (isLiked) {
-        return prevState - 1;
-      } else {
-        return prevState + 1;
-      }
-    });
-    setCurrentComments((prevState) => {
-      return prevState.map((currentComment) => {
-        if (currentComment.id === comment.id) {
-          if (isLiked) {
-            currentComment.likedByIds = currentComment.likedByIds.filter(
-              (likeById) => likeById !== session!.user.id
-            );
-            return currentComment;
-          } else {
-            currentComment.likedByIds.push(session!.user.id);
-            return { ...currentComment };
-          }
-        } else {
-          return currentComment;
-        }
-      });
-    });
+  // const likeCommentHandler = async () => {
+  //   setIsLiked((prevState) => !prevState);
+  //   setLikesCount((prevState) => {
+  //     if (isLiked) {
+  //       return prevState - 1;
+  //     } else {
+  //       return prevState + 1;
+  //     }
+  //   });
+  //   setCurrentComments((prevState) => {
+  //     return prevState.map((currentComment) => {
+  //       if (currentComment.id === comment.id) {
+  //         if (isLiked) {
+  //           currentComment.likedByIds = currentComment.likedByIds.filter(
+  //             (likeById) => likeById !== session!.user.id
+  //           );
+  //           return currentComment;
+  //         } else {
+  //           currentComment.likedByIds.push(session!.user.id);
+  //           return { ...currentComment };
+  //         }
+  //       } else {
+  //         return currentComment;
+  //       }
+  //     });
+  //   });
 
-    await axios.post("/api/likeComment", {
-      commentId: comment.id,
-      userId: session!.user.id,
-      dislike: isLiked,
-    });
-  };
+  //   await axios.post("/api/likeComment", {
+  //     commentId: comment.id,
+  //     userId: session!.user.id,
+  //     dislike: isLiked,
+  //   });
+  // };
 
-  const replyHandler = async (metionUser: string, commentId: string) => {
-    setCommentInput(`@${metionUser} `);
-    setIsReply(true);
-    setReplyingCommentId(commentId);
-    commentInputRef.current?.focus();
-  };
+  // const replyHandler = async (metionUser: string, commentId: string) => {
+  //   setCommentInput(`@${metionUser} `);
+  //   setIsReply(true);
+  //   setReplyingCommentId(commentId);
+  //   commentInputRef.current?.focus();
+  // };
 
-  const fetchChildrenComments = async () => {
-    if (childrenComments.length > 0) {
-      setToggleChildren(true);
-      return;
-    }
+  // const fetchChildrenComments = async () => {
+  //   if (childrenComments.length > 0) {
+  //     setToggleChildren(true);
+  //     return;
+  //   }
 
-    setToggleChildren(true);
-    setIsLoading(true);
+  //   setToggleChildren(true);
+  //   setIsLoading(true);
 
-    const { data } = await axios.get(`/api/children?parentId=${comment.id}`);
+  //   const { data } = await axios.get(`/api/children?parentId=${comment.id}`);
 
-    setChildrenComments(data.commentWithChildren.children);
+  //   setChildrenComments(data.commentWithChildren.children);
 
-    setIsLoading(false);
-  };
+  //   setIsLoading(false);
+  // };
 
-  const toggleChildrenHandler = () => {
-    if (!toggleChildren && childrenComments.length === 0) {
-      fetchChildrenComments();
-      return;
-    }
+  // const toggleChildrenHandler = () => {
+  //   if (!toggleChildren && childrenComments.length === 0) {
+  //     fetchChildrenComments();
+  //     return;
+  //   }
 
-    if (!toggleChildren && childrenComments.length > 0) {
-      setToggleChildren(true);
-      return;
-    }
+  //   if (!toggleChildren && childrenComments.length > 0) {
+  //     setToggleChildren(true);
+  //     return;
+  //   }
 
-    setToggleChildren(false);
-  };
+  //   setToggleChildren(false);
+  // };
 
   return (
     <>
@@ -177,7 +175,7 @@ const Comment = ({
               {session && (
                 <div className="flex gap-x-3 font-semibold">
                   <span
-                    onClick={likeCommentHandler}
+                    // onClick={likeCommentHandler}
                     className={`hover:cursor-pointer ${
                       isLiked && "text-red-400"
                     }`}
@@ -185,14 +183,14 @@ const Comment = ({
                     Like
                   </span>
                   <span
-                    onClick={() =>
-                      replyHandler(comment.user.username, comment.id)
-                    }
+                    // onClick={() =>
+                    //   replyHandler(comment.user.username, comment.id)
+                    // }
                     className="hover:cursor-pointer"
                   >
                     Reply
                   </span>
-                  {(session?.user.id === comment.userId ||
+                  {/* {(session?.user.id === comment.userId ||
                     session?.user.id === postAuthorId) && (
                     <div
                       onClick={() => setToggleControlMenu(true)}
@@ -200,14 +198,14 @@ const Comment = ({
                     >
                       <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
             </div>
             {childrenCount > 0 && (
               <div className="mt-2 flex items-center before:mr-2 before:w-7 before:border before:content-['']">
                 <span
-                  onClick={toggleChildrenHandler}
+                  // onClick={toggleChildrenHandler}
                   className="text-sm font-semibold text-gray-400 hover:cursor-pointer"
                 >
                   {!toggleChildren
@@ -225,7 +223,7 @@ const Comment = ({
         </div>
       </div>
 
-      {toggleChildren && (
+      {/* {toggleChildren && (
         <div className="flex w-full flex-col gap-y-5 pl-12">
           {childrenComments.map((childComment) => {
             return (
@@ -249,7 +247,7 @@ const Comment = ({
           type="comment"
           isOwner={session?.user.id === comment.userId}
         />
-      )}
+      )} */}
     </>
   );
 };

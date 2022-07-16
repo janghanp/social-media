@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         orderBy: {
           createdAt: "desc",
         },
-        take: 20,
+        take: 2,
         include: {
           user: true,
           _count: {
@@ -42,6 +42,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Home: NextPage<Props> = ({ posts }: Props) => {
+  console.log("Home");
+
   return (
     <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row border px-2 pt-10 lg:px-0">
       <section className="w-full lg:w-3/5">

@@ -10,13 +10,20 @@ import { PostValidationSchema } from "../lib/validation";
 import DropZone from "./DropZone";
 
 interface Props {
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  initialFiles?: { Key: string; ratio: number }[];
-  initialBody?: string;
+  isOpen: boolean;
   postId?: string;
+  initialBody?: string;
+  initialFiles?: { Key: string; ratio: number }[];
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PostModal = ({ setIsOpen, initialFiles, initialBody, postId }: Props) => {
+const PostModal = ({
+  isOpen,
+  postId,
+  initialFiles,
+  initialBody,
+  setIsOpen,
+}: Props) => {
   const isEditing = initialFiles ? true : false;
 
   const router = useRouter();
@@ -158,6 +165,10 @@ const PostModal = ({ setIsOpen, initialFiles, initialBody, postId }: Props) => {
     e.preventDefault();
     setIsOpen(false);
   };
+
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <>

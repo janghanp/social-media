@@ -5,28 +5,30 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { Comment as CommentType } from "../types";
 import useFetchComments from "../hooks/useFetchComments";
 import Comment from "./Comment";
+import useComments from "../hooks/useComments";
 
 interface Props {
   postId: string;
-  postAuthorId: string;
 }
 
-const CommentsList = ({ postId, postAuthorId }: Props) => {
+const CommentsList = ({ postId }: Props) => {
   const {
-    data,
+    currentComments,
     error,
-    isLoading,
-    isFetching,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-  } = useFetchComments(postId);
+    isLoadingInitialData,
+    isRefreshing,
+    isLastPage,
+    isLoadingMore,
+    mutate,
+    size,
+    setSize,
+  } = useComments(postId);
 
   if (error) {
-    return <div>Error...</div>;
+    return <div>An error occurred while loading comments...</div>;
   }
 
-  if (isLoading) {
+  if (isLoadingInitialData) {
     return (
       <div className="relative flex w-full justify-center">
         <SyncLoader size={7} color="gray" margin={2} />
@@ -34,36 +36,32 @@ const CommentsList = ({ postId, postAuthorId }: Props) => {
     );
   }
 
+  console.log("comentslist");
+
   return (
-    <>
-      <div className="flex flex-col gap-y-5">
-        {data?.pages.map((group, i) => (
+    <div className="relative overflow-y-hidden">
+      <div className="flex flex-col gap-y-5 p-3">
+        {currentComments.map((currentComment, i) => (
           <Fragment key={i}>
-            {group.map((comment: CommentType) => (
-              <Comment
-                key={comment.id}
-                comment={comment}
-                postAuthorId={postAuthorId}
-              />
-            ))}
+            <Comment key={currentComment.id} comment={currentComment} />
           </Fragment>
         ))}
       </div>
       <div className="flex w-full items-center justify-center">
-        {hasNextPage && (
+        {!isLastPage && (
           <>
-            {isFetchingNextPage ? (
+            {isLoadingMore ? (
               <SyncLoader size={8} color="gray" />
             ) : (
               <AiOutlinePlusCircle
                 className="h-6 w-6 hover:cursor-pointer"
-                onClick={() => fetchNextPage()}
+                onClick={() => setSize(size + 1)}
               />
             )}
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

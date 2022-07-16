@@ -8,6 +8,8 @@ interface Props {
 }
 
 const PostsList = ({ posts }: Props) => {
+  console.log('PostList');
+
   return (
     <div className="flex w-full flex-col items-center justify-center gap-y-24">
       {posts.map((post) => (

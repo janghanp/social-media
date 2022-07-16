@@ -95,17 +95,17 @@ const DetailModal = ({
     string | undefined
   >("");
 
-  useEffect(() => {
-    if (!customButtons) {
-      setCustomButtons(true);
-    }
+  // useEffect(() => {
+  //   if (!customButtons) {
+  //     setCustomButtons(true);
+  //   }
 
-    router.push("/", `/posts/${post.id}`, { shallow: true });
+  //   router.push("/", `/posts/${post.id}`, { shallow: true });
 
-    return () => {
-      router.push("/", "/", { shallow: true });
-    };
-  }, []);
+  //   return () => {
+  //     router.push("/", "/", { shallow: true });
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (parentCommentsCountRef.current === 0) {

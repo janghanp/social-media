@@ -5,14 +5,14 @@ import { HiOutlinePlus } from "react-icons/hi";
 
 import Avatar from "./Avatar";
 import PostModal from "./PostModal";
-import { useUserContext } from "../context/user";
+import useUser from "../hooks/useUser";
 
 const Navbar = () => {
   const { data: session } = useSession();
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { currentUser } = useUser();
 
-  const { currentUser } = useUserContext();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (isOpen) {

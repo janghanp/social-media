@@ -1,35 +1,27 @@
+import { useState } from "react";
+
 interface Props {
-  commentInput: string;
-  setCommentInput: React.Dispatch<React.SetStateAction<string>>;
-  submitHandler: (e: React.MouseEvent<HTMLButtonElement>) => {};
-  isEdit: boolean;
-  commentInputRef: React.RefObject<HTMLTextAreaElement>;
-  setIsReply: React.Dispatch<React.SetStateAction<boolean>>;
+  postId: string;
 }
 
-const CommentInputBox = ({
-  commentInput,
-  setCommentInput,
-  submitHandler,
-  isEdit,
-  commentInputRef,
-  setIsReply,
-}: Props) => {
+const CommentInputBox = ({ postId }: Props) => {
+  const [commentInput, setCommentInput] = useState<string>("");
   const changeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const inputValue = e.target.value;
+    setCommentInput(e.target.value);
+    // const inputValue = e.target.value;
 
-    if (inputValue.length === 0 || inputValue[0] !== "@") {
-      setIsReply(false);
-    }
+    // if (inputValue.length === 0 || inputValue[0] !== "@") {
+    //   setIsReply(false);
+    // }
 
-    setCommentInput(inputValue);
+    // setCommentInput(inputValue);
   };
 
   return (
     <form className="w-full">
       <div className="flex items-center justify-center">
         <textarea
-          ref={commentInputRef}
+          // ref={commentInputRef}
           placeholder="Add a comment..."
           value={commentInput}
           onChange={changeHandler}
@@ -38,9 +30,10 @@ const CommentInputBox = ({
         <button
           className={`font-semibold text-primary disabled:cursor-not-allowed disabled:text-gray-500`}
           disabled={commentInput.length === 0}
-          onClick={submitHandler}
+          // onClick={submitHandler}
         >
-          {isEdit ? "Edit" : "Post"}
+          {/* {isEdit ? "Edit" : "Post"} */}
+          Post
         </button>
       </div>
     </form>

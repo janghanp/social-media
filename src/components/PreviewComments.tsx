@@ -1,10 +1,10 @@
 import { usePostContext } from "../context/postContext";
 
 interface Props {
-  togglePostDetailHandler: () => void;
+  togglePostDetailModalHandler: () => void;
 }
 
-const PreviewComments = ({ togglePostDetailHandler }: Props) => {
+const PreviewComments = ({ togglePostDetailModalHandler }: Props) => {
   const { previewComments, totalCommentsCount } = usePostContext();
 
   return (
@@ -25,7 +25,7 @@ const PreviewComments = ({ togglePostDetailHandler }: Props) => {
       </div>
       {previewComments.length === 2 && (
         <div
-          onClick={togglePostDetailHandler}
+          onClick={togglePostDetailModalHandler}
           className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
         >
           View {totalCommentsCount === 1 ? "" : "all"} {totalCommentsCount}{" "}

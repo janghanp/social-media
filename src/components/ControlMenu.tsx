@@ -1,21 +1,27 @@
 import { useState } from "react";
 
 interface Props {
-  setToggleControlMenu: React.Dispatch<React.SetStateAction<boolean>>;
   type: "post" | "comment";
+  isOwner: boolean;
+  isOpen: boolean;
   deleteHandler: () => {};
   editHandler: () => {};
-  isOwner: boolean;
+  setToggleControlMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ControlMenu = ({
+  isOpen,
+  isOwner,
+  type,
   setToggleControlMenu,
   deleteHandler,
   editHandler,
-  isOwner,
-  type,
 }: Props) => {
   const [toggleConfirm, setToggleConfirm] = useState<boolean>(false);
+
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <>

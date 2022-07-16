@@ -8,7 +8,7 @@ import { UserNameValidationSchema } from "../lib/validation";
 import FadeLoader from "react-spinners/FadeLoader";
 
 import { prisma } from "../lib/prisma";
-import { useUserContext } from "../context/user";
+import useUser from "../hooks/useUser";
 
 interface formikValue {
   userNameInput: string;
@@ -49,7 +49,7 @@ const Welcome: NextPage = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { setCurrentUser } = useUserContext();
+  const { mutate } = useUser();
 
   const formik = useFormik<formikValue>({
     initialValues: {
@@ -70,13 +70,16 @@ const Welcome: NextPage = () => {
         await axios.post("/api/username", { userNameInput });
 
         setIsLoading(false);
-        setCurrentUser({username: userNameInput});
+        mutate();
 
         router.push("/");
       } catch (err) {
         if (axios.isAxiosError(err)) {
           if (err?.response?.status === 409) {
-            formik.setFieldError("userNameInput", "The username was already taken.");
+            formik.setFieldError(
+              "userNameInput",
+              "The username was already taken."
+            );
             setIsLoading(false);
           }
         }
@@ -119,7 +122,9 @@ const Welcome: NextPage = () => {
           )}
         </form>
         {formik.errors.userNameInput && (
-          <span className="text-sm text-red-500">{formik.errors.userNameInput}</span>
+          <span className="text-sm text-red-500">
+            {formik.errors.userNameInput}
+          </span>
         )}
       </div>
     </div>
