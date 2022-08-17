@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { getToken } from "next-auth/jwt";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
 
-import { prisma } from "../../lib/prisma";
+import { prisma } from '../../lib/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,10 +10,10 @@ export default async function handler(
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     const { parentId } = req.query;
 
     try {
@@ -36,7 +36,7 @@ export default async function handler(
       return res.status(200).json({ commentWithChildren: comment });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
 }

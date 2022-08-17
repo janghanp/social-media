@@ -1,16 +1,16 @@
-import { useState, useMemo } from "react";
-import { Pagination, Navigation } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
-import Image from "next/image";
+import { useState, useMemo } from 'react';
+import { Pagination, Navigation } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import Image from 'next/image';
 
-import SwiperPrevButton from "./SwiperPrevButton";
-import SwiperNextButton from "./SwiperNextButton";
-import { calculateRatio } from "../lib/calculateRatio";
-import { FileInfo } from "../types";
+import SwiperPrevButton from './SwiperPrevButton';
+import SwiperNextButton from './SwiperNextButton';
+import { calculateRatio } from '../lib/calculateRatio';
+import { FileInfo } from '../types';
 
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 interface Props {
   files?: FileInfo[];
@@ -33,7 +33,7 @@ const ImageSlide = ({ files }: Props) => {
               layout="responsive"
               objectFit="cover"
               alt="image"
-              priority={true}
+              priority={false}
             />
           </div>
         </SwiperSlide>

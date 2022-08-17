@@ -1,13 +1,13 @@
-import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
-import { FormikHelpers, useFormik } from "formik";
-import { HiOutlinePhotograph } from "react-icons/hi";
-import axios from "axios";
-import FadeLoader from "react-spinners/FadeLoader";
+import { useRouter } from 'next/router';
+import React, { useState, useEffect } from 'react';
+import { FormikHelpers, useFormik } from 'formik';
+import { HiOutlinePhotograph } from 'react-icons/hi';
+import axios from 'axios';
+import FadeLoader from 'react-spinners/FadeLoader';
 
-import { CustomFile, formikValues } from "../types";
-import { PostValidationSchema } from "../lib/validation";
-import DropZone from "./DropZone";
+import { CustomFile, formikValues } from '../types';
+import { PostValidationSchema } from '../lib/validation';
+import DropZone from './DropZone';
 
 interface Props {
   isOpen: boolean;
@@ -34,7 +34,7 @@ const PostModal = ({
 
   const formik = useFormik<formikValues>({
     initialValues: {
-      body: initialBody || "",
+      body: initialBody || '',
       files: [],
     },
     validationSchema: PostValidationSchema,
@@ -96,7 +96,7 @@ const PostModal = ({
           async (file) => await createFileValues(file.Key, file.ratio)
         )
       ).then((files) => {
-        formik.setFieldValue("files", files, false);
+        formik.setFieldValue('files', files, false);
       });
     };
 
@@ -117,7 +117,7 @@ const PostModal = ({
       ratio: file.aspectInit?.value || 1,
     }));
 
-    await axios.post("/api/post", {
+    await axios.post('/api/post', {
       body,
       fileInfos,
     });
@@ -133,7 +133,7 @@ const PostModal = ({
       ratio: file.aspectInit?.value || 1,
     }));
 
-    await axios.put("/api/post", { postId, body, fileInfos });
+    await axios.put('/api/post', { postId, body, fileInfos });
   };
 
   const stillUploading = (files: CustomFile[]) => {
@@ -192,7 +192,7 @@ const PostModal = ({
       )}
       <div
         className={`fixed top-10 ${
-          formik.values.files.length === 0 ? "bottom-auto" : "bottom-10"
+          formik.values.files.length === 0 ? 'bottom-auto' : 'bottom-10'
         } left-1/2 z-40 w-[90%] -translate-x-1/2 overflow-y-auto rounded-md border-2 border-primary bg-white p-7 shadow-lg sm:w-[650px] sm:p-10`}
       >
         <h3 className="mb-5 text-xl font-bold sm:text-2xl">
@@ -201,7 +201,7 @@ const PostModal = ({
         <button
           onClick={cancelHandler}
           className={`btn btn-outline btn-circle btn-sm absolute right-5 top-5 border-2 ${
-            isLoading && "btn-disabled"
+            isLoading && 'btn-disabled'
           }`}
         >
           ✕
@@ -214,7 +214,7 @@ const PostModal = ({
             onChange={formik.handleChange}
             value={formik.values.body}
             className={`textarea border-2 ${
-              formik.errors.body ? "textarea-warning" : "textarea-primary"
+              formik.errors.body ? 'textarea-warning' : 'textarea-primary'
             } h-40 w-full text-lg`}
           ></textarea>
           {formik.errors.body && (
@@ -232,16 +232,16 @@ const PostModal = ({
             <button
               type="submit"
               className={`btn btn-outline border-2 ${
-                isLoading && "btn-disabled"
+                isLoading && 'btn-disabled'
               }`}
-              disabled={isLoading ?? "disabled"}
+              disabled={isLoading ?? 'disabled'}
             >
-              {isEditing ? "Update" : "Post"}
+              {isEditing ? 'Update' : 'Post'}
             </button>
             <button
               onClick={cancelHandler}
-              className={`btn btn-ghost ${isLoading && "btn-disabled"}`}
-              disabled={isLoading ?? "disabled"}
+              className={`btn btn-ghost ${isLoading && 'btn-disabled'}`}
+              disabled={isLoading ?? 'disabled'}
             >
               Cancel
             </button>

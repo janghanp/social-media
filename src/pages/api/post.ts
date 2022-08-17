@@ -1,13 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { getToken } from "next-auth/jwt";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
 import {
   S3Client,
   PutObjectCommand,
   CopyObjectCommand,
   DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
+} from '@aws-sdk/client-s3';
 
-import { prisma } from "../../lib/prisma";
+import { prisma } from '../../lib/prisma';
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION as string,
@@ -22,7 +22,7 @@ const copyObject = async (key: string) => {
     Bucket: process.env.AWS_S3_BUCKET,
     CopySource: `${process.env.AWS_S3_BUCKET}/temp/${key}`,
     Key: `posts/${key}`,
-    ACL: "public-read",
+    ACL: 'public-read',
   };
 
   const copyCommand = new CopyObjectCommand(input);
@@ -46,10 +46,10 @@ export default async function handler(
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const {
       body,
       fileInfos,
@@ -71,14 +71,14 @@ export default async function handler(
         },
       });
 
-      return res.status(201).json({ message: "Successfully created!" });
+      return res.status(201).json({ message: 'Successfully created!' });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
 
-  if (req.method === "DELETE") {
+  if (req.method === 'DELETE') {
     const { postId }: { postId: string } = req.body;
 
     try {
@@ -92,15 +92,15 @@ export default async function handler(
         deleteObject(file.Key);
       });
 
-      return res.status(200).json({ message: "Successfully deleted" });
+      return res.status(200).json({ message: 'Successfully deleted' });
     } catch (err) {
       console.log(err);
 
-      return res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
 
-  if (req.method === "PUT") {
+  if (req.method === 'PUT') {
     const {
       postId,
       body,
@@ -118,7 +118,7 @@ export default async function handler(
     });
 
     if (!post) {
-      return res.status(400).json({ mesasge: "Bad request" });
+      return res.status(400).json({ mesasge: 'Bad request' });
     }
 
     const currentFiles = post.files.map((file) => ({
@@ -162,6 +162,6 @@ export default async function handler(
       },
     });
 
-    return res.status(204).json({ message: "Succesfully updated" });
+    return res.status(204).json({ message: 'Succesfully updated' });
   }
 }

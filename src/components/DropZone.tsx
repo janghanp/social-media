@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
-import { useDropzone, FileRejection } from "react-dropzone";
-import classNames from "classnames";
-import { FormikProps } from "formik";
-import { HiOutlineUpload } from "react-icons/hi";
+import React, { useCallback, useState, useEffect, useRef } from 'react';
+import { useDropzone, FileRejection } from 'react-dropzone';
+import classNames from 'classnames';
+import { FormikProps } from 'formik';
+import { HiOutlineUpload } from 'react-icons/hi';
 
-import { CustomFile, formikValues } from "../types";
-import Preview from "./Preview";
+import { CustomFile, formikValues } from '../types';
+import Preview from './Preview';
 
 interface Props {
   formik: FormikProps<formikValues>;
@@ -21,7 +21,7 @@ const DropZone = ({ formik, isEditing }: Props) => {
     if (firstRender.current) {
       firstRender.current = false;
     } else {
-      formik.setFieldValue("files", files, false);
+      formik.setFieldValue('files', files, false);
     }
   }, [files]);
 
@@ -49,8 +49,8 @@ const DropZone = ({ formik, isEditing }: Props) => {
   const fileSizeValidator = (file: File) => {
     if (file.size > 100000000) {
       return {
-        code: "size-too-large",
-        message: "The file size is too big. It should be less than 100MB.",
+        code: 'size-too-large',
+        message: 'The file size is too big. It should be less than 100MB.',
       };
     }
 
@@ -62,21 +62,21 @@ const DropZone = ({ formik, isEditing }: Props) => {
       multiple: true,
       useFsAccessApi: false,
       accept: {
-        "image/jpeg": [".jpeg", ".jpg"],
-        "image/png": [".png"],
-        "image/gif": [".gif"],
-        "image/webp": [".webp"],
-        "video/*": [],
+        'image/jpeg': ['.jpeg', '.jpg'],
+        'image/png': ['.png'],
+        'image/gif': ['.gif'],
+        'image/webp': ['.webp'],
+        'video/*': [],
       },
       onDrop: onDropHandler,
       validator: fileSizeValidator,
     });
 
   const dragAreaClasses = classNames({
-    "border-2 border-dashed rounded-lg max-h-80 overflow-auto": true,
-    "bg-gray-200": isDragActive,
-    "border-warning": fileRejections.length > 0,
-    "border-gray-500": fileRejections.length === 0,
+    'border-2 border-dashed rounded-lg max-h-80 overflow-auto': true,
+    'bg-gray-200': isDragActive,
+    'border-warning': fileRejections.length > 0,
+    'border-gray-500': fileRejections.length === 0,
   });
 
   return (

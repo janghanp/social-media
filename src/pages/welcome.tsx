@@ -1,14 +1,14 @@
-import { NextPage, GetServerSideProps } from "next";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
-import { getToken } from "next-auth/jwt";
-import axios from "axios";
-import { useFormik, FormikHelpers } from "formik";
-import { UserNameValidationSchema } from "../lib/validation";
-import FadeLoader from "react-spinners/FadeLoader";
+import { NextPage, GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { getToken } from 'next-auth/jwt';
+import axios from 'axios';
+import { useFormik, FormikHelpers } from 'formik';
+import { UserNameValidationSchema } from '../lib/validation';
+import FadeLoader from 'react-spinners/FadeLoader';
 
-import { prisma } from "../lib/prisma";
-import useUser from "../hooks/useUser";
+import { prisma } from '../lib/prisma';
+import useUser from '../hooks/useUser';
 
 interface formikValue {
   userNameInput: string;
@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!jwt) {
     return {
       redirect: {
-        destination: "/",
+        destination: '/',
         permanent: false,
       },
     };
@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (user?.username) {
     return {
       redirect: {
-        destination: "/",
+        destination: '/',
         permanent: false,
       },
     };
@@ -53,7 +53,7 @@ const Welcome: NextPage = () => {
 
   const formik = useFormik<formikValue>({
     initialValues: {
-      userNameInput: "",
+      userNameInput: '',
     },
     validationSchema: UserNameValidationSchema,
     validateOnBlur: true,
@@ -67,18 +67,18 @@ const Welcome: NextPage = () => {
       setIsLoading(true);
 
       try {
-        await axios.post("/api/username", { userNameInput });
+        await axios.post('/api/username', { userNameInput });
 
         setIsLoading(false);
         mutate();
 
-        router.push("/");
+        router.push('/');
       } catch (err) {
         if (axios.isAxiosError(err)) {
           if (err?.response?.status === 409) {
             formik.setFieldError(
-              "userNameInput",
-              "The username was already taken."
+              'userNameInput',
+              'The username was already taken.'
             );
             setIsLoading(false);
           }
@@ -110,7 +110,7 @@ const Welcome: NextPage = () => {
             type="text"
             placeholder="Type here"
             className={`input input-bordered input-primary w-full ${
-              formik.errors.userNameInput ? "input-warning" : ""
+              formik.errors.userNameInput ? 'input-warning' : ''
             }`}
           />
           {isLoading ? (

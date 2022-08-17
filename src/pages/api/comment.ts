@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getToken } from "next-auth/jwt";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
 
-import { prisma } from "../../lib/prisma";
+import { prisma } from '../../lib/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,11 +10,11 @@ export default async function handler(
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  if (req.method === "GET") {
-    const { postId, currentPage } = req.query;
+  if (req.method === 'GET') {
+    const { postId, currentPage, skip = 0 } = req.query;
 
     try {
       const post = await prisma.post.findFirst({
@@ -27,9 +27,9 @@ export default async function handler(
               parent: null,
             },
             orderBy: {
-              createdAt: "desc",
+              createdAt: 'desc',
             },
-            skip: (+currentPage - 1) * 20,
+            skip: (+currentPage - 1) * 20 + +skip,
             take: 20,
             include: {
               user: true,
@@ -47,11 +47,11 @@ export default async function handler(
       return res.status(200).send(post?.comments);
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
 
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const { postId, comment: body }: { postId: string; comment: string } =
       req.body;
 
@@ -91,15 +91,16 @@ export default async function handler(
         },
       });
 
-      return res
-        .status(201)
-        .json({ message: "Successfully created!", commentWithUser });
+      return res.status(201).json({
+        message: 'Successfully created!',
+        newComment: commentWithUser,
+      });
     } catch (err) {
-      return res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
 
-  if (req.method === "DELETE") {
+  if (req.method === 'DELETE') {
     const {
       commentId,
       postId,
@@ -114,7 +115,7 @@ export default async function handler(
           },
         });
 
-        return res.status(200).json({ message: "Successfully deleted" });
+        return res.status(200).json({ message: 'Successfully deleted' });
       }
 
       await prisma.comment.deleteMany({
@@ -140,31 +141,42 @@ export default async function handler(
         },
       });
 
-      return res.status(200).json({ message: "Successfully deleted" });
+      return res.status(200).json({ message: 'Successfully deleted' });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
 
-  if (req.method === "PUT") {
+  if (req.method === 'PUT') {
     const { commentId, comment }: { commentId: string; comment: string } =
       req.body;
 
     try {
-      await prisma.comment.update({
+      const updatedComment = await prisma.comment.update({
         where: {
           id: commentId,
         },
         data: {
           comment,
         },
+        include: {
+          user: true,
+          _count: {
+            select: {
+              children: true,
+              likedBy: true,
+            },
+          },
+        },
       });
 
-      return res.status(204).json({ message: "Successfully updated" });
+      return res
+        .status(200)
+        .json({ message: 'Successfully updated', updatedComment });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Something went wrong..." });
+      return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
 }

@@ -1,8 +1,8 @@
-import { NextPage, GetServerSideProps } from "next";
+import { NextPage, GetServerSideProps } from 'next';
 
-import { prisma } from "../lib/prisma";
-import { Post } from "../types";
-import PostsList from "../components/PostsList";
+import { prisma } from '../lib/prisma';
+import { Post } from '../types';
+import PostsList from '../components/PostsList';
 
 interface Props {
   posts: Post[];
@@ -11,7 +11,7 @@ interface Props {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const posts = await prisma.post.findMany({
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
     include: {
       user: true,
@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           parent: null,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
         take: 2,
         include: {
@@ -42,8 +42,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Home: NextPage<Props> = ({ posts }: Props) => {
-  console.log("Home");
-
   return (
     <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row border px-2 pt-10 lg:px-0">
       <section className="w-full lg:w-3/5">

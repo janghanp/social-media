@@ -1,10 +1,10 @@
-import NextAuth from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import GithubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import GithubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
 
-import { prisma } from "../../../lib/prisma";
+import { prisma } from '../../../lib/prisma';
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -24,7 +24,7 @@ export default NextAuth({
   ],
   secret: process.env.SECRET,
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   callbacks: {
     async session({ session, token }) {
@@ -34,6 +34,6 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
 });

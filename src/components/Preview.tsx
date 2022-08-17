@@ -1,14 +1,14 @@
-import { useRef, useState, useEffect } from "react";
-import { Pagination, Navigation, EffectFade } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { useRef, useState, useEffect } from 'react';
+import { Pagination, Navigation, EffectFade } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { CustomFile } from "../types";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import "swiper/css/effect-fade";
-import PreviewImageItem from "./PreviewImageItem";
-import SwiperPrevButton from "./SwiperPrevButton";
-import SwiperNextButton from "./SwiperNextButton";
+import { CustomFile } from '../types';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/effect-fade';
+import PreviewImageItem from './PreviewImageItem';
+import SwiperPrevButton from './SwiperPrevButton';
+import SwiperNextButton from './SwiperNextButton';
 
 interface Props {
   files: CustomFile[];

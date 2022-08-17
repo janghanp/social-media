@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 interface Props {
-  type: "post" | "comment";
+  type: 'post' | 'comment';
   isOwner: boolean;
   isOpen: boolean;
+  isChild?: boolean;
   deleteHandler: () => {};
   editHandler: () => {};
   setToggleControlMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ControlMenu = ({
+  isChild,
   isOpen,
   isOwner,
   type,
@@ -51,7 +53,7 @@ const ControlMenu = ({
           </div>
         ) : (
           <ul className="menu w-4/5 max-w-md rounded-md border border-primary bg-base-100 shadow-md">
-            {isOwner && (
+            {isOwner && !isChild && (
               <li
                 onClick={editHandler}
                 className="border-b p-3 text-center transition duration-200 hover:cursor-pointer hover:bg-gray-200"

@@ -1,9 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { getToken } from "next-auth/jwt";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { v4 as uuidv4 } from "uuid";
-import Formidable from "formidable";
-import fs from "fs";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { v4 as uuidv4 } from 'uuid';
+import Formidable from 'formidable';
+import fs from 'fs';
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION as string,
@@ -26,26 +26,26 @@ export default async function hanlder(
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const form = Formidable({ multiples: true });
 
     form.parse(req, (err, _fields, files: any) => {
       if (err) {
         console.log(err);
-        return res.status(500).json({ message: "Something went wrong..." });
+        return res.status(500).json({ message: 'Something went wrong...' });
       }
 
       fs.readFile(files.file.filepath, async (err, file) => {
         if (err) {
           console.log(err);
-          return res.status(500).json({ message: "Something went wrong..." });
+          return res.status(500).json({ message: 'Something went wrong...' });
         }
 
         const type = files.file.mimetype;
-        const fileExtension = type.split("/")[1];
+        const fileExtension = type.split('/')[1];
         const Key = `${uuidv4()}.${fileExtension}`;
 
         const input = {

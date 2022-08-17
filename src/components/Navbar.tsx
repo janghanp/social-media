@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react";
-import { HiOutlinePlus } from "react-icons/hi";
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { HiOutlinePlus } from 'react-icons/hi';
 
-import Avatar from "./Avatar";
-import PostModal from "./PostModal";
-import useUser from "../hooks/useUser";
+import Avatar from './Avatar';
+import PostModal from './PostModal';
+import useUser from '../hooks/useUser';
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -16,11 +16,11 @@ const Navbar = () => {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflowY = "hidden";
-      document.body.style.height = "100%";
+      document.body.style.overflowY = 'hidden';
+      document.body.style.height = '100%';
     } else {
-      document.body.style.overflow = "auto";
-      document.body.style.height = "auto";
+      document.body.style.overflow = 'auto';
+      document.body.style.height = 'auto';
     }
   }, [isOpen]);
 
@@ -30,7 +30,7 @@ const Navbar = () => {
         <div className="container mx-auto max-w-4xl">
           <div className="navbar justify-between bg-base-100 px-5 lg:px-0">
             {/* left */}
-            <Link href={"/"}>
+            <Link href={'/'}>
               <div className="text-xl font-semibold normal-case hover:cursor-pointer">
                 Social Media
               </div>
@@ -45,13 +45,13 @@ const Navbar = () => {
                 />
                 <Avatar
                   image={session.user.image}
-                  username={currentUser.username}
+                  username={currentUser.user.username}
                   signout={signOut}
                 />
               </div>
             ) : (
               <div className="flex flex-row">
-                <Link href={"/login"}>
+                <Link href={'/login'}>
                   <div className="btn btn-ghost">log in</div>
                 </Link>
               </div>
@@ -59,7 +59,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      {isOpen && <PostModal setIsOpen={setIsOpen} />}
+      <PostModal isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 };

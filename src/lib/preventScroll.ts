@@ -3,10 +3,10 @@ export const preventScroll = (
   toggleControlMenu: boolean
 ) => {
   if (togglePostDetailModal || toggleControlMenu) {
-    document.body.style.overflowY = "hidden";
-    document.body.style.height = "100%";
+    document.body.style.overflowY = 'hidden';
+    document.body.style.height = '100%';
   } else {
-    document.body.style.overflow = "auto";
-    document.body.style.height = "auto";
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
   }
 };

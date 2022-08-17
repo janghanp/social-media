@@ -15,8 +15,6 @@
 # production
 /build
 
-/TODO.txt
-
 # misc
 .DS_Store
 *.pem

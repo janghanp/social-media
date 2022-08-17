@@ -1,19 +1,17 @@
-import React from "react";
+import React from 'react';
 
-import { Post } from "../types";
-import PostItem from "./PostItem";
+import { Post as PostType } from '../types';
+import Post from './Post';
 
 interface Props {
-  posts: Post[];
+  posts: PostType[];
 }
 
 const PostsList = ({ posts }: Props) => {
-  console.log('PostList');
-
   return (
     <div className="flex w-full flex-col items-center justify-center gap-y-24">
       {posts.map((post) => (
-        <PostItem key={post.id} post={post} />
+        <Post key={post.id} post={post} />
       ))}
     </div>
   );

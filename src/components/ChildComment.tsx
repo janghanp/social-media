@@ -1,12 +1,13 @@
-import { SetStateAction, useState, memo } from "react";
-import { useSession } from "next-auth/react";
-import axios from "axios";
-import Image from "next/image";
-import dayjs from "dayjs";
+import { SetStateAction, useState, memo } from 'react';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import Image from 'next/image';
+import dayjs from 'dayjs';
 
-import { Comment as CommentType } from "../types";
-import { AiOutlineEllipsis } from "react-icons/ai";
-import ControlMenu from "./ControlMenu";
+import { Comment as CommentType } from '../types';
+import { AiOutlineEllipsis } from 'react-icons/ai';
+import ControlMenu from './ControlMenu';
+import { usePostContext } from '../context/postContext';
 
 interface Props {
   childComment: CommentType;
@@ -30,6 +31,8 @@ const ChildComment = ({
     childComment._count ? childComment._count.likedBy : 0
   );
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
+
+  const { setTotalCommentsCount } = usePostContext();
 
   const likeCommentHandler = async () => {
     setIsLiked((prevState) => !prevState);
@@ -59,7 +62,7 @@ const ChildComment = ({
       });
     });
 
-    await axios.post("/api/likeComment", {
+    await axios.post('/api/likeComment', {
       commentId: childComment.id,
       userId: session!.user.id,
       dislike: isLiked,
@@ -73,17 +76,19 @@ const ChildComment = ({
     );
     setChildrenCount((prevState) => prevState - 1);
 
-    await axios.delete("/api/comment", {
+    await axios.delete('/api/comment', {
       data: {
         commentId: childComment.id,
         postId: childComment.postId,
         isChild: true,
       },
     });
+
+    setTotalCommentsCount((prevState) => prevState - 1);
   };
 
   const editCommentHandler = async () => {
-    console.log("edit");
+    console.log('edit');
   };
 
   return (
@@ -106,7 +111,7 @@ const ChildComment = ({
             <span>{dayjs().to(dayjs(childComment.createdAt))}</span>
             {likesCount > 0 && (
               <span>
-                {likesCount} {likesCount === 1 ? "Like" : "Likes"}
+                {likesCount} {likesCount === 1 ? 'Like' : 'Likes'}
               </span>
             )}
             {session && (
@@ -114,7 +119,7 @@ const ChildComment = ({
                 <span
                   onClick={likeCommentHandler}
                   className={`hover:cursor-pointer ${
-                    isLiked && "text-red-400"
+                    isLiked && 'text-red-400'
                   }`}
                 >
                   Like
@@ -144,15 +149,15 @@ const ChildComment = ({
         </div>
       </div>
 
-      {toggleControlMenu && (
-        <ControlMenu
-          setToggleControlMenu={setToggleControlMenu}
-          deleteHandler={deleteCommentHandler}
-          editHandler={editCommentHandler}
-          type="comment"
-          isOwner={session?.user.id === childComment.userId}
-        />
-      )}
+      <ControlMenu
+        isChild={true}
+        isOpen={toggleControlMenu}
+        setToggleControlMenu={setToggleControlMenu}
+        deleteHandler={deleteCommentHandler}
+        editHandler={editCommentHandler}
+        type="comment"
+        isOwner={session?.user.id === childComment.userId}
+      />
     </>
   );
 };

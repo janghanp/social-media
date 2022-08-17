@@ -1,11 +1,11 @@
-import { memo, useState, useCallback } from "react";
-import ReactDom from "react-dom";
-import Cropper from "react-easy-crop";
-import { Point, Area } from "react-easy-crop/types";
-import FadeLoader from "react-spinners/FadeLoader";
+import { memo, useState, useCallback } from 'react';
+import ReactDom from 'react-dom';
+import Cropper from 'react-easy-crop';
+import { Point, Area } from 'react-easy-crop/types';
+import FadeLoader from 'react-spinners/FadeLoader';
 
-import { CustomFile } from "../types";
-import getCroppedImg from "../lib/cropImage";
+import { CustomFile } from '../types';
+import getCroppedImg from '../lib/cropImage';
 
 interface Props {
   file: CustomFile;
@@ -15,9 +15,9 @@ interface Props {
 }
 
 const aspectRatios = [
-  { value: 1 / 1, text: "1/1" },
-  { value: 4 / 5, text: "4/5" },
-  { value: 16 / 9, text: "16/9" },
+  { value: 1 / 1, text: '1/1' },
+  { value: 4 / 5, text: '4/5' },
+  { value: 16 / 9, text: '16/9' },
 ];
 
 const ImageCropModal = ({
@@ -26,7 +26,7 @@ const ImageCropModal = ({
   setFiles,
   imageCropModal,
 }: Props) => {
-  const isVideo = file.type.includes("video");
+  const isVideo = file.type.includes('video');
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(file.zoomInit || 1);
@@ -219,7 +219,7 @@ const ImageCropModal = ({
         </div>
       )}
     </>,
-    document.getElementById("image-crop-portal")!
+    document.getElementById('image-crop-portal')!
   );
 };
 

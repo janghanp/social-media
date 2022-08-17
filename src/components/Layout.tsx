@@ -1,9 +1,9 @@
-import React, { useRef, useEffect } from "react";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import React, { useRef, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
-import Navbar from "./Navbar";
-import useUser from "../hooks/useUser";
+import Navbar from './Navbar';
+import useUser from '../hooks/useUser';
 
 interface Props {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ const Layout = ({ children }: Props) => {
 
   const userNameCheckedRef = useRef<boolean>(false);
 
-  if (status === "loading" || !currentUser) {
+  if (status === 'loading' || !currentUser) {
     return <></>;
   }
 
@@ -33,7 +33,7 @@ const Layout = ({ children }: Props) => {
   ) {
     userNameCheckedRef.current = true;
 
-    router.push("/welcome");
+    router.push('/welcome');
   }
 
   return (

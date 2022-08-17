@@ -1,11 +1,11 @@
-import { Area } from "react-easy-crop/types";
+import { Area } from 'react-easy-crop/types';
 
 export const createImage = (url: string) =>
   new Promise((resolve, reject) => {
     const image = new Image();
-    image.addEventListener("load", () => resolve(image));
-    image.addEventListener("error", (error) => reject(error));
-    image.setAttribute("crossOrigin", "anonymous"); // needed to avoid cross-origin issues on CodeSandbox
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.setAttribute('crossOrigin', 'anonymous'); // needed to avoid cross-origin issues on CodeSandbox
     image.src = url;
   });
 
@@ -37,8 +37,8 @@ export default async function getCroppedImg(
   flip = { horizontal: false, vertical: false }
 ) {
   const image: any = await createImage(imageSrc);
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
 
   if (!ctx) {
     return null;
@@ -92,6 +92,6 @@ export default async function getCroppedImg(
         croppedImageUrl: URL.createObjectURL(file),
         croppedImageFile: file,
       });
-    }, "image/jpeg");
+    }, 'image/jpeg');
   });
 }

@@ -1,8 +1,8 @@
-import SyncLoader from "react-spinners/SyncLoader";
+import SyncLoader from 'react-spinners/SyncLoader';
 
-import { Comment as CommentType } from "../types";
-import ChildComment from "./ChildComment";
-import useChildrenComment from "../hooks/useChildrenComment";
+import { Comment as CommentType } from '../types';
+import ChildComment from './ChildComment';
+import useChildrenComment from '../hooks/useChildrenComment';
 
 interface Props {
   parentId: string;

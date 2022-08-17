@@ -1,4 +1,4 @@
-import useSWRImmutable from "swr/immutable";
+import useSWRImmutable from 'swr/immutable';
 
 export default function useChildrenComment(parentId: string) {
   const { data, error, mutate } = useSWRImmutable(

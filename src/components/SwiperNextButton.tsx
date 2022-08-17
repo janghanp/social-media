@@ -1,5 +1,5 @@
-import { useSwiper } from "swiper/react";
-import { MdOutlineArrowForwardIos } from "react-icons/md";
+import { useSwiper } from 'swiper/react';
+import { MdOutlineArrowForwardIos } from 'react-icons/md';
 
 interface Props {
   currentIndex: number;
@@ -13,7 +13,7 @@ const SwiperNextButton = ({ currentIndex, fileLength }: Props) => {
     <div
       onClick={() => swiper.slideNext()}
       className={`btn-circle btn-ghost btn-sm absolute top-1/2 right-3 z-30 flex -translate-y-1/2 items-center justify-center  bg-black/50 text-white hover:cursor-pointer hover:bg-black/30 ${
-        currentIndex === fileLength - 1 && "hidden"
+        currentIndex === fileLength - 1 && 'hidden'
       }`}
     >
       <MdOutlineArrowForwardIos />

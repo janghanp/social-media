@@ -1,4 +1,4 @@
-import { usePostContext } from "../context/postContext";
+import { usePostContext } from '../context/postContext';
 
 interface Props {
   togglePostDetailModalHandler: () => void;
@@ -11,7 +11,7 @@ const PreviewComments = ({ togglePostDetailModalHandler }: Props) => {
     <>
       <div className="mt-5">
         <ul>
-          {previewComments.map((previewComment) => (
+          {previewComments.slice(0, 2).map((previewComment) => (
             <li key={previewComment.id} className="mt-2">
               <div>
                 <span className="mr-3 text-sm font-bold text-primary">
@@ -23,15 +23,13 @@ const PreviewComments = ({ togglePostDetailModalHandler }: Props) => {
           ))}
         </ul>
       </div>
-      {previewComments.length === 2 && (
-        <div
-          onClick={togglePostDetailModalHandler}
-          className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
-        >
-          View {totalCommentsCount === 1 ? "" : "all"} {totalCommentsCount}{" "}
-          {totalCommentsCount === 1 ? "comment" : "comments"}
-        </div>
-      )}
+      <div
+        onClick={togglePostDetailModalHandler}
+        className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
+      >
+        View {totalCommentsCount === 1 ? '' : 'all'} {totalCommentsCount}{' '}
+        {totalCommentsCount === 1 ? 'comment' : 'comments'}
+      </div>
     </>
   );
 };

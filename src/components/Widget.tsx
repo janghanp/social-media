@@ -1,4 +1,4 @@
-import Rect from "react";
+import Rect from 'react';
 
 const Widget = () => {
   return <div>widget</div>;

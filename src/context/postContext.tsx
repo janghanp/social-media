@@ -4,9 +4,9 @@ import {
   SetStateAction,
   useContext,
   useState,
-} from "react";
+} from 'react';
 
-import { Comment as CommentType } from "../types";
+import { Comment as CommentType } from '../types';
 
 interface Props {
   children: React.ReactNode;
@@ -15,6 +15,7 @@ interface Props {
   initialIsLiked: boolean;
   initialLikesCount: number;
   postId: string;
+  postAuthorId: string;
 }
 
 interface PostContextType {
@@ -23,6 +24,7 @@ interface PostContextType {
   isLiked: boolean;
   totalLikesCount: number;
   postId: string;
+  postAuthorId: string;
   setPreviewComments: Dispatch<SetStateAction<CommentType[]>>;
   setTotalCommentsCount: Dispatch<SetStateAction<number>>;
   setIsLiked: Dispatch<SetStateAction<boolean>>;
@@ -34,7 +36,8 @@ const defaultValue: PostContextType = {
   totalCommentsCount: 0,
   isLiked: false,
   totalLikesCount: 0,
-  postId: "",
+  postId: '',
+  postAuthorId: '',
   setPreviewComments: () => {},
   setTotalCommentsCount: () => {},
   setIsLiked: () => {},
@@ -50,6 +53,7 @@ export function PostProvider({
   initialIsLiked,
   initialLikesCount,
   postId,
+  postAuthorId,
 }: Props) {
   const [previewComments, setPreviewComments] = useState<CommentType[]>(
     initialPreviewComments
@@ -69,6 +73,7 @@ export function PostProvider({
         isLiked,
         totalLikesCount,
         postId,
+        postAuthorId,
         setPreviewComments,
         setTotalCommentsCount,
         setIsLiked,
