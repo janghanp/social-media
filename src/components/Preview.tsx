@@ -55,9 +55,8 @@ const Preview = ({ files, setFiles, isEditing }: Props) => {
             />
           </SwiperSlide>
         ))}
-        <SwiperPrevButton prevRef={prevRef} currentIndex={currentIndex} />
+        <SwiperPrevButton currentIndex={currentIndex} />
         <SwiperNextButton
-          nextRef={nextRef}
           currentIndex={currentIndex}
           fileLength={files.length}
         />

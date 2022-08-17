@@ -11,16 +11,16 @@ import { usePostContext } from '../context/postContext';
 
 interface Props {
   childComment: CommentType;
-  setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
-  setChildrenCount: React.Dispatch<SetStateAction<number>>;
-  replyHandler: (mentionUser: string, commentId: string) => {};
+  // setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
+  // setChildrenCount: React.Dispatch<SetStateAction<number>>;
+  // replyHandler: (mentionUser: string, commentId: string) => {};
 }
 
 const ChildComment = ({
   childComment,
-  setChildrenComments,
-  setChildrenCount,
-  replyHandler,
+  // setChildrenComments,
+  // setChildrenCount,
+  // replyHandler,
 }: Props) => {
   const { data: session } = useSession();
 
@@ -44,23 +44,23 @@ const ChildComment = ({
       }
     });
 
-    setChildrenComments((prevState) => {
-      return prevState.map((comment) => {
-        if (comment.id === childComment.id) {
-          if (isLiked) {
-            comment.likedByIds = comment.likedByIds.filter(
-              (likeById) => likeById !== session!.user.id
-            );
-            return comment;
-          } else {
-            comment.likedByIds.push(session!.user.id);
-            return { ...comment };
-          }
-        } else {
-          return comment;
-        }
-      });
-    });
+    // setChildrenComments((prevState) => {
+    //   return prevState.map((comment) => {
+    //     if (comment.id === childComment.id) {
+    //       if (isLiked) {
+    //         comment.likedByIds = comment.likedByIds.filter(
+    //           (likeById) => likeById !== session!.user.id
+    //         );
+    //         return comment;
+    //       } else {
+    //         comment.likedByIds.push(session!.user.id);
+    //         return { ...comment };
+    //       }
+    //     } else {
+    //       return comment;
+    //     }
+    //   });
+    // });
 
     await axios.post('/api/likeComment', {
       commentId: childComment.id,
@@ -70,21 +70,21 @@ const ChildComment = ({
   };
 
   const deleteCommentHandler = async () => {
-    setToggleControlMenu(false);
-    setChildrenComments((prevState) =>
-      prevState.filter((child) => child.id !== childComment.id)
-    );
-    setChildrenCount((prevState) => prevState - 1);
+  //   setToggleControlMenu(false);
+  //   setChildrenComments((prevState) =>
+  //     prevState.filter((child) => child.id !== childComment.id)
+  //   );
+  //   setChildrenCount((prevState) => prevState - 1);
 
-    await axios.delete('/api/comment', {
-      data: {
-        commentId: childComment.id,
-        postId: childComment.postId,
-        isChild: true,
-      },
-    });
+  //   await axios.delete('/api/comment', {
+  //     data: {
+  //       commentId: childComment.id,
+  //       postId: childComment.postId,
+  //       isChild: true,
+  //     },
+  //   });
 
-    setTotalCommentsCount((prevState) => prevState - 1);
+  //   setTotalCommentsCount((prevState) => prevState - 1);
   };
 
   const editCommentHandler = async () => {
@@ -95,7 +95,12 @@ const ChildComment = ({
     <>
       <div className="group flex w-full flex-row items-start justify-start gap-x-2">
         <div className="avatar flex-none overflow-hidden rounded-full">
-          <Image src={childComment.user.image} width={40} height={40} />
+          <Image
+            src={childComment.user.image}
+            width={40}
+            height={40}
+            alt="user-image"
+          />
         </div>
         <div className="-mt-2 flex flex-col">
           <div>
@@ -125,12 +130,12 @@ const ChildComment = ({
                   Like
                 </span>
                 <span
-                  onClick={() =>
-                    replyHandler(
-                      childComment.user.username,
-                      childComment.parentId!
-                    )
-                  }
+                  // onClick={() =>
+                  //   replyHandler(
+                  //     childComment.user.username,
+                  //     childComment.parentId!
+                  //   )
+                  // }
                   className="hover:cursor-pointer"
                 >
                   Reply

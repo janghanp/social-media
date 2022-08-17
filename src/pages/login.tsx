@@ -38,7 +38,7 @@ const Login: NextPage = () => {
         'To confirm your identity, sign in with the same account you used originally.'
       );
     }
-  }, []);
+  }, [router.query]);
 
   return (
     <div className="container mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center">

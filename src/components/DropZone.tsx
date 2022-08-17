@@ -87,7 +87,7 @@ const DropZone = ({ formik, isEditing }: Props) => {
           <div className="flex flex-col items-center justify-center space-y-2 py-5">
             <HiOutlineUpload className="h-6 w-6 text-gray-500" />
             <p className="text-center text-base text-primary">
-              Drag 'n' drop some files here, or click to select files
+              Drag and drop some files here, or click to select files
             </p>
           </div>
         </div>

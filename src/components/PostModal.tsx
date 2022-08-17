@@ -196,7 +196,7 @@ const PostModal = ({
         } left-1/2 z-40 w-[90%] -translate-x-1/2 overflow-y-auto rounded-md border-2 border-primary bg-white p-7 shadow-lg sm:w-[650px] sm:p-10`}
       >
         <h3 className="mb-5 text-xl font-bold sm:text-2xl">
-          What's on your mind?
+          What is on your mind?
         </h3>
         <button
           onClick={cancelHandler}

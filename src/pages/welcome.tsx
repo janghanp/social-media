@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { getToken } from 'next-auth/jwt';
 import axios from 'axios';
-import { useFormik, FormikHelpers } from 'formik';
+import { useFormik } from 'formik';
 import { UserNameValidationSchema } from '../lib/validation';
 import FadeLoader from 'react-spinners/FadeLoader';
 
@@ -58,10 +58,7 @@ const Welcome: NextPage = () => {
     validationSchema: UserNameValidationSchema,
     validateOnBlur: true,
     validateOnChange: true,
-    onSubmit: async (
-      values: formikValue,
-      _formikHelpers: FormikHelpers<formikValue>
-    ) => {
+    onSubmit: async (values: formikValue) => {
       const { userNameInput } = values;
 
       setIsLoading(true);

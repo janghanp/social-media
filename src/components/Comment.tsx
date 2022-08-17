@@ -231,9 +231,9 @@ const Comment = ({
               <ChildComment
                 key={childComment.id}
                 childComment={childComment}
-                replyHandler={replyHandler}
-                setChildrenComments={setChildrenComments}
-                setChildrenCount={setChildrenCount}
+                // replyHandler={replyHandler}
+                // setChildrenComments={setChildrenComments}
+                // setChildrenCount={setChildrenCount}
               />
             );
           })}

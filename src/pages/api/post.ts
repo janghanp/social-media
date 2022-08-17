@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import {
   S3Client,
-  PutObjectCommand,
   CopyObjectCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
@@ -151,7 +150,7 @@ export default async function handler(
     filesToDelete.map((file) => deleteObject(file.Key));
 
     //Update with newrly created files info. - what about ratio?.
-    const newPost = await prisma.post.update({
+    await prisma.post.update({
       where: {
         id: postId,
       },
