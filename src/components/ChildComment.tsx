@@ -18,10 +18,10 @@ interface Props {
 
 const ChildComment = ({
   childComment,
-  // setChildrenComments,
-  // setChildrenCount,
-  // replyHandler,
-}: Props) => {
+}: // setChildrenComments,
+// setChildrenCount,
+// replyHandler,
+Props) => {
   const { data: session } = useSession();
 
   const [isLiked, setIsLiked] = useState<boolean>(
@@ -70,21 +70,19 @@ const ChildComment = ({
   };
 
   const deleteCommentHandler = async () => {
-  //   setToggleControlMenu(false);
-  //   setChildrenComments((prevState) =>
-  //     prevState.filter((child) => child.id !== childComment.id)
-  //   );
-  //   setChildrenCount((prevState) => prevState - 1);
-
-  //   await axios.delete('/api/comment', {
-  //     data: {
-  //       commentId: childComment.id,
-  //       postId: childComment.postId,
-  //       isChild: true,
-  //     },
-  //   });
-
-  //   setTotalCommentsCount((prevState) => prevState - 1);
+    //   setToggleControlMenu(false);
+    //   setChildrenComments((prevState) =>
+    //     prevState.filter((child) => child.id !== childComment.id)
+    //   );
+    //   setChildrenCount((prevState) => prevState - 1);
+    //   await axios.delete('/api/comment', {
+    //     data: {
+    //       commentId: childComment.id,
+    //       postId: childComment.postId,
+    //       isChild: true,
+    //     },
+    //   });
+    //   setTotalCommentsCount((prevState) => prevState - 1);
   };
 
   const editCommentHandler = async () => {
