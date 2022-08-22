@@ -86,6 +86,10 @@ const CommentSection = ({ post }: Props) => {
           setIsLastPage(true);
         }
 
+        if (data.length === 0) {
+          return;
+        }
+
         setCurrentComments((prevState) => [...prevState, ...data]);
       } catch (err) {
         console.log(err);
@@ -184,6 +188,7 @@ const CommentSection = ({ post }: Props) => {
         if (currentComment.id === replyingCommentId) {
           currentComment._count.children++;
           currentComment.newChildren = newReply;
+
           return { ...currentComment };
         }
         return currentComment;
@@ -191,6 +196,7 @@ const CommentSection = ({ post }: Props) => {
 
       return newCurrentComments;
     });
+    setTotalCommentsCount((state) => state + 1);
   };
 
   const deleteComment = async (commentId: string, postId: string) => {
@@ -201,7 +207,13 @@ const CommentSection = ({ post }: Props) => {
       },
     });
 
-    setTotalCommentsCount((prevState) => prevState - 1);
+    const comment = currentComments.filter(
+      (currentComment) => currentComment.id === commentId
+    )[0];
+
+    setTotalCommentsCount(
+      (prevState) => prevState - (comment._count.children + 1)
+    );
     setCurrentComments((prevState) => {
       const newCurrentComments = prevState.filter(
         (prevComment) => prevComment.id !== commentId

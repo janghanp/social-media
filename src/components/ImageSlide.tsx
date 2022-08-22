@@ -33,7 +33,7 @@ const ImageSlide = ({ files }: Props) => {
               layout="responsive"
               objectFit="cover"
               alt="image"
-              priority={false}
+              priority={true}
             />
           </div>
         </SwiperSlide>

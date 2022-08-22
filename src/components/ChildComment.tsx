@@ -11,17 +11,17 @@ import { usePostContext } from '../context/postContext';
 
 interface Props {
   childComment: CommentType;
-  // setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
-  // setChildrenCount: React.Dispatch<SetStateAction<number>>;
-  // replyHandler: (mentionUser: string, commentId: string) => {};
+  setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
+  setChildrenCount: React.Dispatch<SetStateAction<number>>;
+  replyHandler: (mentionUser: string, commentId: string) => {};
 }
 
 const ChildComment = ({
   childComment,
-}: // setChildrenComments,
-// setChildrenCount,
-// replyHandler,
-Props) => {
+  replyHandler,
+  setChildrenComments,
+  setChildrenCount,
+}: Props) => {
   const { data: session } = useSession();
 
   const [isLiked, setIsLiked] = useState<boolean>(
@@ -44,23 +44,23 @@ Props) => {
       }
     });
 
-    // setChildrenComments((prevState) => {
-    //   return prevState.map((comment) => {
-    //     if (comment.id === childComment.id) {
-    //       if (isLiked) {
-    //         comment.likedByIds = comment.likedByIds.filter(
-    //           (likeById) => likeById !== session!.user.id
-    //         );
-    //         return comment;
-    //       } else {
-    //         comment.likedByIds.push(session!.user.id);
-    //         return { ...comment };
-    //       }
-    //     } else {
-    //       return comment;
-    //     }
-    //   });
-    // });
+    setChildrenComments((prevState) => {
+      return prevState.map((comment) => {
+        if (comment.id === childComment.id) {
+          if (isLiked) {
+            comment.likedByIds = comment.likedByIds.filter(
+              (likeById) => likeById !== session!.user.id
+            );
+            return comment;
+          } else {
+            comment.likedByIds.push(session!.user.id);
+            return { ...comment };
+          }
+        } else {
+          return comment;
+        }
+      });
+    });
 
     await axios.post('/api/likeComment', {
       commentId: childComment.id,
@@ -70,23 +70,22 @@ Props) => {
   };
 
   const deleteCommentHandler = async () => {
-    //   setToggleControlMenu(false);
-    //   setChildrenComments((prevState) =>
-    //     prevState.filter((child) => child.id !== childComment.id)
-    //   );
-    //   setChildrenCount((prevState) => prevState - 1);
-    //   await axios.delete('/api/comment', {
-    //     data: {
-    //       commentId: childComment.id,
-    //       postId: childComment.postId,
-    //       isChild: true,
-    //     },
-    //   });
-    //   setTotalCommentsCount((prevState) => prevState - 1);
-  };
+    setToggleControlMenu(false);
+    setChildrenComments((prevState) =>
+      prevState.filter((child) => child.id !== childComment.id)
+    );
 
-  const editCommentHandler = async () => {
-    console.log('edit');
+    setChildrenCount(prevState => prevState - 1);
+
+    await axios.delete('/api/comment', {
+      data: {
+        commentId: childComment.id,
+        postId: childComment.postId,
+        isChild: true,
+      },
+    });
+
+    setTotalCommentsCount((prevState) => prevState - 1);
   };
 
   return (
@@ -128,12 +127,12 @@ Props) => {
                   Like
                 </span>
                 <span
-                  // onClick={() =>
-                  //   replyHandler(
-                  //     childComment.user.username,
-                  //     childComment.parentId!
-                  //   )
-                  // }
+                  onClick={() =>
+                    replyHandler(
+                      childComment.user.username,
+                      childComment.parentId!
+                    )
+                  }
                   className="hover:cursor-pointer"
                 >
                   Reply
@@ -157,7 +156,6 @@ Props) => {
         isOpen={toggleControlMenu}
         setToggleControlMenu={setToggleControlMenu}
         deleteHandler={deleteCommentHandler}
-        editHandler={editCommentHandler}
         type="comment"
         isOwner={session?.user.id === childComment.userId}
       />

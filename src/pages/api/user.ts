@@ -10,12 +10,14 @@ export default async function handler(
   if (req.method === 'GET') {
     const jwt = await getToken({ req, secret: process.env.SECRET });
 
-    const user = await prisma.user.findFirst({
-      where: {
-        id: jwt?.sub,
-      },
-    });
+    if (jwt) {
+      const user = await prisma.user.findFirst({
+        where: {
+          id: jwt?.sub,
+        },
+      });
 
-    return res.status(200).json({ user });
+      return res.status(200).json({ user });
+    }
   }
 }

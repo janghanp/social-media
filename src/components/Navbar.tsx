@@ -5,12 +5,12 @@ import { HiOutlinePlus } from 'react-icons/hi';
 
 import Avatar from './Avatar';
 import PostModal from './PostModal';
-import useUser from '../hooks/useUser';
+import { useCurrentUserState } from '../store';
 
 const Navbar = () => {
   const { data: session } = useSession();
 
-  const { currentUser } = useUser();
+  const { setCurrentUser, currentUser } = useCurrentUserState();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -23,6 +23,11 @@ const Navbar = () => {
       document.body.style.height = 'auto';
     }
   }, [isOpen]);
+
+  const signOutHandler = async () => {
+    setCurrentUser(null);
+    signOut();
+  };
 
   return (
     <>
@@ -37,16 +42,16 @@ const Navbar = () => {
             </Link>
 
             {/* right */}
-            {session ? (
+            {session && currentUser ? (
               <div className="flex flex-row items-center justify-center">
                 <HiOutlinePlus
                   onClick={() => setIsOpen(true)}
                   className="h-8 w-8 hover:cursor-pointer"
                 />
                 <Avatar
-                  image={session.user.image}
-                  username={currentUser.user.username}
-                  signout={signOut}
+                  image={currentUser.image}
+                  username={currentUser.username}
+                  signout={signOutHandler}
                 />
               </div>
             ) : (

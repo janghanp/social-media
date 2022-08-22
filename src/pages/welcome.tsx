@@ -8,10 +8,10 @@ import { UserNameValidationSchema } from '../lib/validation';
 import FadeLoader from 'react-spinners/FadeLoader';
 
 import { prisma } from '../lib/prisma';
-import useUser from '../hooks/useUser';
+import { useCurrentUserState } from '../store';
 
 interface formikValue {
-  userNameInput: string;
+  userName: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -49,34 +49,31 @@ const Welcome: NextPage = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { mutate } = useUser();
+  const setCurrentUser = useCurrentUserState((state) => state.setCurrentUser);
 
   const formik = useFormik<formikValue>({
     initialValues: {
-      userNameInput: '',
+      userName: '',
     },
     validationSchema: UserNameValidationSchema,
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (values: formikValue) => {
-      const { userNameInput } = values;
+      const { userName } = values;
 
       setIsLoading(true);
 
       try {
-        await axios.post('/api/username', { userNameInput });
+        const response = await axios.post('/api/username', { userName });
 
         setIsLoading(false);
-        mutate();
+        setCurrentUser(response.data.updatedUser);
 
         router.push('/');
       } catch (err) {
         if (axios.isAxiosError(err)) {
           if (err?.response?.status === 409) {
-            formik.setFieldError(
-              'userNameInput',
-              'The username was already taken.'
-            );
+            formik.setFieldError('userName', 'The username has already taken.');
             setIsLoading(false);
           }
         }
@@ -99,15 +96,15 @@ const Welcome: NextPage = () => {
         >
           <input
             disabled={isLoading}
-            id="userNameInput"
-            name="userNameInput"
+            id="userName"
+            name="userName"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-            value={formik.values.userNameInput}
+            value={formik.values.userName}
             type="text"
             placeholder="Type here"
             className={`input input-bordered input-primary w-full ${
-              formik.errors.userNameInput ? 'input-warning' : ''
+              formik.errors.userName ? 'input-warning' : ''
             }`}
           />
           {isLoading ? (
@@ -118,10 +115,8 @@ const Welcome: NextPage = () => {
             </button>
           )}
         </form>
-        {formik.errors.userNameInput && (
-          <span className="text-sm text-red-500">
-            {formik.errors.userNameInput}
-          </span>
+        {formik.errors.userName && (
+          <span className="text-sm text-red-500">{formik.errors.userName}</span>
         )}
       </div>
     </div>

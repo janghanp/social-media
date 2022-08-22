@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import axios from 'axios';
 
 import Navbar from './Navbar';
-import useUser from '../hooks/useUser';
+import { useCurrentUserState } from '../store';
 
 interface Props {
   children: React.ReactNode;
@@ -12,26 +13,32 @@ interface Props {
 const Layout = ({ children }: Props) => {
   const router = useRouter();
 
-  const { status } = useSession();
+  const { status, data: session } = useSession();
 
-  const { currentUser, isError } = useUser();
+  const { setCurrentUser, currentUser } = useCurrentUserState();
 
-  const userNameCheckedRef = useRef<boolean>(false);
+  const checkUserNameRef = useRef<boolean>(false);
 
-  if (status === 'loading' || !currentUser) {
+  useEffect(() => {
+    if (session) {
+      axios
+        .get('/api/user')
+        .then((res) => {
+          console.log('set currentUser in zustand');
+          setCurrentUser(res.data.user);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [status]);
+
+  if (status === 'loading' || (session && !currentUser)) {
     return <></>;
   }
 
-  if (isError) {
-    return <div>An error has ocuurred...</div>;
-  }
-
-  if (
-    !userNameCheckedRef.current &&
-    currentUser.user &&
-    !currentUser.user.username
-  ) {
-    userNameCheckedRef.current = true;
+  if (!checkUserNameRef.current && currentUser && !currentUser.username) {
+    checkUserNameRef.current = true;
 
     router.push('/welcome');
   }

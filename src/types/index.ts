@@ -3,6 +3,7 @@ export interface User {
   name?: string;
   username: string;
   email?: string;
+  emailVerified?: string;
   image: string;
   likedPostsIds: string[];
   likedCommentsIds: string[];

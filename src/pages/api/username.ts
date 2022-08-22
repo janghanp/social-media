@@ -29,7 +29,7 @@ export default async function handler(
           .json({ message: 'The user name was already taken.' });
       }
 
-      await prisma.user.update({
+      const updatedUser = await prisma.user.update({
         where: {
           id: jwt.sub,
         },
@@ -38,7 +38,7 @@ export default async function handler(
         },
       });
 
-      return res.status(201).json({ message: 'Successfully created!' });
+      return res.status(200).json({ updatedUser });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: 'Something went wrong...' });

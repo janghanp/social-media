@@ -61,8 +61,14 @@ const Comment = ({
 
         return newChildrenComments;
       });
+
+      setChildrenCount((prevState) => prevState + 1);
     }
   }, [comment.newChildren]);
+
+  useEffect(() => {
+    setChildrenCount(comment._count.children);
+  }, [comment._count.children]);
 
   const deleteCommentHandler = async () => {
     setToggleControlMenu(false);
@@ -201,16 +207,14 @@ const Comment = ({
                 </div>
               )}
             </div>
-            {childrenCount > 0 && (
+            {comment._count.children > 0 && (
               <div className="mt-2 flex items-center before:mr-2 before:w-7 before:border before:content-['']">
                 <span
                   onClick={toggleChildrenHandler}
                   className="text-sm font-semibold text-gray-400 hover:cursor-pointer"
                 >
                   {!toggleChildren
-                    ? `View replies (${
-                        comment._count ? comment._count.children : 0
-                      })`
+                    ? `View replies (${comment._count ? childrenCount : 0})`
                     : 'Hide replies'}
                   {isLoading && (
                     <span className="relative -top-1 ml-2">
@@ -231,9 +235,9 @@ const Comment = ({
               <ChildComment
                 key={childComment.id}
                 childComment={childComment}
-                // replyHandler={replyHandler}
-                // setChildrenComments={setChildrenComments}
-                // setChildrenCount={setChildrenCount}
+                replyHandler={replyHandler}
+                setChildrenComments={setChildrenComments}
+                setChildrenCount={setChildrenCount}
               />
             );
           })}

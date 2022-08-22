@@ -6,7 +6,7 @@ interface Props {
   isOpen: boolean;
   isChild?: boolean;
   deleteHandler: () => {};
-  editHandler: () => {};
+  editHandler?: () => {};
   setToggleControlMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
