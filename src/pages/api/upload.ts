@@ -32,7 +32,7 @@ export default async function hanlder(
   if (req.method === 'POST') {
     const form = Formidable({ multiples: true });
 
-    form.parse(req, (err, _fields, files: any) => {
+    form.parse(req, (err, fields, files: any) => {
       if (err) {
         console.log(err);
         return res.status(500).json({ message: 'Something went wrong...' });
@@ -48,11 +48,21 @@ export default async function hanlder(
         const fileExtension = type.split('/')[1];
         const Key = `${uuidv4()}.${fileExtension}`;
 
-        const input = {
-          Bucket: process.env.AWS_S3_BUCKET,
-          Key: `temp/${Key}`,
-          Body: file,
-        };
+        let input;
+
+        if (fields.isProfile) {
+          input = {
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: `profile/${Key}`,
+            Body: file,
+          };
+        } else {
+          input = {
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: `temp/${Key}`,
+            Body: file,
+          };
+        }
 
         const putCommand = new PutObjectCommand(input);
 

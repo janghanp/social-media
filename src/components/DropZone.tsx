@@ -4,11 +4,11 @@ import classNames from 'classnames';
 import { FormikProps } from 'formik';
 import { HiOutlineUpload } from 'react-icons/hi';
 
-import { CustomFile, formikValues } from '../types';
+import { CustomFile, FormikValues } from '../types';
 import Preview from './Preview';
 
 interface Props {
-  formik: FormikProps<formikValues>;
+  formik: FormikProps<FormikValues>;
   isEditing: boolean;
 }
 

@@ -5,7 +5,7 @@ import { HiOutlinePhotograph } from 'react-icons/hi';
 import axios from 'axios';
 import FadeLoader from 'react-spinners/FadeLoader';
 
-import { CustomFile, formikValues } from '../types';
+import { CustomFile, FormikValues } from '../types';
 import { PostValidationSchema } from '../lib/validation';
 import DropZone from './DropZone';
 
@@ -32,7 +32,7 @@ const PostModal = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [toggleDropZone, setToggleDropZone] = useState<boolean>(false);
 
-  const formik = useFormik<formikValues>({
+  const formik = useFormik<FormikValues>({
     initialValues: {
       body: initialBody || '',
       files: [],
@@ -41,8 +41,8 @@ const PostModal = ({
     validateOnBlur: true,
     validateOnChange: true,
     onSubmit: async (
-      values: formikValues,
-      _formikHelpers: FormikHelpers<formikValues>
+      values: FormikValues,
+      _formikHelpers: FormikHelpers<FormikValues>
     ) => {
       const { files, body } = values;
 

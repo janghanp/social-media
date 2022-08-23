@@ -24,7 +24,6 @@ const Layout = ({ children }: Props) => {
       axios
         .get('/api/user')
         .then((res) => {
-          console.log('set currentUser in zustand');
           setCurrentUser(res.data.user);
         })
         .catch((err) => {

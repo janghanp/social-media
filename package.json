@@ -6,8 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.100.0",
@@ -21,7 +20,7 @@
     "dayjs": "^1.11.2",
     "formidable": "^2.0.1",
     "formik": "^2.2.9",
-    "framer-motion": "^6.3.10",
+    "framer-motion": "^7.2.0",
     "immer": "^9.0.15",
     "next": "12.1.6",
     "next-auth": "^4.5.0",

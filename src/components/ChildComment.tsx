@@ -75,7 +75,7 @@ const ChildComment = ({
       prevState.filter((child) => child.id !== childComment.id)
     );
 
-    setChildrenCount(prevState => prevState - 1);
+    setChildrenCount((prevState) => prevState - 1);
 
     await axios.delete('/api/comment', {
       data: {

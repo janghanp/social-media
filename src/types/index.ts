@@ -56,7 +56,7 @@ export interface CustomFile extends File {
   Key?: string;
 }
 
-export interface formikValues {
+export interface FormikValues {
   body: string;
   files: CustomFile[];
 }
