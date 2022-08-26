@@ -5,7 +5,7 @@ import { Post } from '../types';
 import PostsList from '../components/PostsList';
 
 interface Props {
-  posts: Post[];
+  initialPosts: Post[];
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -13,6 +13,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     orderBy: {
       createdAt: 'desc',
     },
+    take: 3,
     include: {
       user: true,
       _count: {
@@ -37,15 +38,15 @@ export const getServerSideProps: GetServerSideProps = async () => {
   });
 
   return {
-    props: { posts },
+    props: { initialPosts: posts },
   };
 };
 
-const Home: NextPage<Props> = ({ posts }: Props) => {
+const Home: NextPage<Props> = ({ initialPosts }: Props) => {
   return (
-    <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row border px-2 pt-10 lg:px-0">
-      <section className="w-full lg:w-3/5">
-        <PostsList posts={posts} />
+    <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row  px-2 pt-10 lg:px-0">
+      <section className="flex w-full lg:w-3/5">
+        <PostsList initialPosts={initialPosts} />
       </section>
       {/* <section className="hidden w-2/5 lg:block">
         <Widget />

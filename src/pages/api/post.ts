@@ -42,6 +42,46 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method === 'GET') {
+    const { pageNumber } = req.query;
+
+    try {
+      const posts = await prisma.post.findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip: (+pageNumber - 1) * 3,
+        take: 3,
+        include: {
+          user: true,
+          _count: {
+            select: { comments: true, likedBy: true },
+          },
+          comments: {
+            where: {
+              parent: null,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+            take: 2,
+            include: {
+              user: true,
+              _count: {
+                select: { likedBy: true, children: true },
+              },
+            },
+          },
+        },
+      });
+
+      return res.status(200).send(posts);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: 'Something went wrong...' });
+    }
+  }
+
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {

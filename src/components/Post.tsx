@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
@@ -22,7 +22,11 @@ import { PostProvider } from '../context/postContext';
 
 dayjs.extend(relativeTime);
 
-const Post = ({ post }: { post: PostType }) => {
+interface Props {
+  post: PostType;
+}
+
+const Post = ({ post }: Props) => {
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -59,6 +63,8 @@ const Post = ({ post }: { post: PostType }) => {
 
     setTogglePostDetailModal(true);
   };
+
+  console.log('Post render');
 
   return (
     <PostProvider
@@ -134,4 +140,4 @@ const Post = ({ post }: { post: PostType }) => {
   );
 };
 
-export default Post;
+export default memo(Post);
