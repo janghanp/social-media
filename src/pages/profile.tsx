@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-const Profile: NextPage<Props> = ({ posts }) => {
+const Profile: NextPage<Props> = ({ posts }: Props) => {
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
   return (
