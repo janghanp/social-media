@@ -35,6 +35,7 @@ model User {
   image            String?
   likedPostsIds    String[]  @db.ObjectId
   likedCommentsIds String[]  @db.ObjectId
+  friendsIds          String[]  @db.ObjectId
 
   accounts Account[] @relation("UserAndAccounts")
 
@@ -68,7 +69,6 @@ model Post {
   likedBy User[] @relation("UsersLikePosts", fields: [likedByIds], references: [id])
 }
 
-//Maybe add mectionUser field
 model Comment {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   comment     String

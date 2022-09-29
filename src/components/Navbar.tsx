@@ -49,8 +49,9 @@ const Navbar = () => {
                   className="h-8 w-8 hover:cursor-pointer"
                 />
                 <Avatar
-                  image={currentUser.image}
-                  username={currentUser.username}
+                  userId={currentUser.id}
+                  userImage={currentUser.image}
+                  userName={currentUser.username}
                   signout={signOutHandler}
                 />
               </div>

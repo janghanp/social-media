@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { Post as PostType } from '../types';
 import ImageSlide from './ImageSlide';
@@ -11,11 +11,13 @@ interface Props {
 }
 
 const PostDetailModal = ({ isOpen, post, setTogglePostDetailModal }: Props) => {
+  const prevUrlRef = useRef<string>(window.location.pathname);
+
   useEffect(() => {
     if (isOpen) {
-      window.history.pushState(null, '', `/posts/${post.id}`);
+      window.history.replaceState(null, '', `/posts/${post.id}`);
     } else {
-      window.history.pushState(null, '', '/');
+      window.history.replaceState(null, '', prevUrlRef.current);
     }
   }, [isOpen, post.id]);
 

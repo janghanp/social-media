@@ -1,14 +1,16 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { HiCog, HiOutlineLogout, HiUserCircle } from 'react-icons/hi';
 
 interface Props {
-  image: string;
-  username: string;
+  userId: string;
+  userImage: string;
+  userName: string;
   signout: () => {};
 }
 
-const Avatar = ({ image, username, signout }: Props) => {
+const Avatar = ({ userImage, userName, signout, userId }: Props) => {
   const router = useRouter();
 
   const blurDropdown = () => {
@@ -22,7 +24,13 @@ const Avatar = ({ image, username, signout }: Props) => {
 
   const profileHandler = () => {
     blurDropdown();
-    router.push('/profile');
+    router.push(
+      {
+        pathname: `/${userName}`,
+        query: { userId },
+      },
+      `/${userName}`
+    );
   };
 
   const signoutHandler = () => {
@@ -31,10 +39,10 @@ const Avatar = ({ image, username, signout }: Props) => {
   };
 
   return (
-    <div id="dropdown" className="dropdown dropdown-end">
+    <div id="dropdown" className="dropdown-end dropdown">
       <div tabIndex={0} className="avatar ml-5 mt-1 hover:cursor-pointer">
         <div className="w-8 rounded-full ring-primary transition duration-200 hover:ring">
-          <Image src={image} alt="avatar" width={32} height={32} />
+          <Image src={userImage} alt="avatar" width={32} height={32} />
         </div>
       </div>
       <ul

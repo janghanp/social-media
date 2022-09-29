@@ -64,7 +64,15 @@ const Post = ({ post }: Props) => {
     setTogglePostDetailModal(true);
   };
 
-  console.log('Post render');
+  const avatarClickHandler = () => {
+    router.push(
+      {
+        pathname: `/${post.user.username}`,
+        query: { userId: post.user.id },
+      },
+      `/${post.user.username}`
+    );
+  };
 
   return (
     <PostProvider
@@ -80,7 +88,10 @@ const Post = ({ post }: Props) => {
       <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary bg-white shadow-xl">
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center justify-center gap-x-3">
-            <div className="avatar overflow-hidden rounded-full">
+            <div
+              onClick={avatarClickHandler}
+              className="avatar overflow-hidden rounded-full hover:cursor-pointer"
+            >
               <Image src={post.user.image} width={40} height={40} alt="Test" />
             </div>
             <span className="text-sm lowercase text-gray-500">
