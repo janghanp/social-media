@@ -8,7 +8,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { AiOutlineEllipsis } from 'react-icons/ai';
 
 import { Post as PostType } from '../types';
-import PostDetailModal from './PostDetailModal';
 import ControlMenu from './ControlMenu';
 import PostModal from './PostModal';
 import ImageSlide from './ImageSlide';
@@ -31,14 +30,12 @@ const Post = ({ post }: Props) => {
 
   const { data: session } = useSession();
 
-  const [togglePostDetailModal, setTogglePostDetailModal] =
-    useState<boolean>(false);
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
   const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
 
   useEffect(() => {
-    preventScroll(togglePostDetailModal, toggleControlMenu);
-  }, [togglePostDetailModal, toggleControlMenu]);
+    preventScroll(!!router.query.postId, toggleControlMenu);
+  }, [router.query.postId, toggleControlMenu]);
 
   const deletePostHandler = async () => {
     await axios.delete('/api/post', {
@@ -53,15 +50,6 @@ const Post = ({ post }: Props) => {
   const editPostHandler = async () => {
     setToggleControlMenu(false);
     setTogglePostModal(true);
-  };
-
-  const togglePostDetailModalHandler = () => {
-    if (!session) {
-      router.push('/login');
-      return;
-    }
-
-    setTogglePostDetailModal(true);
   };
 
   const avatarClickHandler = () => {
@@ -110,26 +98,16 @@ const Post = ({ post }: Props) => {
         </div>
         <ImageSlide files={post.files} />
         <div className="p-3">
-          <Reaction
-            togglePostDetailModalHandler={togglePostDetailModalHandler}
-          />
+          <Reaction />
           <div className="mt-5">
             <span className="mr-3 text-sm font-bold text-primary">
               {post.user.username}
             </span>
             <span>{post.body}</span>
           </div>
-          <PreviewComments
-            togglePostDetailModalHandler={togglePostDetailModalHandler}
-          />
+          <PreviewComments />
         </div>
       </div>
-
-      <PostDetailModal
-        isOpen={togglePostDetailModal}
-        post={post}
-        setTogglePostDetailModal={setTogglePostDetailModal}
-      />
 
       <ControlMenu
         type="post"

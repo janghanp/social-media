@@ -1,11 +1,8 @@
+import Link from 'next/link';
 import { usePostContext } from '../context/postContext';
 
-interface Props {
-  togglePostDetailModalHandler: () => void;
-}
-
-const PreviewComments = ({ togglePostDetailModalHandler }: Props) => {
-  const { previewComments, totalCommentsCount } = usePostContext();
+const PreviewComments = () => {
+  const { previewComments, totalCommentsCount, postId } = usePostContext();
 
   return (
     <>
@@ -23,13 +20,14 @@ const PreviewComments = ({ togglePostDetailModalHandler }: Props) => {
           ))}
         </ul>
       </div>
-      <div
-        onClick={togglePostDetailModalHandler}
-        className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
-      >
-        View {totalCommentsCount === 1 ? '' : 'all'} {totalCommentsCount}{' '}
-        {totalCommentsCount === 1 ? 'comment' : 'comments'}
-      </div>
+      <Link href={`/?postId=${postId}`} as={`/posts/${postId}`} shallow replace>
+        <a>
+          <div className="mt-4 text-sm text-gray-400 hover:cursor-pointer">
+            View {totalCommentsCount === 1 ? '' : 'all'} {totalCommentsCount}{' '}
+            {totalCommentsCount === 1 ? 'comment' : 'comments'}
+          </div>
+        </a>
+      </Link>
     </>
   );
 };

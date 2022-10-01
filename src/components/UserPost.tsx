@@ -1,23 +1,35 @@
-import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRef, useState } from 'react';
 import { HiDocumentDuplicate } from 'react-icons/hi';
 
 import { Post } from '../types';
-import PostDetailModal from './PostDetailModal';
+import PostDetailModal from '../components/PostDetailModal';
 
 interface Props {
   post: Post;
 }
 
 const UserPost = ({ post }: Props) => {
-  const [togglePostDetailModal, setTogglePostDetailModal] =
-    useState<boolean>(false);
+  const prevUrlRef = useRef<string>(window.location.pathname);
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const openModal = () => {
+    window.history.replaceState({}, '', `/posts/${post.id}`);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    window.history.replaceState({}, '', prevUrlRef.current);
+    setIsOpen(false);
+  };
 
   return (
     <>
       <div
-        onClick={() => setTogglePostDetailModal(true)}
         className="relative h-full w-full hover:cursor-pointer"
+        onClick={openModal}
       >
         {post.files!.length > 1 && (
           <div className="absolute top-2 right-2 z-10">
@@ -35,11 +47,7 @@ const UserPost = ({ post }: Props) => {
         />
       </div>
 
-      <PostDetailModal
-        isOpen={togglePostDetailModal}
-        post={post}
-        setTogglePostDetailModal={setTogglePostDetailModal}
-      />
+      {isOpen && <PostDetailModal postId={post.id} closeModal={closeModal} />}
     </>
   );
 };

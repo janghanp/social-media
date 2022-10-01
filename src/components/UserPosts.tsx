@@ -19,4 +19,4 @@ const UserPosts = ({ posts }: Props) => {
   );
 };
 
-export default UserPosts;
+export default UserPosts

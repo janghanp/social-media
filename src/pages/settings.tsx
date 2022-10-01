@@ -1,14 +1,15 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useFormik, FormikHelpers } from 'formik';
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { HiOutlinePencil } from 'react-icons/hi';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { useCurrentUserState } from '../store';
 import { UserInfoValidationSchema } from '../lib/validation';
 import { FadeLoader, SyncLoader } from 'react-spinners';
 import Alert from '../components/Alert';
+import { getToken } from 'next-auth/jwt';
 
 interface UserInfo {
   name: string;
@@ -17,7 +18,22 @@ interface UserInfo {
   image: string;
 }
 
-const Profile: NextPage = () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const jwt = await getToken({ req: context.req, secret: process.env.SECRET });
+
+  if (!jwt) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
+
+const Settings: NextPage = () => {
   const router = useRouter();
 
   const [image, setImage] = useState<File | null>();
@@ -245,4 +261,4 @@ const Profile: NextPage = () => {
   );
 };
 
-export default Profile;
+export default Settings;

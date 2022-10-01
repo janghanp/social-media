@@ -7,6 +7,7 @@ export default function Document() {
       <body>
         <Main />
         <div id="image-crop-portal"></div>
+        <div id="post-modal-portal"></div>
         <NextScript />
       </body>
     </Html>

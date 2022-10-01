@@ -1,53 +1,51 @@
-import { useEffect, useRef } from 'react';
+import axios from 'axios';
+import useSWR from 'swr';
+import { PropagateLoader } from 'react-spinners';
 
-import { Post as PostType } from '../types';
 import ImageSlide from './ImageSlide';
 import CommentSection from './CommentSection';
 
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
 interface Props {
-  isOpen: boolean;
-  post: PostType;
-  setTogglePostDetailModal: React.Dispatch<React.SetStateAction<boolean>>;
+  postId: string;
+  closeModal: () => void;
 }
-
-const PostDetailModal = ({ isOpen, post, setTogglePostDetailModal }: Props) => {
-  const prevUrlRef = useRef<string>(window.location.pathname);
-
-  useEffect(() => {
-    if (isOpen) {
-      window.history.replaceState(null, '', `/posts/${post.id}`);
-    } else {
-      window.history.replaceState(null, '', prevUrlRef.current);
-    }
-  }, [isOpen, post.id]);
-
-  if (!isOpen) {
-    return null;
-  }
+const PostDetailModal = ({ postId, closeModal }: Props) => {
+  const { data: post, error } = useSWR(`/api/detail/${postId}`, fetcher);
 
   return (
     <>
       <div
-        onClick={() => setTogglePostDetailModal(false)}
+        onClick={closeModal}
         className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
       ></div>
+      {error && <div className="text-red-500">failed to load</div>}
 
-      <div className="fixed left-1/2 top-1/2 z-40 h-auto w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg md:w-11/12 lg:w-10/12 xl:w-[1150px]">
-        <div className="mb-2 flex w-full items-center justify-end">
-          <button
-            onClick={() => setTogglePostDetailModal(false)}
-            className={`btn btn-outline btn-circle btn-sm border-2`}
-          >
-            ✕
-          </button>
-        </div>
-        <div className="grid grid-cols-5 gap-x-2">
-          <div className="relative z-10 col-span-5 w-full md:col-span-3">
-            <ImageSlide files={post.files} />
+      {!post && !error ? (
+        <div className="fixed left-1/2 top-1/2 z-40 h-auto w-3/5 -translate-x-1/2 -translate-y-1/2">
+          <div className="flex justify-center">
+            <PropagateLoader color='gray' />
           </div>
-          <CommentSection post={post} />
         </div>
-      </div>
+      ) : (
+        <div className="fixed left-1/2 top-1/2 z-40 h-auto w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg md:w-11/12 lg:w-10/12 xl:w-[1150px]">
+          <div className="mb-2 flex w-full items-center justify-end">
+            <button
+              onClick={closeModal}
+              className={`btn btn-outline btn-circle btn-sm border-2`}
+            >
+              ✕
+            </button>
+          </div>
+          <div className="grid grid-cols-5 gap-x-2">
+            <div className="relative z-10 col-span-5 w-full md:col-span-3">
+              <ImageSlide files={post.files} />
+            </div>
+            <CommentSection post={post} />
+          </div>
+        </div>
+      )}
     </>
   );
 };

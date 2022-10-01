@@ -3,6 +3,8 @@ import { NextPage, GetServerSideProps } from 'next';
 import { prisma } from '../lib/prisma';
 import { Post } from '../types';
 import PostsList from '../components/PostsList';
+import { useRouter } from 'next/router';
+import PostDetailModal from '../components/PostDetailModal';
 
 interface Props {
   initialPosts: Post[];
@@ -43,15 +45,27 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 const Home: NextPage<Props> = ({ initialPosts }: Props) => {
+  const router = useRouter();
+
+  const closeModal = () => {
+    router.replace('/', undefined, { shallow: true });
+  };
+
   return (
-    <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row  px-2 pt-10 lg:px-0">
-      <section className="flex w-full lg:w-3/5">
-        <PostsList initialPosts={initialPosts} />
-      </section>
-      {/* <section className="hidden w-2/5 lg:block">
-        <Widget />
-      </section> */}
-    </div>
+    <>
+      <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row  px-2 pt-10 lg:px-0">
+        <section className="flex w-full lg:w-3/5">
+          <PostsList initialPosts={initialPosts} />
+        </section>
+      </div>
+
+      {router.query.postId && (
+        <PostDetailModal
+          postId={router.query.postId as string}
+          closeModal={closeModal}
+        />
+      )}
+    </>
   );
 };
 

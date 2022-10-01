@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
@@ -44,6 +45,9 @@ const Layout = ({ children }: Props) => {
 
   return (
     <>
+      <Head>
+        <title>Social Media</title>
+      </Head>
       <Navbar />
       <main className="bg-gray-50/50">{children}</main>
     </>
