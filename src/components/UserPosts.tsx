@@ -7,7 +7,7 @@ interface Props {
 
 const UserPosts = ({ posts }: Props) => {
   return (
-    <div className="grid grid-cols-3 gap-5 pt-10">
+    <div className="grid grid-cols-3 gap-5 py-10">
       {posts.map((post) => {
         return (
           <div key={post.id}>

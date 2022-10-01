@@ -18,6 +18,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import PreviewComments from './PreviewComments';
 import { PostProvider } from '../context/postContext';
+import PostDetailModal from '../components/PostDetailModal';
 
 dayjs.extend(relativeTime);
 
@@ -30,6 +31,8 @@ const Post = ({ post }: Props) => {
 
   const { data: session } = useSession();
 
+  const [togglePostDetailModal, setTogglePostDetailModal] =
+    useState<boolean>(false);
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
   const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
 
@@ -60,6 +63,16 @@ const Post = ({ post }: Props) => {
       },
       `/${post.user.username}`
     );
+  };
+
+  const openPostDetailModal = () => {
+    window.history.replaceState({}, '', `/posts/${post.id}`)
+    setTogglePostDetailModal(true);
+  }
+
+  const closePostDetailModal = () => {
+    window.history.replaceState({}, '', '/');
+    setTogglePostDetailModal(false);
   };
 
   return (
@@ -98,16 +111,20 @@ const Post = ({ post }: Props) => {
         </div>
         <ImageSlide files={post.files} />
         <div className="p-3">
-          <Reaction />
+          <Reaction openPostDetailModal={openPostDetailModal} />
           <div className="mt-5">
             <span className="mr-3 text-sm font-bold text-primary">
               {post.user.username}
             </span>
             <span>{post.body}</span>
           </div>
-          <PreviewComments />
+          <PreviewComments openDetailPostModal={openPostDetailModal} />
         </div>
       </div>
+
+      {togglePostDetailModal && (
+        <PostDetailModal postId={post.id} closeModal={closePostDetailModal} />
+      )}
 
       <ControlMenu
         type="post"

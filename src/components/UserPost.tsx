@@ -13,16 +13,17 @@ interface Props {
 const UserPost = ({ post }: Props) => {
   const prevUrlRef = useRef<string>(window.location.pathname);
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [togglePostDetailModal, setToggleDetailModal] =
+    useState<boolean>(false);
 
   const openModal = () => {
     window.history.replaceState({}, '', `/posts/${post.id}`);
-    setIsOpen(true);
+    setToggleDetailModal(true);
   };
 
-  const closeModal = () => {
+  const closePostDetailModal = () => {
     window.history.replaceState({}, '', prevUrlRef.current);
-    setIsOpen(false);
+    setToggleDetailModal(false);
   };
 
   return (
@@ -47,7 +48,9 @@ const UserPost = ({ post }: Props) => {
         />
       </div>
 
-      {isOpen && <PostDetailModal postId={post.id} closeModal={closeModal} />}
+      {togglePostDetailModal && (
+        <PostDetailModal postId={post.id} closeModal={closePostDetailModal} />
+      )}
     </>
   );
 };

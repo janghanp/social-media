@@ -56,7 +56,7 @@ interface Props {
 const Profile: NextPage<Props> = ({ user, posts }: Props) => {
   return (
     <>
-      <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-col px-2 pt-10 lg:px-0">
+      <div className="container mx-auto mt-16 flex max-w-4xl flex-col px-2 pt-10 lg:px-0">
         <UserInfo user={user} totalPostsCount={posts.length} />
         <UserPosts posts={posts} />
       </div>

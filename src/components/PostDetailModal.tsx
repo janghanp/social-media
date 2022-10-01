@@ -4,6 +4,7 @@ import { PropagateLoader } from 'react-spinners';
 
 import ImageSlide from './ImageSlide';
 import CommentSection from './CommentSection';
+import { useEffect } from 'react';
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -13,6 +14,20 @@ interface Props {
 }
 const PostDetailModal = ({ postId, closeModal }: Props) => {
   const { data: post, error } = useSWR(`/api/detail/${postId}`, fetcher);
+
+  const keyEventHandler = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', keyEventHandler);
+
+    return () => {
+      document.removeEventListener('keydown', keyEventHandler);
+    };
+  }, []);
 
   return (
     <>
@@ -25,7 +40,7 @@ const PostDetailModal = ({ postId, closeModal }: Props) => {
       {!post && !error ? (
         <div className="fixed left-1/2 top-1/2 z-40 h-auto w-3/5 -translate-x-1/2 -translate-y-1/2">
           <div className="flex justify-center">
-            <PropagateLoader color='gray' />
+            <PropagateLoader color="gray" />
           </div>
         </div>
       ) : (
