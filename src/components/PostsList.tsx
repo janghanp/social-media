@@ -48,7 +48,7 @@ const PostsList = ({ initialPosts }: Props) => {
   );
 
   return (
-    <div className="flex h-auto w-full flex-col items-center justify-center gap-y-24">
+    <div className="flex h-auto w-full flex-col items-center justify-center pb-24 gap-y-14">
       {posts.map((post, index) => {
         if (index + 1 === posts.length) {
           return (
@@ -64,11 +64,13 @@ const PostsList = ({ initialPosts }: Props) => {
           );
         }
       })}
+
       {isLoading && (
         <div className="mt-5">
           <PropagateLoader color="gray" />
         </div>
       )}
+
       {error && (
         <div className="mt-5 text-sm text-warning">Please try again...</div>
       )}

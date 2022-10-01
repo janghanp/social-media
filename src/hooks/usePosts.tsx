@@ -5,8 +5,8 @@ import { Post } from '../types';
 
 const usePosts = (pageNumber: number, initialPosts: Post[]) => {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   useEffect(() => {
@@ -25,11 +25,10 @@ const usePosts = (pageNumber: number, initialPosts: Post[]) => {
 
         setPosts((prevState) => [...prevState, ...response.data]);
       } catch (err) {
-        console.log(err);
         setError(true);
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     };
 
     if (pageNumber > 1) {

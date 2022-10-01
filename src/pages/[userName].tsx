@@ -6,7 +6,6 @@ import { Post, User } from '../types';
 import UserInfo from '../components/UserInfo';
 import UserPosts from '../components/UserPosts';
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const jwt = await getToken({ req: context.req, secret: process.env.SECRET });
 
@@ -19,13 +18,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const user = await prisma.user.findFirst({
+  const postAuthor = await prisma.user.findFirst({
     where: {
       username: context.query.userName as string,
     },
+    include: {
+      following: true,
+      followedBy: true,
+    },
   });
 
-  if (!user) {
+  if (!postAuthor) {
     return {
       redirect: {
         destination: '/',
@@ -36,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const posts = await prisma.post.findMany({
     where: {
-      userId: user.id,
+      userId: postAuthor.id,
     },
     orderBy: {
       createdAt: 'desc',
@@ -44,20 +47,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   });
 
   return {
-    props: { user, posts },
+    props: { postAuthor, posts },
   };
 };
 
 interface Props {
   posts: Post[];
-  user: User;
+  postAuthor: User;
 }
 
-const Profile: NextPage<Props> = ({ user, posts }: Props) => {
+const Profile: NextPage<Props> = ({ postAuthor, posts }: Props) => {
   return (
     <>
       <div className="container mx-auto mt-16 flex max-w-4xl flex-col px-2 pt-10 lg:px-0">
-        <UserInfo user={user} totalPostsCount={posts.length} />
+        <UserInfo postAuthor={postAuthor} totalPostsCount={posts.length} />
         <UserPosts posts={posts} />
       </div>
     </>

@@ -15,6 +15,10 @@ export default async function handler(
         where: {
           id: jwt?.sub,
         },
+        include: {
+          following: true,
+          followedBy: true,
+        },
       });
 
       return res.status(200).json({ user });

@@ -35,16 +35,16 @@ model User {
   image            String?
   likedPostsIds    String[]  @db.ObjectId
   likedCommentsIds String[]  @db.ObjectId
-  friendsIds          String[]  @db.ObjectId
+  followingIds     String[]  @db.ObjectId
+  followedByIds    String[]  @db.ObjectId
 
-  accounts Account[] @relation("UserAndAccounts")
-
-  posts Post[] @relation("UserAndPosts")
-
-  comments Comment[] @relation("UserAndComments")
-
+  accounts      Account[] @relation("UserAndAccounts")
+  posts         Post[]    @relation("UserAndPosts")
+  comments      Comment[] @relation("UserAndComments")
   likedPosts    Post[]    @relation("UsersLikePosts", fields: [likedPostsIds], references: [id])
   likedComments Comment[] @relation("UsersLikeComments", fields: [likedCommentsIds], references: [id])
+  following     User[]    @relation("UserFollows", fields: [followingIds], references: [id])
+  followedBy    User[]    @relation("UserFollows", fields: [followedByIds], references: [id])
 }
 
 type File {
@@ -62,11 +62,9 @@ model Post {
   likedByIds          String[] @db.ObjectId
   parentCommentsCount Int      @default(0)
 
-  user User @relation("UserAndPosts", fields: [userId], references: [id])
-
+  user     User      @relation("UserAndPosts", fields: [userId], references: [id])
   comments Comment[] @relation("PostAndComments")
-
-  likedBy User[] @relation("UsersLikePosts", fields: [likedByIds], references: [id])
+  likedBy  User[]    @relation("UsersLikePosts", fields: [likedByIds], references: [id])
 }
 
 model Comment {
@@ -80,12 +78,9 @@ model Comment {
   likedByIds  String[] @db.ObjectId
   mentionUser String?
 
-  user User @relation("UserAndComments", fields: [userId], references: [id])
-
-  post Post @relation("PostAndComments", fields: [postId], references: [id], onDelete: Cascade)
-
+  user     User      @relation("UserAndComments", fields: [userId], references: [id])
+  post     Post      @relation("PostAndComments", fields: [postId], references: [id], onDelete: Cascade)
   parent   Comment?  @relation("CommentandComments", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   children Comment[] @relation("CommentandComments")
-
-  likedBy User[] @relation("UsersLikeComments", fields: [likedByIds], references: [id])
+  likedBy  User[]    @relation("UsersLikeComments", fields: [likedByIds], references: [id])
 }

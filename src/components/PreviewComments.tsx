@@ -27,7 +27,11 @@ const PreviewComments = ({ openDetailPostModal }: Props) => {
         className="mt-4 text-sm text-gray-400 hover:cursor-pointer"
         onClick={openDetailPostModal}
       >
-        {totalCommentsCount === 1 ? 'comment' : 'comments'}
+        {totalCommentsCount === 0
+          ? ''
+          : totalCommentsCount === 1
+          ? '1 comment'
+          : `${totalCommentsCount} comments`}
       </div>
     </>
   );

@@ -12,13 +12,13 @@ interface Props {
 }
 
 const Layout = ({ children }: Props) => {
+  const checkUserNameRef = useRef<boolean>(false);
+
   const router = useRouter();
 
   const { status, data: session } = useSession();
 
   const { setCurrentUser, currentUser } = useCurrentUserState();
-
-  const checkUserNameRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (session) {
@@ -49,7 +49,7 @@ const Layout = ({ children }: Props) => {
         <title>Social Media</title>
       </Head>
       <Navbar />
-      <main className="bg-gray-50/50 min-h-screen">{children}</main>
+      <main className="min-h-screen bg-gray-50/50">{children}</main>
     </>
   );
 };

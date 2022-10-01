@@ -7,6 +7,8 @@ export interface User {
   image: string;
   likedPostsIds: string[];
   likedCommentsIds: string[];
+  followingIds: string[];
+  followedByIds: string[];
 }
 
 export interface Post {

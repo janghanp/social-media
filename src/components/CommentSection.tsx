@@ -254,10 +254,17 @@ const CommentSection = ({ post }: Props) => {
         </div>
         <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
           <div className="flex w-auto gap-x-2 p-3">
-            <div className="avatar flex-none overflow-hidden rounded-full">
-              <Image src={post.user.image} width={40} height={40} alt="Image" />
+            <div className="avatar overflow-hidden">
+              <div className='w-[40px] h-[40px]  rounded-full flex justify-center items-center'>
+                <Image
+                  src={post.user.image}
+                  width={40}
+                  height={40}
+                  alt="Image"
+                />
+              </div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1">
               <div>
                 <span className="mr-3 text-sm font-bold">
                   {post.user.username}
