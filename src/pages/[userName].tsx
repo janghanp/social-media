@@ -23,8 +23,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       username: context.query.userName as string,
     },
     include: {
-      following: true,
-      followedBy: true,
+      _count: {
+        select: {
+          following: true,
+          followedBy: true,
+        },
+      },
     },
   });
 

@@ -56,19 +56,13 @@ const Post = ({ post }: Props) => {
   };
 
   const avatarClickHandler = () => {
-    router.push(
-      {
-        pathname: `/${post.user.username}`,
-        query: { userId: post.user.id },
-      },
-      `/${post.user.username}`
-    );
+    router.push(`/${post.user.username}`);
   };
 
   const openPostDetailModal = () => {
-    window.history.replaceState({}, '', `/posts/${post.id}`)
+    window.history.replaceState({}, '', `/posts/${post.id}`);
     setTogglePostDetailModal(true);
-  }
+  };
 
   const closePostDetailModal = () => {
     window.history.replaceState({}, '', '/');

@@ -10,7 +10,7 @@ interface Props {
   signout: () => {};
 }
 
-const Avatar = ({ userImage, userName, signout, userId }: Props) => {
+const Avatar = ({ userImage, userName, signout }: Props) => {
   const router = useRouter();
 
   const blurDropdown = () => {
@@ -24,13 +24,7 @@ const Avatar = ({ userImage, userName, signout, userId }: Props) => {
 
   const profileHandler = () => {
     blurDropdown();
-    router.push(
-      {
-        pathname: `/${userName}`,
-        query: { userId },
-      },
-      `/${userName}`
-    );
+    router.push(`/${userName}`);
   };
 
   const signoutHandler = () => {
@@ -39,7 +33,7 @@ const Avatar = ({ userImage, userName, signout, userId }: Props) => {
   };
 
   return (
-    <div id="dropdown" className="dropdown-end dropdown">
+    <div id="dropdown" className="dropdown dropdown-end">
       <div tabIndex={0} className="avatar ml-5 mt-1 hover:cursor-pointer">
         <div className="w-8 rounded-full ring-primary transition duration-200 hover:ring">
           <Image src={userImage} alt="avatar" width={32} height={32} />
