@@ -30,8 +30,8 @@ const PreviewComments = ({ openDetailPostModal }: Props) => {
         {totalCommentsCount === 0
           ? ''
           : totalCommentsCount === 1
-          ? '1 comment'
-          : `${totalCommentsCount} comments`}
+          ? 'View 1 comment'
+          : `View ${totalCommentsCount} comments`}
       </div>
     </>
   );

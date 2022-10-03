@@ -224,17 +224,8 @@ const CommentSection = ({ post }: Props) => {
     });
   };
 
-  const stillIsEditing = (inputValue: string) => {
-    if (inputValue.length === 0 && isEdit) {
-      setIsEdit(false);
-      setCurrentCommentInput('');
-    }
-  };
-
   const stillIsReplying = (inputValue: string) => {
     if ((inputValue.length === 0 && isReply) || inputValue[0] !== '@') {
-      console.log('unset isreply');
-
       setIsReply(false);
       setCurrentCommentInput('');
     }
@@ -255,7 +246,7 @@ const CommentSection = ({ post }: Props) => {
         <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
           <div className="flex w-auto gap-x-2 p-3">
             <div className="avatar overflow-hidden">
-              <div className='w-[40px] h-[40px]  rounded-full flex justify-center items-center'>
+              <div className="flex h-[40px]  w-[40px] items-center justify-center rounded-full">
                 <Image
                   src={post.user.image}
                   width={40}
@@ -264,7 +255,7 @@ const CommentSection = ({ post }: Props) => {
                 />
               </div>
             </div>
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-1 flex-col">
               <div>
                 <span className="mr-3 text-sm font-bold">
                   {post.user.username}
@@ -310,7 +301,6 @@ const CommentSection = ({ post }: Props) => {
           isEdit={isEdit}
           isReply={isReply}
           currentCommentInput={currentCommentInput}
-          stillIsEditing={stillIsEditing}
           stillIsReplying={stillIsReplying}
           createComment={createComment}
           editComment={editComment}

@@ -12,7 +12,7 @@ interface Props {
   totalPostsCount: number;
 }
 
-interface FriendshipModal {
+interface FriendshipModalType {
   isOpen: boolean;
   status: 'isFollowing' | 'isFollowedBy' | '';
 }
@@ -20,7 +20,7 @@ interface FriendshipModal {
 const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
   const { currentUser, setCurrentUser } = useCurrentUserState((state) => state);
 
-  const [isFllowing, setIsFllowing] = useState<boolean>(
+  const [isFollowing, setIsFollowing] = useState<boolean>(
     !!currentUser?.followingIds.find((id) => id === postAuthor.id)
   );
 
@@ -33,39 +33,58 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
   );
 
   const [toggleFriendshipModal, setToggleFriendshipModal] =
-    useState<FriendshipModal>({
+    useState<FriendshipModalType>({
       isOpen: false,
       status: '',
     });
 
   useEffect(() => {
+    //Props as an initial state.
     setFollowerCounts(postAuthor._count!.followedBy);
     setFollowingCounts(postAuthor._count!.following);
+    setIsFollowing(
+      !!currentUser?.followingIds.find((id) => id === postAuthor.id)
+    );
   }, [postAuthor]);
 
-  const toggleFriendship = async () => {
+  const toggleFriendship = async (
+    requesterId: string,
+    receiverId: string,
+    isFollowing: boolean
+  ) => {
     let updatedCurrentUser: User;
 
-    if (!isFllowing) {
+    if (!isFollowing) {
       const { data } = await axios.patch('/api/followUser', {
-        postAuthorId: postAuthor.id,
-        currentUserId: currentUser?.id,
+        receiverId,
+        requesterId,
       });
 
       updatedCurrentUser = data;
-      setFollowerCounts((prevState) => prevState + 1);
+
+      if (postAuthor.id === currentUser!.id) {
+        setFollowingCounts((prevState) => prevState + 1);
+      } else if (receiverId === postAuthor.id) {
+        setFollowerCounts((prevState) => prevState + 1);
+        setIsFollowing((prevState) => !prevState);
+      }
     } else {
       const { data } = await axios.patch('/api/followUser', {
-        postAuthorId: postAuthor.id,
-        currentUserId: currentUser?.id,
+        receiverId,
+        requesterId,
         unfollow: true,
       });
 
       updatedCurrentUser = data;
-      setFollowerCounts((prevState) => prevState - 1);
+
+      if (postAuthor.id === currentUser!.id) {
+        setFollowingCounts((prevState) => prevState - 1);
+      } else if (receiverId === postAuthor.id) {
+        setFollowerCounts((prevState) => prevState - 1);
+        setIsFollowing((prevState) => !prevState);
+      }
     }
 
-    setIsFllowing((prevState) => !prevState);
     setCurrentUser(updatedCurrentUser);
   };
 
@@ -89,10 +108,12 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
             <div className="text-xl font-semibold">{postAuthor?.username}</div>
             {currentUser?.username !== postAuthor.username && (
               <button
-                className="btn btn-outline btn-sm px-10"
-                onClick={toggleFriendship}
+                className={`btn ${!isFollowing && 'btn-outline'} btn-sm px-10`}
+                onClick={() =>
+                  toggleFriendship(currentUser!.id, postAuthor.id, isFollowing)
+                }
               >
-                {isFllowing ? (
+                {isFollowing ? (
                   <span className="text-sm font-semibold normal-case">
                     Following
                   </span>
@@ -129,6 +150,7 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
           closeFriendshipModal={() =>
             setToggleFriendshipModal({ isOpen: false, status: '' })
           }
+          toggleFriendship={toggleFriendship}
         />
       )}
     </>

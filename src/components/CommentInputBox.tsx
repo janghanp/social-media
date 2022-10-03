@@ -8,7 +8,6 @@ interface Props {
   createComment: (commentInput: string) => Promise<void>;
   editComment: (commentInput: string) => Promise<void>;
   replyComment: (commentInput: string) => Promise<void>;
-  stillIsEditing: (inputValue: string) => void;
   stillIsReplying: (inputValue: string) => void;
 }
 
@@ -19,7 +18,6 @@ const CommentInputBox = ({
   createComment,
   editComment,
   replyComment,
-  stillIsEditing,
   stillIsReplying,
 }: Props) => {
   const [commentInput, setCommentInput] = useState<string>('');
@@ -51,10 +49,6 @@ const CommentInputBox = ({
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
-
-    if (isEdit) {
-      stillIsEditing(inputValue);
-    }
 
     if (isReply) {
       stillIsReplying(inputValue);

@@ -15,30 +15,30 @@ export default async function handler(
 
   if (req.method === 'PATCH') {
     const {
-      postAuthorId,
-      currentUserId,
+      requesterId,
+      receiverId,
       unfollow,
-    }: { postAuthorId: string; currentUserId: string; unfollow: boolean } =
+    }: { requesterId: string; receiverId: string; unfollow: boolean } =
       req.body;
 
     let updatedCurrentUser: User;
 
     try {
       if (unfollow) {
-        const currentUser = await prisma.user.findUnique({
+        const requester = await prisma.user.findUnique({
           where: {
-            id: currentUserId,
+            id: requesterId,
           },
         });
 
         updatedCurrentUser = await prisma.user.update({
           where: {
-            id: currentUserId,
+            id: requesterId,
           },
           data: {
             followingIds: {
-              set: currentUser?.followingIds.filter(
-                (followingId) => followingId !== postAuthorId
+              set: requester?.followingIds.filter(
+                (followingId) => followingId !== receiverId
               ),
             },
           },
@@ -46,18 +46,18 @@ export default async function handler(
 
         const postAuthor = await prisma.user.findUnique({
           where: {
-            id: postAuthorId,
+            id: receiverId,
           },
         });
 
         await prisma.user.update({
           where: {
-            id: postAuthorId,
+            id: receiverId,
           },
           data: {
             followedByIds: {
               set: postAuthor?.followedByIds.filter(
-                (followedById) => followedById !== currentUserId
+                (followedById) => followedById !== requesterId
               ),
             },
           },
@@ -65,22 +65,22 @@ export default async function handler(
       } else {
         updatedCurrentUser = await prisma.user.update({
           where: {
-            id: currentUserId,
+            id: requesterId,
           },
           data: {
             followingIds: {
-              push: postAuthorId,
+              push: receiverId,
             },
           },
         });
 
         await prisma.user.update({
           where: {
-            id: postAuthorId,
+            id: receiverId,
           },
           data: {
             followedByIds: {
-              push: currentUserId,
+              push: requesterId,
             },
           },
         });

@@ -48,7 +48,7 @@ const PostsList = ({ initialPosts }: Props) => {
   );
 
   return (
-    <div className="flex h-auto w-full flex-col items-center justify-center pb-24 gap-y-14">
+    <div className="flex h-auto w-full flex-col items-center justify-center gap-y-14 pb-24">
       {posts.map((post, index) => {
         if (index + 1 === posts.length) {
           return (

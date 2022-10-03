@@ -1,19 +1,46 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 
 import { User } from '../types';
+import { useCurrentUserState } from '../store';
 
 interface Props {
   friend: User;
   closeFriendshipModal: () => void;
+  toggleFriendship: (
+    requesterId: string,
+    receiverId: string,
+    isFollowing: boolean
+  ) => void;
 }
 
-const Friend = ({ friend, closeFriendshipModal }: Props) => {
+const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
   const router = useRouter();
+
+  const currentUser = useCurrentUserState((state) => state.currentUser);
+
+  const [isCurrenUserFollowingThisUser, setIsCurrentUserFollowingThisUser] =
+    useState<boolean>(
+      !!friend.followedByIds.find((id) => id === currentUser!.id)
+    );
+
+  useEffect(() => {
+    setIsCurrentUserFollowingThisUser(
+      !!friend.followedByIds.find((id) => id === currentUser!.id)
+    );
+  }, [friend.followedByIds]);
+
+  const isMe = friend.id === currentUser!.id;
 
   const avatarClickHandler = () => {
     closeFriendshipModal();
     router.push(`/${friend.username}`);
+  };
+
+  const toggleFriendshipHandler = () => {
+    toggleFriendship(currentUser!.id, friend.id, isCurrenUserFollowingThisUser);
+    setIsCurrentUserFollowingThisUser((prevState) => !prevState);
   };
 
   return (
@@ -33,7 +60,22 @@ const Friend = ({ friend, closeFriendshipModal }: Props) => {
       </div>
 
       {/* button */}
-      <button className="btn btn-outline btn-sm px-10">test</button>
+      {isMe ? (
+        ''
+      ) : (
+        <button
+          onClick={toggleFriendshipHandler}
+          className={`rounded-md border-2 border-black px-3 py-1 ${
+            !isCurrenUserFollowingThisUser
+              ? 'bg-white text-black'
+              : 'bg-black text-white'
+          }`}
+        >
+          <span className="text-sm font-semibold">
+            {isCurrenUserFollowingThisUser ? 'Following' : 'Follow'}
+          </span>
+        </button>
+      )}
     </div>
   );
 };
