@@ -9,7 +9,8 @@ export interface User {
   likedCommentsIds: string[];
   followingIds: string[];
   followedByIds: string[];
-  _count?: { following: number; followedBy: number };
+  _count?: { following: number; followedBy: number; notifications: number };
+  notificationsIds: string[];
 }
 
 export interface Post {
@@ -62,4 +63,14 @@ export interface CustomFile extends File {
 export interface FormikValues {
   body: string;
   files: CustomFile[];
+}
+
+export interface Notification {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  message: string;
+  is_read: boolean;
+  createdAt: Date;
+  sender: User;
 }

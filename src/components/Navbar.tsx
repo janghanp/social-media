@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { HiOutlinePlus } from 'react-icons/hi';
 
 import Avatar from './Avatar';
+import Notification from './Notification';
 import PostModal from './PostModal';
 import { useCurrentUserState } from '../store';
 
@@ -24,6 +25,8 @@ const Navbar = () => {
     }
   }, [isOpen]);
 
+  const isLoggedIn = session && currentUser ? true : false;
+
   const signOutHandler = async () => {
     setCurrentUser(null);
     signOut({ callbackUrl: '/' });
@@ -34,24 +37,22 @@ const Navbar = () => {
       <div className="fixed top-0 z-20 w-full border-b-2 border-primary bg-base-100 shadow-lg">
         <div className="container mx-auto max-w-4xl">
           <div className="navbar justify-between bg-base-100 px-5 lg:px-0">
-            {/* left */}
             <Link href={'/'}>
               <div className="text-xl font-semibold normal-case hover:cursor-pointer">
                 Social Media
               </div>
             </Link>
-
-            {/* right */}
-            {session && currentUser ? (
+            {isLoggedIn ? (
               <div className="flex flex-row items-center justify-center">
                 <HiOutlinePlus
                   onClick={() => setIsOpen(true)}
                   className="h-8 w-8 hover:cursor-pointer"
                 />
+                <Notification />
                 <Avatar
-                  userId={currentUser.id}
-                  userImage={currentUser.image}
-                  userName={currentUser.username}
+                  userId={currentUser!.id}
+                  userImage={currentUser!.image}
+                  userName={currentUser!.username}
                   signout={signOutHandler}
                 />
               </div>

@@ -38,13 +38,15 @@ model User {
   followingIds     String[]  @db.ObjectId
   followedByIds    String[]  @db.ObjectId
 
-  accounts      Account[] @relation("UserAndAccounts")
-  posts         Post[]    @relation("UserAndPosts")
-  comments      Comment[] @relation("UserAndComments")
-  likedPosts    Post[]    @relation("UsersLikePosts", fields: [likedPostsIds], references: [id])
-  likedComments Comment[] @relation("UsersLikeComments", fields: [likedCommentsIds], references: [id])
-  following     User[]    @relation("UserFollows", fields: [followingIds], references: [id])
-  followedBy    User[]    @relation("UserFollows", fields: [followedByIds], references: [id])
+  accounts      Account[]      @relation("UserAndAccounts")
+  posts         Post[]         @relation("UserAndPosts")
+  comments      Comment[]      @relation("UserAndComments")
+  likedPosts    Post[]         @relation("UsersLikePosts", fields: [likedPostsIds], references: [id])
+  likedComments Comment[]      @relation("UsersLikeComments", fields: [likedCommentsIds], references: [id])
+  following     User[]         @relation("UserFollows", fields: [followingIds], references: [id])
+  followedBy    User[]         @relation("UserFollows", fields: [followedByIds], references: [id])
+  notifications Notification[] @relation("UserReceiveNotifications")
+  sender        Notification[] @relation("UserSendNotifications")
 }
 
 type File {
@@ -83,4 +85,18 @@ model Comment {
   parent   Comment?  @relation("CommentandComments", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
   children Comment[] @relation("CommentandComments")
   likedBy  User[]    @relation("UsersLikeComments", fields: [likedByIds], references: [id])
+}
+
+model Notification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  senderId   String   @db.ObjectId
+  receiverId String   @db.ObjectId
+  message    String
+  is_read    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  //one to many relation
+  receiver User @relation("UserReceiveNotifications", fields: [receiverId], references: [id])
+  //one to many relation
+  sender   User @relation("UserSendNotifications", fields: [senderId], references: [id])
 }
