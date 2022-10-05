@@ -53,4 +53,22 @@ export default async function handler(
       return res.status(500).json({ message: 'Something went wrong...' });
     }
   }
+
+  if (req.method === 'PATCH') {
+    try {
+      await prisma.notification.updateMany({
+        where: {
+          AND: [{ receiverId: jwt.sub }, { is_read: false }],
+        },
+        data: {
+          is_read: true,
+        },
+      });
+
+      return res.status(200).json({ message: 'Success' });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: 'Something went wrong...' });
+    }
+  }
 }

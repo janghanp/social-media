@@ -20,7 +20,9 @@ export default async function handler(
           followedBy: true,
           _count: {
             select: {
-              notifications: true,
+              notifications: {
+                where: { is_read: false },
+              },
             },
           },
         },
