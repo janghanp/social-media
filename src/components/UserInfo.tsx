@@ -61,12 +61,7 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
         requesterId,
       });
 
-      sendNotification(
-        requesterId,
-        receiverId,
-        `${currentUser!.username} started following you`,
-        'FOLLOW'
-      );
+      sendNotification(requesterId, receiverId, 'FOLLOW');
 
       updatedCurrentUser = data;
 

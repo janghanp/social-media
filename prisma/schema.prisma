@@ -90,7 +90,8 @@ model Comment {
 
 enum Type {
   FOLLOW
-  LIKE
+  LIKEPOST
+  LIKECOMMENT
   COMMENT
 }
 
@@ -98,8 +99,8 @@ model Notification {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   senderId   String   @db.ObjectId
   receiverId String   @db.ObjectId
+  targetId   String?   @db.ObjectId
   type       Type
-  message    String
   is_read    Boolean  @default(false)
   createdAt  DateTime @default(now())
 

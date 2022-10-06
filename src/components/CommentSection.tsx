@@ -11,6 +11,8 @@ import Comment from './Comment';
 import CommentsList from './CommentsList';
 import CommentInputBox from './CommentInputBox';
 import { usePostContext } from '../context/postContext';
+import { sendNotification } from '../lib/sendNotification';
+import { useCurrentUserState } from '../store';
 
 const thresholds = [
   { l: 's', r: 1 },
@@ -57,6 +59,8 @@ interface Props {
 
 const CommentSection = ({ post }: Props) => {
   const { data: session } = useSession();
+
+  const currentUser = useCurrentUserState((state) => state.currentUser);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
@@ -130,6 +134,10 @@ const CommentSection = ({ post }: Props) => {
       postId: post.id,
       comment: commentInput,
     });
+
+    if (currentUser!.id !== post.userId) {
+      sendNotification(currentUser!.id, post.userId, 'COMMENT');
+    }
 
     setCurrentComments((prevState) => [newComment, ...prevState]);
     setTotalCommentsCount((prevState) => prevState + 1);
@@ -243,7 +251,7 @@ const CommentSection = ({ post }: Props) => {
             {dayjs().to(dayjs(post.createdAt))}
           </span>
         </div>
-        <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
+        <div className="absolute top-20 bottom-16 w-full overflow-y-auto border border-blue-500">
           <div className="flex w-auto gap-x-2 p-3">
             <div className="avatar overflow-hidden">
               <div className="flex h-[40px]  w-[40px] items-center justify-center rounded-full">

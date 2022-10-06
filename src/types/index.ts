@@ -1,3 +1,5 @@
+import { Type } from "@prisma/client";
+
 export interface User {
   id: string;
   name?: string;
@@ -69,7 +71,7 @@ export interface Notification {
   id: string;
   senderId: string;
   receiverId: string;
-  message: string;
+  type: Type;
   is_read: boolean;
   createdAt: Date;
   sender: User;

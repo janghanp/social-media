@@ -4,13 +4,13 @@ import { Type } from '@prisma/client';
 export const sendNotification = async (
   senderId: string,
   receiverId: string,
-  message: string,
-  type: Type
+  type: Type,
+  targetId?: string
 ) => {
   await axios.post('/api/notification', {
     senderId,
     receiverId,
-    message,
     type,
+    targetId,
   });
 };

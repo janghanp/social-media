@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useState } from 'react';
 import { HiOutlineBell } from 'react-icons/hi';
 import useSWR from 'swr';
-import useSWRImmutable from 'swr/immutable';
 
 import { Notification as NotificationType } from '../types';
 import NotificationList from './NotificationList';

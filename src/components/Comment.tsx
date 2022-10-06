@@ -10,6 +10,8 @@ import SyncLoader from 'react-spinners/SyncLoader';
 import { Comment as CommentType } from '../types';
 import ControlMenu from './ControlMenu';
 import ChildComment from './ChildComment';
+import { useCurrentUserState } from '../store';
+import { sendNotification } from '../lib/sendNotification';
 
 dayjs.extend(relativeTime);
 
@@ -39,6 +41,8 @@ const Comment = ({
   setReplyingCommentId,
 }: Props) => {
   const { data: session } = useSession();
+
+  const currentUser = useCurrentUserState((state) => state.currentUser);
 
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
   const [likesCount, setLikesCount] = useState<number>(
@@ -83,6 +87,21 @@ const Comment = ({
   };
 
   const likeCommentHandler = async () => {
+    await axios.post('/api/likeComment', {
+      commentId: comment.id,
+      userId: session!.user.id,
+      dislike: isLiked,
+    });
+
+    if (currentUser!.id !== comment.userId) {
+      sendNotification(
+        currentUser!.id,
+        comment.userId,
+        'LIKECOMMENT',
+        comment.id
+      );
+    }
+
     setIsLiked((prevState) => !prevState);
     setLikesCount((prevState) => {
       if (isLiked) {
@@ -108,12 +127,6 @@ const Comment = ({
           return currentComment;
         }
       });
-    });
-
-    await axios.post('/api/likeComment', {
-      commentId: comment.id,
-      userId: session!.user.id,
-      dislike: isLiked,
     });
   };
 

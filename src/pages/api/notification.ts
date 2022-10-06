@@ -44,6 +44,9 @@ export default async function handler(
         include: {
           sender: true,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
 
       return res.status(200).send(notifications);
@@ -58,10 +61,14 @@ export default async function handler(
       const {
         senderId,
         receiverId,
-        message,
         type,
-      }: { senderId: string; receiverId: string; message: string; type: Type } =
-        req.body;
+        targetId,
+      }: {
+        senderId: string;
+        receiverId: string;
+        type: Type;
+        targetId?: string;
+      } = req.body;
 
       if (type === 'FOLLOW') {
         //Don't send a notification when a user re-follows people.
@@ -76,12 +83,50 @@ export default async function handler(
         }
       }
 
+      if (type === 'LIKEPOST') {
+        //Don't send a notificaion when a user re-likes posts.
+        //A usermight like your several posts.
+        const hasSentWithLikePost = await prisma.notification.findFirst({
+          where: {
+            AND: [
+              { senderId },
+              { receiverId },
+              { type: 'LIKEPOST' },
+              { targetId },
+            ],
+          },
+        });
+
+        if (hasSentWithLikePost) {
+          return res.status(204).json({ message: '' });
+        }
+      }
+
+      if (type === 'LIKECOMMENT') {
+        //Don't send a notificaion when a user re-likes comments.
+        //A user might like your several comments.
+        const hasSentWithLikeComment = await prisma.notification.findFirst({
+          where: {
+            AND: [
+              { senderId },
+              { receiverId },
+              { type: 'LIKECOMMENT' },
+              { targetId },
+            ],
+          },
+        });
+
+        if (hasSentWithLikeComment) {
+          return res.status(204).json({ message: '' });
+        }
+      }
+
       const newNotification = await prisma.notification.create({
         data: {
           senderId,
           receiverId,
-          message,
           type,
+          targetId,
         },
       });
 

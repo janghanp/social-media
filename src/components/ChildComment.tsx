@@ -8,6 +8,8 @@ import { Comment as CommentType } from '../types';
 import { AiOutlineEllipsis } from 'react-icons/ai';
 import ControlMenu from './ControlMenu';
 import { usePostContext } from '../context/postContext';
+import { useCurrentUserState } from '../store';
+import { sendNotification } from '../lib/sendNotification';
 
 interface Props {
   childComment: CommentType;
@@ -24,6 +26,8 @@ const ChildComment = ({
 }: Props) => {
   const { data: session } = useSession();
 
+  const currentUser = useCurrentUserState((state) => state.currentUser);
+
   const [isLiked, setIsLiked] = useState<boolean>(
     session && childComment.likedByIds.includes(session.user.id) ? true : false
   );
@@ -35,6 +39,21 @@ const ChildComment = ({
   const { setTotalCommentsCount } = usePostContext();
 
   const likeCommentHandler = async () => {
+    await axios.post('/api/likeComment', {
+      commentId: childComment.id,
+      userId: session!.user.id,
+      dislike: isLiked,
+    });
+
+    if (currentUser!.id !== childComment.userId) {
+      sendNotification(
+        currentUser!.id,
+        childComment.userId,
+        'LIKECOMMENT',
+        childComment.id
+      );
+    }
+
     setIsLiked((prevState) => !prevState);
     setLikesCount((prevState) => {
       if (isLiked) {
@@ -60,12 +79,6 @@ const ChildComment = ({
           return comment;
         }
       });
-    });
-
-    await axios.post('/api/likeComment', {
-      commentId: childComment.id,
-      userId: session!.user.id,
-      dislike: isLiked,
     });
   };
 

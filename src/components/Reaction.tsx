@@ -1,9 +1,10 @@
 import { AiOutlineHeart, AiOutlineMessage } from 'react-icons/ai';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 import { usePostContext } from '../context/postContext';
+import { sendNotification } from '../lib/sendNotification';
+import { useCurrentUserState } from '../store';
 
 interface Props {
   openPostDetailModal: () => void;
@@ -12,19 +13,21 @@ interface Props {
 const Reaction = ({ openPostDetailModal }: Props) => {
   const router = useRouter();
 
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
+  const currentUser = useCurrentUserState((state) => state.currentUser);
 
   const {
     totalCommentsCount,
     isLiked,
     totalLikesCount,
     postId,
+    postAuthorId,
     setIsLiked,
     setTotalLikesCount,
   } = usePostContext();
 
   const likePostHandler = async () => {
-    if (!session) {
+    if (!currentUser) {
       router.push('/login');
       return;
     }
@@ -39,10 +42,14 @@ const Reaction = ({ openPostDetailModal }: Props) => {
     });
 
     await axios.post('/api/likePost', {
-      userId: session!.user.id,
+      userId: currentUser.id,
       postId,
       dislike: isLiked,
     });
+
+    if (currentUser.id !== postAuthorId && !isLiked) {
+      sendNotification(currentUser.id, postAuthorId, 'LIKEPOST', postId);
+    }
   };
 
   return (
