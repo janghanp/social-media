@@ -1,15 +1,22 @@
+import axios from 'axios';
 import { useState } from 'react';
 import { HiOutlineBell } from 'react-icons/hi';
+import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
-import { useCurrentUserState } from '../store';
+import { Notification as NotificationType } from '../types';
 import NotificationList from './NotificationList';
 
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
 const Notification = () => {
+  const {
+    data: unReadNotifications,
+    error,
+    mutate,
+  } = useSWR<NotificationType[]>('/api/notification?filter=unread', fetcher);
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const currentUser = useCurrentUserState((state) => state.currentUser);
-
-  const unReadNotificationsCount = currentUser?._count?.notifications;
 
   return (
     <div className="relative pb-1">
@@ -18,16 +25,18 @@ const Notification = () => {
         className="ml-5 mt-1 hover:cursor-pointer"
       >
         <HiOutlineBell className="h-7 w-7 hover:cursor-pointer" />
-        {unReadNotificationsCount! > 0 && (
+        {unReadNotifications?.length! > 0 && (
           <div className="absolute -top-2 -right-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-white bg-red-500 text-xs font-bold text-white">
-            {unReadNotificationsCount}
+            {unReadNotifications?.length}
           </div>
         )}
       </div>
       {isOpen && (
         <NotificationList
+          isOpen={isOpen}
           setIsOpen={setIsOpen}
-          unReadNotifications={unReadNotificationsCount}
+          unReadNotifications={unReadNotifications?.length}
+          reFetchUnReadNotifications={mutate}
         />
       )}
     </div>

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { User } from '../types';
 import { useCurrentUserState } from '../store';
 import FriendshipModal from './FriendshipModal';
-import { createNotification } from '../lib/createNotification';
+import { sendNotification } from '../lib/sendNotification';
 
 interface Props {
   postAuthor: User;
@@ -61,10 +61,11 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
         requesterId,
       });
 
-      createNotification(
+      sendNotification(
         requesterId,
         receiverId,
-        `${currentUser!.username} started following you`
+        `${currentUser!.username} started following you`,
+        'FOLLOW'
       );
 
       updatedCurrentUser = data;

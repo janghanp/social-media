@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
 import { prisma } from '../../lib/prisma';
+import { Type } from '@prisma/client';
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,7 +15,28 @@ export default async function handler(
   }
 
   if (req.method === 'GET') {
+    const { filter } = req.query;
+
     try {
+      //unread notifications
+      if (filter === 'unread') {
+        const unReadNotifications = await prisma.notification.findMany({
+          where: {
+            AND: [
+              {
+                receiverId: jwt.sub,
+              },
+              {
+                is_read: false,
+              },
+            ],
+          },
+        });
+
+        return res.status(200).send(unReadNotifications);
+      }
+
+      //All notifications
       const notifications = await prisma.notification.findMany({
         where: {
           receiverId: jwt.sub,
@@ -37,13 +59,29 @@ export default async function handler(
         senderId,
         receiverId,
         message,
-      }: { senderId: string; receiverId: string; message: string } = req.body;
+        type,
+      }: { senderId: string; receiverId: string; message: string; type: Type } =
+        req.body;
+
+      if (type === 'FOLLOW') {
+        //Don't send a notification when a user re-follows people.
+        const hasSentWithFollow = await prisma.notification.findFirst({
+          where: {
+            AND: [{ senderId }, { receiverId }, { type: 'FOLLOW' }],
+          },
+        });
+
+        if (hasSentWithFollow) {
+          return res.status(204).json({ message: '' });
+        }
+      }
 
       const newNotification = await prisma.notification.create({
         data: {
           senderId,
           receiverId,
           message,
+          type,
         },
       });
 
@@ -55,6 +93,7 @@ export default async function handler(
   }
 
   if (req.method === 'PATCH') {
+    //read all notifications at once.
     try {
       await prisma.notification.updateMany({
         where: {

@@ -9,7 +9,7 @@ export interface User {
   likedCommentsIds: string[];
   followingIds: string[];
   followedByIds: string[];
-  _count?: { following: number; followedBy: number; notifications: number };
+  _count?: { following: number; followedBy: number };
   notificationsIds: string[];
 }
 

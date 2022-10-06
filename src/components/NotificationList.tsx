@@ -1,29 +1,30 @@
 import axios from 'axios';
 import Image from 'next/image';
 import useSWR from 'swr';
-import useSWRImmutable from 'swr/immutable';
 import { motion } from 'framer-motion';
 
 import { Notification as NotificationType } from '../types';
 import SkeletionLoader from './SkeletonLoader';
-import { useCurrentUserState } from '../store';
 import { useEffect } from 'react';
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 interface Props {
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpen: boolean;
   unReadNotifications: number | undefined;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  reFetchUnReadNotifications: () => void;
 }
 
-const NotificationList = ({ setIsOpen, unReadNotifications }: Props) => {
-  const { data, error } = useSWRImmutable<NotificationType[]>(
+const NotificationList = ({
+  setIsOpen,
+  unReadNotifications,
+  isOpen,
+  reFetchUnReadNotifications,
+}: Props) => {
+  const { data: notifications, error } = useSWR<NotificationType[]>(
     '/api/notification',
     fetcher
-  );
-
-  const setHasReadAllNotifications = useCurrentUserState(
-    (state) => state.setHasReadAllNotifications
   );
 
   useEffect(() => {
@@ -32,12 +33,17 @@ const NotificationList = ({ setIsOpen, unReadNotifications }: Props) => {
         await axios.patch('/api/notification');
       };
 
-      updateNotificationsStatus();
-      setHasReadAllNotifications();
+      updateNotificationsStatus()
+        .then(() => {
+          reFetchUnReadNotifications();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  }, []);
+  }, [isOpen]);
 
-  const isLoading = !data && !error;
+  const isLoading = !notifications && !error;
 
   return (
     <>
@@ -56,7 +62,7 @@ const NotificationList = ({ setIsOpen, unReadNotifications }: Props) => {
           <SkeletionLoader />
         ) : (
           <ul className="flex flex-col">
-            {data?.map((notification) => {
+            {notifications?.map((notification) => {
               return (
                 <li
                   key={notification.id}

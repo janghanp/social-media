@@ -18,13 +18,6 @@ export default async function handler(
         include: {
           following: true,
           followedBy: true,
-          _count: {
-            select: {
-              notifications: {
-                where: { is_read: false },
-              },
-            },
-          },
         },
       });
 

@@ -88,10 +88,17 @@ model Comment {
   likedBy  User[]    @relation("UsersLikeComments", fields: [likedByIds], references: [id])
 }
 
+enum Type {
+  FOLLOW
+  LIKE
+  COMMENT
+}
+
 model Notification {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   senderId   String   @db.ObjectId
   receiverId String   @db.ObjectId
+  type       Type
   message    String
   is_read    Boolean  @default(false)
   createdAt  DateTime @default(now())
