@@ -1,4 +1,4 @@
-import { Type } from "@prisma/client";
+import { Type } from '@prisma/client';
 
 export interface User {
   id: string;
@@ -71,8 +71,11 @@ export interface Notification {
   id: string;
   senderId: string;
   receiverId: string;
+  targetId?: string;
   type: Type;
+  link: string;
   is_read: boolean;
+  is_clicked: boolean;
   createdAt: Date;
   sender: User;
 }

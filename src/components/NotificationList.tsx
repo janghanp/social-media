@@ -10,16 +10,16 @@ import NotificationItem from './NotificationItem';
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 interface Props {
-  isOpen: boolean;
+  isNotificationOpen: boolean;
   unReadNotifications: number | undefined;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsNotificationOpen: React.Dispatch<React.SetStateAction<boolean>>;
   reFetchUnReadNotifications: () => void;
 }
 
 const NotificationList = ({
-  setIsOpen,
+  setIsNotificationOpen,
   unReadNotifications,
-  isOpen,
+  isNotificationOpen,
   reFetchUnReadNotifications,
 }: Props) => {
   const { data: notifications, error } = useSWR<NotificationType[]>(
@@ -28,8 +28,6 @@ const NotificationList = ({
   );
 
   useEffect(() => {
-    //set is_read to true to all notificaionts.
-    //It should have is_read and is_checked or something.
     if (unReadNotifications && unReadNotifications > 0) {
       const updateNotificationsStatus = async () => {
         await axios.patch('/api/notification');
@@ -43,29 +41,35 @@ const NotificationList = ({
           console.log(err);
         });
     }
-  }, [isOpen]);
+  }, [isNotificationOpen]);
 
   const isLoading = !notifications && !error;
 
   return (
     <>
       <div
-        onClick={() => setIsOpen(false)}
+        onClick={() => setIsNotificationOpen(false)}
         className="fixed inset-0 z-30"
       ></div>
       <motion.div
         initial={{ opacity: 0, y: -60 }}
         animate={{ opacity: 1, y: -40 }}
-        className="rounded-box absolute right-0 top-20 z-40 w-auto min-w-[300px] border-2 border-primary bg-base-100 shadow max-h-[550px] overflow-y-auto"
+        className="rounded-box absolute right-0 top-20 z-40 max-h-[550px] w-auto min-w-[300px] overflow-y-auto border-2 border-primary bg-base-100 shadow"
       >
         {error ? (
           <div className="text-red-500">failed to load... please try again</div>
         ) : isLoading ? (
           <SkeletionLoader />
         ) : (
-          <ul className="flex flex-col relative overflow-y-hidden">
+          <ul className="relative flex flex-col overflow-y-hidden">
             {notifications?.map((notification) => {
-              return <NotificationItem key={notification.id} notification={notification}  />;
+              return (
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification}
+                  setIsNotificationOpen={setIsNotificationOpen}
+                />
+              );
             })}
           </ul>
         )}

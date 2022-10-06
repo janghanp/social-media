@@ -15,12 +15,12 @@ const Notification = () => {
     mutate,
   } = useSWR<NotificationType[]>('/api/notification?filter=unread', fetcher);
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
 
   return (
     <div className="relative pb-1">
       <div
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsNotificationOpen(!isNotificationOpen)}
         className="ml-5 mt-1 hover:cursor-pointer"
       >
         <HiOutlineBell className="h-7 w-7 hover:cursor-pointer" />
@@ -30,10 +30,10 @@ const Notification = () => {
           </div>
         )}
       </div>
-      {isOpen && (
+      {isNotificationOpen && (
         <NotificationList
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
+          isNotificationOpen={isNotificationOpen}
+          setIsNotificationOpen={setIsNotificationOpen}
           unReadNotifications={unReadNotifications?.length}
           reFetchUnReadNotifications={mutate}
         />

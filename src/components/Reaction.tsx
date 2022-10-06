@@ -13,7 +13,6 @@ interface Props {
 const Reaction = ({ openPostDetailModal }: Props) => {
   const router = useRouter();
 
-  // const { data: session } = useSession();
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
   const {
@@ -48,7 +47,13 @@ const Reaction = ({ openPostDetailModal }: Props) => {
     });
 
     if (currentUser.id !== postAuthorId && !isLiked) {
-      sendNotification(currentUser.id, postAuthorId, 'LIKEPOST', postId);
+      sendNotification(
+        currentUser.id,
+        postAuthorId,
+        'LIKEPOST',
+        `${window.location.origin}/posts/${postId}`,
+        postId
+      );
     }
   };
 

@@ -49,7 +49,9 @@ const Layout = ({ children }: Props) => {
         <title>Social Media</title>
       </Head>
       <Navbar />
-      <main className="min-h-screen bg-gray-50/50">{children}</main>
+      <main id="main" className="min-h-screen bg-gray-50/50">
+        {children}
+      </main>
     </>
   );
 };

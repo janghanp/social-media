@@ -32,7 +32,7 @@ const CommentsList = ({
 
   return (
     <>
-      <div className="relative overflow-y-hidden border border-red-500">
+      <div className="relative overflow-y-hidden">
         <div className="flex flex-col gap-y-5 p-3">{children}</div>
         <div className="flex w-full items-center justify-center">
           {!isLastPage && (

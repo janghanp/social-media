@@ -1,18 +1,33 @@
 import Image from 'next/image';
 import dayjs from 'dayjs';
+import { useRouter } from 'next/router';
 
 import { Notification as NotificationType } from '../types';
 import NotificationMessage from './NotificationMessage';
+import axios from 'axios';
 
 interface Props {
   notification: NotificationType;
+  setIsNotificationOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const NotificationItem = ({ notification }: Props) => {
+const NotificationItem = ({ notification, setIsNotificationOpen }: Props) => {
+  const router = useRouter();
+
+  const notificationClickHandler = async () => {
+    await axios.patch('/api/clickNotification', {
+      notificationId: notification.id,
+    });
+
+    router.push(notification.link);
+    setIsNotificationOpen(false);
+  };
+
   return (
     <li
       key={notification.id}
-      className="flex items-center justify-start space-x-3 rounded-sm p-3 transition duration-300 hover:cursor-pointer hover:bg-gray-200"
+      onClick={notificationClickHandler}
+      className="flex items-center justify-start space-x-3 p-3 transition duration-300 hover:cursor-pointer hover:bg-gray-200"
     >
       <div className="avatar flex-none overflow-hidden rounded-full">
         <Image
@@ -25,7 +40,7 @@ const NotificationItem = ({ notification }: Props) => {
       <div className="flex flex-col text-sm">
         <div
           className={`${
-            notification.is_read ? 'text-gray-300' : 'text-primary'
+            notification.is_clicked ? 'text-gray-300' : 'text-primary'
           }`}
         >
           <NotificationMessage
@@ -35,7 +50,7 @@ const NotificationItem = ({ notification }: Props) => {
         </div>
         <span
           className={`text-sm ${
-            notification.is_read ? 'text-gray-300' : 'text-gray-600'
+            notification.is_clicked ? 'text-gray-300' : 'text-gray-600'
           }`}
         >
           {dayjs().to(dayjs(notification.createdAt))}

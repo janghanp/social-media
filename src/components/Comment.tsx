@@ -98,6 +98,7 @@ const Comment = ({
         currentUser!.id,
         comment.userId,
         'LIKECOMMENT',
+        `${window.location.origin}/posts/${postId}`,
         comment.id
       );
     }

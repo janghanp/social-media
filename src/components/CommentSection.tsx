@@ -136,7 +136,12 @@ const CommentSection = ({ post }: Props) => {
     });
 
     if (currentUser!.id !== post.userId) {
-      sendNotification(currentUser!.id, post.userId, 'COMMENT');
+      sendNotification(
+        currentUser!.id,
+        post.userId,
+        'COMMENT',
+        `${window.location.origin}/posts/${post.id}`
+      );
     }
 
     setCurrentComments((prevState) => [newComment, ...prevState]);
@@ -251,7 +256,7 @@ const CommentSection = ({ post }: Props) => {
             {dayjs().to(dayjs(post.createdAt))}
           </span>
         </div>
-        <div className="absolute top-20 bottom-16 w-full overflow-y-auto border border-blue-500">
+        <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
           <div className="flex w-auto gap-x-2 p-3">
             <div className="avatar overflow-hidden">
               <div className="flex h-[40px]  w-[40px] items-center justify-center rounded-full">

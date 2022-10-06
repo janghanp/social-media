@@ -18,7 +18,7 @@ export default async function handler(
     const { filter } = req.query;
 
     try {
-      //unread notifications
+      //get unread notifications
       if (filter === 'unread') {
         const unReadNotifications = await prisma.notification.findMany({
           where: {
@@ -36,7 +36,7 @@ export default async function handler(
         return res.status(200).send(unReadNotifications);
       }
 
-      //All notifications
+      //get all notifications
       const notifications = await prisma.notification.findMany({
         where: {
           receiverId: jwt.sub,
@@ -62,11 +62,13 @@ export default async function handler(
         senderId,
         receiverId,
         type,
+        link,
         targetId,
       }: {
         senderId: string;
         receiverId: string;
         type: Type;
+        link: string;
         targetId?: string;
       } = req.body;
 
@@ -127,6 +129,7 @@ export default async function handler(
           receiverId,
           type,
           targetId,
+          link,
         },
       });
 

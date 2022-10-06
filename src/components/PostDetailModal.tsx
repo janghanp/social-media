@@ -24,8 +24,13 @@ const PostDetailModal = ({ postId, closeModal }: Props) => {
   useEffect(() => {
     document.addEventListener('keydown', keyEventHandler);
 
+    const body = document.getElementsByTagName('BODY')[0];
+
+    body.classList.add('overflow-hidden');
+
     return () => {
       document.removeEventListener('keydown', keyEventHandler);
+      body.classList.remove('overflow-hidden');
     };
   }, []);
 
