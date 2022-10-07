@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Notification as NotificationType } from '../types';
 import SkeletionLoader from './SkeletonLoader';
 import NotificationItem from './NotificationItem';
+import NotificationOption from './NotificationOption';
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -17,15 +18,16 @@ interface Props {
 }
 
 const NotificationList = ({
-  setIsNotificationOpen,
   unReadNotifications,
   isNotificationOpen,
+  setIsNotificationOpen,
   reFetchUnReadNotifications,
 }: Props) => {
-  const { data: notifications, error } = useSWR<NotificationType[]>(
-    '/api/notification',
-    fetcher
-  );
+  const {
+    data: notifications,
+    error,
+    mutate,
+  } = useSWR<NotificationType[]>('/api/notification', fetcher);
 
   useEffect(() => {
     if (unReadNotifications && unReadNotifications > 0) {
@@ -56,6 +58,13 @@ const NotificationList = ({
         animate={{ opacity: 1, y: -40 }}
         className="rounded-box absolute right-0 top-20 z-40 max-h-[550px] w-auto min-w-[300px] overflow-y-auto border-2 border-primary bg-base-100 shadow"
       >
+        <div className="flex items-center justify-between py-3 px-5">
+          <span className="text-lg font-semibold">Notifications</span>
+          <NotificationOption
+            setIsNotificationOpen={setIsNotificationOpen}
+            refetchNotifications={mutate}
+          />
+        </div>
         {error ? (
           <div className="text-red-500">failed to load... please try again</div>
         ) : isLoading ? (

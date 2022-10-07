@@ -75,7 +75,8 @@ const CommentSection = ({ post }: Props) => {
   const [currentComments, setCurrentComments] = useState<CommentType[]>([]);
   const [skip, setSkip] = useState<number>(0);
 
-  const { setTotalCommentsCount, setPreviewComments } = usePostContext();
+  const { postThumbnail, setTotalCommentsCount, setPreviewComments } =
+    usePostContext();
 
   useEffect(() => {
     async function fetchComments(): Promise<void> {
@@ -140,7 +141,9 @@ const CommentSection = ({ post }: Props) => {
         currentUser!.id,
         post.userId,
         'COMMENT',
-        `${window.location.origin}/posts/${post.id}`
+        `${window.location.origin}/posts/${post.id}`,
+        undefined,
+        postThumbnail
       );
     }
 

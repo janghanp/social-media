@@ -36,7 +36,7 @@ const ChildComment = ({
   );
   const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
 
-  const { postId, setTotalCommentsCount } = usePostContext();
+  const { postId, postThumbnail, setTotalCommentsCount } = usePostContext();
 
   const likeCommentHandler = async () => {
     await axios.post('/api/likeComment', {
@@ -51,7 +51,8 @@ const ChildComment = ({
         childComment.userId,
         'LIKECOMMENT',
         `${window.location.origin}/posts/${postId}`,
-        childComment.id
+        childComment.id,
+        postThumbnail
       );
     }
 

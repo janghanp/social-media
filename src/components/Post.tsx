@@ -73,6 +73,7 @@ const Post = ({ post }: Props) => {
     <PostProvider
       postId={post.id}
       postAuthorId={post.userId}
+      postThumbnail={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${post.files[0].Key}`}
       initialIsLiked={
         session ? post.likedByIds.includes(session!.user.id) : false
       }

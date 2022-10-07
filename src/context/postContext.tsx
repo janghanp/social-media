@@ -16,6 +16,7 @@ interface Props {
   initialLikesCount: number;
   postId: string;
   postAuthorId: string;
+  postThumbnail: string;
 }
 
 interface PostContextType {
@@ -25,6 +26,7 @@ interface PostContextType {
   totalLikesCount: number;
   postId: string;
   postAuthorId: string;
+  postThumbnail: string;
   setPreviewComments: Dispatch<SetStateAction<CommentType[]>>;
   setTotalCommentsCount: Dispatch<SetStateAction<number>>;
   setIsLiked: Dispatch<SetStateAction<boolean>>;
@@ -38,6 +40,7 @@ const defaultValue: PostContextType = {
   totalLikesCount: 0,
   postId: '',
   postAuthorId: '',
+  postThumbnail: '',
   setPreviewComments: () => {},
   setTotalCommentsCount: () => {},
   setIsLiked: () => {},
@@ -54,6 +57,7 @@ export function PostProvider({
   initialLikesCount,
   postId,
   postAuthorId,
+  postThumbnail,
 }: Props) {
   const [previewComments, setPreviewComments] = useState<CommentType[]>(
     initialPreviewComments
@@ -74,6 +78,7 @@ export function PostProvider({
         totalLikesCount,
         postId,
         postAuthorId,
+        postThumbnail,
         setPreviewComments,
         setTotalCommentsCount,
         setIsLiked,

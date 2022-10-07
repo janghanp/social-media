@@ -105,6 +105,7 @@ model Notification {
   is_clicked Boolean  @default(false)
   createdAt  DateTime @default(now())
   link       String
+  thumbnail  String?
 
   //one to many relation
   receiver User @relation("UserReceiveNotifications", fields: [receiverId], references: [id])

@@ -18,7 +18,7 @@ export interface User {
 export interface Post {
   id: string;
   body: string;
-  files?: FileInfo[];
+  files: FileInfo[];
   createdAt: Date;
   updatedAt: Date;
   userId: string;
@@ -72,6 +72,7 @@ export interface Notification {
   senderId: string;
   receiverId: string;
   targetId?: string;
+  thumbnail?: string;
   type: Type;
   link: string;
   is_read: boolean;

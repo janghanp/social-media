@@ -31,6 +31,7 @@ export default async function handler(
               },
             ],
           },
+          take: 50,
         });
 
         return res.status(200).send(unReadNotifications);
@@ -64,12 +65,14 @@ export default async function handler(
         type,
         link,
         targetId,
+        thumbnail,
       }: {
         senderId: string;
         receiverId: string;
         type: Type;
         link: string;
         targetId?: string;
+        thumbnail?: string;
       } = req.body;
 
       if (type === 'FOLLOW') {
@@ -130,6 +133,7 @@ export default async function handler(
           type,
           targetId,
           link,
+          thumbnail,
         },
       });
 

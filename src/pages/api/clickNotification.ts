@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
 import { prisma } from '../../lib/prisma';
-import { Type } from '@prisma/client';
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,17 +14,28 @@ export default async function handler(
   }
 
   if (req.method === 'PATCH') {
-    const { notificationId }: { notificationId: string } = req.body;
+    const { notificationId }: { notificationId?: string } = req.body;
 
     try {
-      await prisma.notification.update({
-        where: {
-          id: notificationId,
-        },
-        data: {
-          is_clicked: true,
-        },
-      });
+      if (notificationId) {
+        await prisma.notification.update({
+          where: {
+            id: notificationId,
+          },
+          data: {
+            is_clicked: true,
+          },
+        });
+      } else {
+        await prisma.notification.updateMany({
+          where: {
+            receiverId: jwt.sub,
+          },
+          data: {
+            is_clicked: true,
+          },
+        });
+      }
 
       return res.status(200).json({ message: 'Success' });
     } catch (err) {
