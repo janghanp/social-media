@@ -43,7 +43,7 @@ const NotificationList = ({
           console.log(err);
         });
     }
-  }, [isNotificationOpen]);
+  }, [isNotificationOpen, unReadNotifications, reFetchUnReadNotifications]);
 
   const isLoading = !notifications && !error;
 
@@ -56,7 +56,7 @@ const NotificationList = ({
       <motion.div
         initial={{ opacity: 0, y: -60 }}
         animate={{ opacity: 1, y: -40 }}
-        className="rounded-box absolute right-0 top-20 z-40 max-h-[550px] w-auto min-w-[300px] overflow-y-auto border-2 border-primary bg-base-100 shadow"
+        className="rounded-box absolute right-0 top-20 z-40 max-h-[550px] w-[350px] overflow-y-auto border-2 border-primary bg-base-100 shadow"
       >
         <div className="flex items-center justify-between py-3 px-5">
           <span className="text-lg font-semibold">Notifications</span>

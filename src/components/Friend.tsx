@@ -29,7 +29,7 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
     setIsCurrentUserFollowingThisUser(
       !!friend.followedByIds.find((id) => id === currentUser!.id)
     );
-  }, [friend.followedByIds]);
+  }, [friend.followedByIds, currentUser]);
 
   const isMe = friend.id === currentUser!.id;
 

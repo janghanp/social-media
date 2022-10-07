@@ -46,7 +46,7 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
     setIsFollowing(
       !!currentUser?.followingIds.find((id) => id === postAuthor.id)
     );
-  }, [postAuthor]);
+  }, [postAuthor, currentUser?.followingIds]);
 
   const toggleFriendship = async (
     requesterId: string,

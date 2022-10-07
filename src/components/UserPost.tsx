@@ -45,6 +45,7 @@ const UserPost = ({ post }: Props) => {
           height={300}
           layout="responsive"
           objectFit="cover"
+          alt="userProfile"
         />
       </div>
 

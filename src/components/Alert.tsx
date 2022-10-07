@@ -14,7 +14,7 @@ const Alert = ({ message, showAlert, setShowAlert }: Props) => {
         setShowAlert(false);
       }, 5000);
     }
-  }, [showAlert]);
+  }, [showAlert, setShowAlert]);
 
   return (
     <AnimatePresence>

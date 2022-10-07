@@ -84,7 +84,7 @@ const PreviewImageItem = ({
     } else {
       uploadFile();
     }
-  }, [file.croppedImage]);
+  }, [file.croppedImage, editInitialized, file, isEditing, setFiles]);
 
   const deleteHandler = () => {
     URL.revokeObjectURL(file.preview);
@@ -112,24 +112,16 @@ const PreviewImageItem = ({
         <MdOutlineModeEdit className="mr-1 h-6 w-6 self-center stroke-0 text-center" />
         <span>Edit</span>
       </div>
-      {file.type.includes('video') ? (
-        <video
-        // className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  ${height} ${width} object-cover`}
-        >
-          <source src={file.preview} type={file.type} />
-        </video>
-      ) : (
-        <div className={`h-auto w-auto ${px} ${py} bg-white`}>
-          <Image
-            layout="responsive"
-            objectFit="cover"
-            width={width}
-            height={height}
-            src={file.croppedPreview || file.preview}
-            alt="image"
-          />
-        </div>
-      )}
+      <div className={`h-auto w-auto ${px} ${py} bg-white`}>
+        <Image
+          layout="responsive"
+          objectFit="cover"
+          width={width}
+          height={height}
+          src={file.croppedPreview || file.preview}
+          alt="image"
+        />
+      </div>
     </>
   );
 };

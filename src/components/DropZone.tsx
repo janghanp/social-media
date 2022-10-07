@@ -23,7 +23,7 @@ const DropZone = ({ formik, isEditing }: Props) => {
     } else {
       formik.setFieldValue('files', files, false);
     }
-  }, [files]);
+  }, [files, formik]);
 
   const onDropHandler = useCallback(
     async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
@@ -66,7 +66,6 @@ const DropZone = ({ formik, isEditing }: Props) => {
         'image/png': ['.png'],
         'image/gif': ['.gif'],
         'image/webp': ['.webp'],
-        'video/*': [],
       },
       onDrop: onDropHandler,
       validator: fileSizeValidator,

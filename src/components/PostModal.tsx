@@ -8,21 +8,20 @@ import FadeLoader from 'react-spinners/FadeLoader';
 import { CustomFile, FormikValues } from '../types';
 import { PostValidationSchema } from '../lib/validation';
 import DropZone from './DropZone';
+import usePreventScroll from '../hooks/usePreventScroll';
 
 interface Props {
-  isOpen: boolean;
   postId?: string;
   initialBody?: string;
   initialFiles?: { Key: string; ratio: number }[];
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPostModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PostModal = ({
-  isOpen,
   postId,
   initialFiles,
   initialBody,
-  setIsOpen,
+  setIsPostModalOpen,
 }: Props) => {
   const isEditing = initialFiles ? true : false;
 
@@ -60,11 +59,13 @@ const PostModal = ({
       }
 
       setIsLoading(false);
-      setIsOpen(false);
+      setIsPostModalOpen(false);
 
       router.reload();
     },
   });
+
+  usePreventScroll();
 
   useEffect(() => {
     const checkUploading = async () => {
@@ -78,7 +79,7 @@ const PostModal = ({
         }
 
         setIsLoading(false);
-        setIsOpen(false);
+        setIsPostModalOpen(false);
 
         router.reload();
       }
@@ -87,10 +88,20 @@ const PostModal = ({
     if (isSubmited) {
       checkUploading();
     }
-  }, [formik.values.files]);
+  }, [
+    formik.values.files,
+    formik.values,
+    isEditing,
+    isSubmited,
+    postId,
+    router,
+    setIsPostModalOpen,
+  ]);
 
   useEffect(() => {
     const setInitialFiles = async () => {
+      console.log('set initialfiles');
+
       Promise.all(
         initialFiles!.map(
           async (file) => await createFileValues(file.Key, file.ratio)
@@ -103,13 +114,13 @@ const PostModal = ({
     if (isEditing) {
       setInitialFiles();
     }
-  }, []);
+  }, [isEditing, formik, initialFiles]);
 
   useEffect(() => {
     if (isEditing && formik.values.files.length > 0) {
       setToggleDropZone(true);
     }
-  }, [formik.values.files]);
+  }, [formik.values.files, isEditing]);
 
   const copyObjectsInUse = async (files: CustomFile[], body: string) => {
     const fileInfos = files.map((file) => ({
@@ -163,12 +174,8 @@ const PostModal = ({
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
   ) => {
     e.preventDefault();
-    setIsOpen(false);
+    setIsPostModalOpen(false);
   };
-
-  if (!isOpen) {
-    return null;
-  }
 
   return (
     <>

@@ -1,15 +1,18 @@
 import { GetServerSideProps, NextPage } from 'next';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useFormik, FormikHelpers } from 'formik';
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { HiOutlinePencil } from 'react-icons/hi';
 import axios from 'axios';
+import dynamic from 'next/dynamic';
 
 import { useCurrentUserState } from '../store';
 import { UserInfoValidationSchema } from '../lib/validation';
 import { FadeLoader, SyncLoader } from 'react-spinners';
-import Alert from '../components/Alert';
 import { getToken } from 'next-auth/jwt';
+
+const DynamicAlert = dynamic(() => import('../components/Alert'));
 
 interface UserInfo {
   name: string;
@@ -113,7 +116,7 @@ const Settings: NextPage = () => {
     if (image && !imageError) {
       uploadFile();
     }
-  }, [image]);
+  }, [image, imageError, setCurrentUser]);
 
   const changeFileHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0];
@@ -138,7 +141,7 @@ const Settings: NextPage = () => {
 
   return (
     <div className="container relative mx-auto mt-16 flex min-h-screen max-w-4xl flex-col justify-start border px-2 pt-10 lg:px-0">
-      <Alert
+      <DynamicAlert
         showAlert={showAlert}
         setShowAlert={setShowAlert}
         message="The profile image has been updated."
@@ -146,7 +149,12 @@ const Settings: NextPage = () => {
       <div className="mt-5 flex w-full flex-col items-center">
         <div className={`avatar relative mb-3`}>
           <div className={`relative w-28 rounded-full`}>
-            <img src={preview || currentUser?.image} />
+            <Image
+              src={preview || currentUser!.image}
+              width={112}
+              height={112}
+              alt="userProfile"
+            />
             {imageLoading && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-200 bg-opacity-50 pl-2">
                 <FadeLoader margin={5} />

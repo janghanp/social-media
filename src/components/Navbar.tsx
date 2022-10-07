@@ -1,29 +1,21 @@
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { HiOutlinePlus } from 'react-icons/hi';
+import dynamic from 'next/dynamic';
 
 import Avatar from './Avatar';
-import Notification from './Notification';
-import PostModal from './PostModal';
 import { useCurrentUserState } from '../store';
+
+const DynamicPostModal = dynamic(() => import('../components/PostModal'));
+const DynamicNotification = dynamic(() => import('../components/Notification'));
 
 const Navbar = () => {
   const { data: session } = useSession();
 
   const { setCurrentUser, currentUser } = useCurrentUserState();
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflowY = 'hidden';
-      document.body.style.height = '100%';
-    } else {
-      document.body.style.overflow = 'auto';
-      document.body.style.height = 'auto';
-    }
-  }, [isOpen]);
+  const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
 
   const isLoggedIn = session && currentUser ? true : false;
 
@@ -45,10 +37,10 @@ const Navbar = () => {
             {isLoggedIn ? (
               <div className="flex flex-row items-center justify-center">
                 <HiOutlinePlus
-                  onClick={() => setIsOpen(true)}
+                  onClick={() => setIsPostModalOpen(true)}
                   className="h-8 w-8 hover:cursor-pointer"
                 />
-                <Notification />
+                <DynamicNotification />
                 <Avatar
                   userId={currentUser!.id}
                   userImage={currentUser!.image}
@@ -66,7 +58,10 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <PostModal isOpen={isOpen} setIsOpen={setIsOpen} />
+
+      {isPostModalOpen && (
+        <DynamicPostModal setIsPostModalOpen={setIsPostModalOpen} />
+      )}
     </>
   );
 };

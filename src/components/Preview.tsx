@@ -27,7 +27,7 @@ const Preview = ({ files, setFiles, isEditing }: Props) => {
     if (isEditing) {
       setEditInitialized(true);
     }
-  }, []);
+  }, [setEditInitialized, isEditing]);
 
   return (
     <div className="mt-5 box-content h-auto w-auto overflow-hidden rounded-md border border-primary">

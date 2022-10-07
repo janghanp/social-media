@@ -1,10 +1,11 @@
-import axios from 'axios';
+import { useCallback, useEffect } from 'react';
 import useSWR from 'swr';
+import axios from 'axios';
 import { PropagateLoader } from 'react-spinners';
 
 import ImageSlide from './ImageSlide';
 import CommentSection from './CommentSection';
-import { useEffect } from 'react';
+import usePreventScroll from '../hooks/usePreventScroll';
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -15,24 +16,24 @@ interface Props {
 const PostDetailModal = ({ postId, closeModal }: Props) => {
   const { data: post, error } = useSWR(`/api/detail/${postId}`, fetcher);
 
-  const keyEventHandler = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      closeModal();
-    }
-  };
+  const keyEventHandler = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    },
+    [closeModal]
+  );
+
+  usePreventScroll();
 
   useEffect(() => {
     document.addEventListener('keydown', keyEventHandler);
 
-    const body = document.getElementsByTagName('BODY')[0];
-
-    body.classList.add('overflow-hidden');
-
     return () => {
       document.removeEventListener('keydown', keyEventHandler);
-      body.classList.remove('overflow-hidden');
     };
-  }, []);
+  }, [keyEventHandler]);
 
   return (
     <>

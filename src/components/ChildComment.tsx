@@ -15,7 +15,7 @@ interface Props {
   childComment: CommentType;
   setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
   setChildrenCount: React.Dispatch<SetStateAction<number>>;
-  replyHandler: (mentionUser: string, commentId: string) => {};
+  replyHandler: (mentionUser: string, commentId: string) => void;
 }
 
 const ChildComment = ({
@@ -34,7 +34,7 @@ const ChildComment = ({
   const [likesCount, setLikesCount] = useState<number>(
     childComment._count ? childComment._count.likedBy : 0
   );
-  const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
+  const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
 
   const { postId, postThumbnail, setTotalCommentsCount } = usePostContext();
 
@@ -85,7 +85,7 @@ const ChildComment = ({
   };
 
   const deleteCommentHandler = async () => {
-    setToggleControlMenu(false);
+    setIsControlMenuOpen(false);
     setChildrenComments((prevState) =>
       prevState.filter((child) => child.id !== childComment.id)
     );
@@ -154,7 +154,7 @@ const ChildComment = ({
                 </span>
                 {session?.user.id === childComment.userId && (
                   <div
-                    onClick={() => setToggleControlMenu(true)}
+                    onClick={() => setIsControlMenuOpen(true)}
                     className="hidden hover:cursor-pointer group-hover:block"
                   >
                     <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
@@ -166,14 +166,15 @@ const ChildComment = ({
         </div>
       </div>
 
-      <ControlMenu
-        isChild={true}
-        isOpen={toggleControlMenu}
-        setToggleControlMenu={setToggleControlMenu}
-        deleteHandler={deleteCommentHandler}
-        type="comment"
-        isOwner={session?.user.id === childComment.userId}
-      />
+      {isControlMenuOpen && (
+        <ControlMenu
+          isChild={true}
+          setIsControlMenuOpen={setIsControlMenuOpen}
+          deleteHandler={deleteCommentHandler}
+          type="comment"
+          isOwner={session?.user.id === childComment.userId}
+        />
+      )}
     </>
   );
 };

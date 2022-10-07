@@ -47,7 +47,7 @@ const Comment = ({
 
   const { postThumbnail } = usePostContext();
 
-  const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
+  const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
   const [likesCount, setLikesCount] = useState<number>(
     comment._count ? comment._count.likedBy : 0
   );
@@ -71,19 +71,19 @@ const Comment = ({
 
       setChildrenCount((prevState) => prevState + 1);
     }
-  }, [comment.newChildren]);
+  }, [comment.newChildren, childrenComments.length]);
 
   useEffect(() => {
     setChildrenCount(comment._count.children);
   }, [comment._count.children]);
 
   const deleteCommentHandler = async () => {
-    setToggleControlMenu(false);
+    setIsControlMenuOpen(false);
     deleteComment(comment.id, comment.postId);
   };
 
   const editCommentHandler = async () => {
-    setToggleControlMenu(false);
+    setIsControlMenuOpen(false);
     setIsEdit(true);
     setEditingCommentId(comment.id);
     setCurrentCommentInput(comment.comment);
@@ -216,7 +216,7 @@ const Comment = ({
                   {(session?.user.id === comment.userId ||
                     session?.user.id === postAuthorId) && (
                     <div
-                      onClick={() => setToggleControlMenu(true)}
+                      onClick={() => setIsControlMenuOpen(true)}
                       className="hidden hover:cursor-pointer group-hover:block"
                     >
                       <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
@@ -262,14 +262,15 @@ const Comment = ({
         </div>
       )}
 
-      <ControlMenu
-        type="comment"
-        isOwner={session?.user.id === comment.userId}
-        isOpen={toggleControlMenu}
-        setToggleControlMenu={setToggleControlMenu}
-        deleteHandler={deleteCommentHandler}
-        editHandler={editCommentHandler}
-      />
+      {isControlMenuOpen && (
+        <ControlMenu
+          type="comment"
+          isOwner={session?.user.id === comment.userId}
+          setIsControlMenuOpen={setIsControlMenuOpen}
+          deleteHandler={deleteCommentHandler}
+          editHandler={editCommentHandler}
+        />
+      )}
     </>
   );
 };

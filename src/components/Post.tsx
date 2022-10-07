@@ -11,7 +11,7 @@ import { Post as PostType } from '../types';
 import ControlMenu from './ControlMenu';
 import PostModal from './PostModal';
 import ImageSlide from './ImageSlide';
-import { preventScroll } from '../lib/preventScroll';
+// import { preventScroll } from '../lib/preventScroll';
 import Reaction from './Reaction';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -31,14 +31,14 @@ const Post = ({ post }: Props) => {
 
   const { data: session } = useSession();
 
-  const [togglePostDetailModal, setTogglePostDetailModal] =
+  const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
+  const [isPostDetailModalOpen, setIsPostDetailModalOpen] =
     useState<boolean>(false);
-  const [toggleControlMenu, setToggleControlMenu] = useState<boolean>(false);
-  const [togglePostModal, setTogglePostModal] = useState<boolean>(false);
+  const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    preventScroll(!!router.query.postId, toggleControlMenu);
-  }, [router.query.postId, toggleControlMenu]);
+  // useEffect(() => {
+  //   preventScroll(!!router.query.postId, isControlMenuOpen);
+  // }, [router.query.postId, isControlMenuOpen]);
 
   const deletePostHandler = async () => {
     await axios.delete('/api/post', {
@@ -51,8 +51,8 @@ const Post = ({ post }: Props) => {
   };
 
   const editPostHandler = async () => {
-    setToggleControlMenu(false);
-    setTogglePostModal(true);
+    setIsControlMenuOpen(false);
+    setIsPostModalOpen(true);
   };
 
   const avatarClickHandler = () => {
@@ -61,12 +61,12 @@ const Post = ({ post }: Props) => {
 
   const openPostDetailModal = () => {
     window.history.replaceState({}, '', `/posts/${post.id}`);
-    setTogglePostDetailModal(true);
+    setIsPostDetailModalOpen(true);
   };
 
   const closePostDetailModal = () => {
     window.history.replaceState({}, '', '/');
-    setTogglePostDetailModal(false);
+    setIsPostDetailModalOpen(false);
   };
 
   return (
@@ -88,7 +88,12 @@ const Post = ({ post }: Props) => {
               onClick={avatarClickHandler}
               className="avatar overflow-hidden rounded-full hover:cursor-pointer"
             >
-              <Image src={post.user.image} width={40} height={40} alt="Test" />
+              <Image
+                src={post.user.image}
+                width={40}
+                height={40}
+                alt="userImage"
+              />
             </div>
             <span className="text-sm lowercase text-gray-500">
               {post.user.username} &nbsp;• &nbsp;{' '}
@@ -98,7 +103,7 @@ const Post = ({ post }: Props) => {
           {session?.user.id === post.userId && (
             <div
               className="rounded-full p-1 transition duration-300 hover:cursor-pointer hover:bg-gray-200/50"
-              onClick={() => setToggleControlMenu(true)}
+              onClick={() => setIsControlMenuOpen(true)}
             >
               <AiOutlineEllipsis className="h-6 w-6" />
             </div>
@@ -117,26 +122,28 @@ const Post = ({ post }: Props) => {
         </div>
       </div>
 
-      {togglePostDetailModal && (
+      {isPostModalOpen && (
+        <PostModal
+          setIsPostModalOpen={setIsPostModalOpen}
+          initialBody={post.body}
+          initialFiles={post.files}
+          postId={post.id}
+        />
+      )}
+
+      {isPostDetailModalOpen && (
         <PostDetailModal postId={post.id} closeModal={closePostDetailModal} />
       )}
 
-      <ControlMenu
-        type="post"
-        isOpen={toggleControlMenu}
-        isOwner={session?.user.id === post.userId}
-        setToggleControlMenu={setToggleControlMenu}
-        deleteHandler={deletePostHandler}
-        editHandler={editPostHandler}
-      />
-
-      <PostModal
-        isOpen={togglePostModal}
-        setIsOpen={setTogglePostModal}
-        initialBody={post.body}
-        initialFiles={post.files}
-        postId={post.id}
-      />
+      {isControlMenuOpen && (
+        <ControlMenu
+          type="post"
+          isOwner={session?.user.id === post.userId}
+          setIsControlMenuOpen={setIsControlMenuOpen}
+          deleteHandler={deletePostHandler}
+          editHandler={editPostHandler}
+        />
+      )}
     </PostProvider>
   );
 };

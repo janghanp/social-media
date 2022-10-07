@@ -26,6 +26,7 @@ const ImageSlide = ({ files }: Props) => {
       return (
         <SwiperSlide key={index}>
           <div className={`h-auto w-auto ${px} ${py}`}>
+            {/* <img src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`} alt="image" /> */}
             <Image
               src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`}
               width={width}

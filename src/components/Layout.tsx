@@ -31,7 +31,7 @@ const Layout = ({ children }: Props) => {
           console.log(err);
         });
     }
-  }, [status]);
+  }, [status, session, setCurrentUser]);
 
   if (status === 'loading' || (session && !currentUser)) {
     return <></>;

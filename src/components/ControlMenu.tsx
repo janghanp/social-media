@@ -1,29 +1,27 @@
 import { useState } from 'react';
 
+import usePreventScroll from '../hooks/usePreventScroll';
+
 interface Props {
   type: 'post' | 'comment';
   isOwner: boolean;
-  isOpen: boolean;
   isChild?: boolean;
   deleteHandler: () => {};
   editHandler?: () => {};
-  setToggleControlMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsControlMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ControlMenu = ({
   isChild,
-  isOpen,
   isOwner,
   type,
-  setToggleControlMenu,
+  setIsControlMenuOpen,
   deleteHandler,
   editHandler,
 }: Props) => {
   const [toggleConfirm, setToggleConfirm] = useState<boolean>(false);
 
-  if (!isOpen) {
-    return null;
-  }
+  usePreventScroll();
 
   return (
     <>
@@ -43,7 +41,7 @@ const ControlMenu = ({
               <button
                 onClick={() => {
                   setToggleConfirm(false);
-                  setToggleControlMenu(false);
+                  setIsControlMenuOpen(false);
                 }}
                 className="btn btn-outline"
               >
@@ -68,7 +66,7 @@ const ControlMenu = ({
               delete
             </li>
             <li
-              onClick={() => setToggleControlMenu(false)}
+              onClick={() => setIsControlMenuOpen(false)}
               className="p-3 text-center transition duration-200 hover:cursor-pointer hover:bg-gray-200"
             >
               cancel
