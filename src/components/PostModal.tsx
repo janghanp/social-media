@@ -9,6 +9,7 @@ import { CustomFile, FormikValues } from '../types';
 import { PostValidationSchema } from '../lib/validation';
 import DropZone from './DropZone';
 import usePreventScroll from '../hooks/usePreventScroll';
+import Preview from './Preview';
 
 interface Props {
   postId?: string;
@@ -29,7 +30,7 @@ const PostModal = ({
 
   const [isSubmited, setIsSubmitted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [toggleDropZone, setToggleDropZone] = useState<boolean>(false);
+  // const [files, setFiles] = useState<CustomFile[]>(formik.values.files);
 
   const formik = useFormik<FormikValues>({
     initialValues: {
@@ -88,20 +89,10 @@ const PostModal = ({
     if (isSubmited) {
       checkUploading();
     }
-  }, [
-    formik.values.files,
-    formik.values,
-    isEditing,
-    isSubmited,
-    postId,
-    router,
-    setIsPostModalOpen,
-  ]);
+  }, [formik.values.files]);
 
   useEffect(() => {
     const setInitialFiles = async () => {
-      console.log('set initialfiles');
-
       Promise.all(
         initialFiles!.map(
           async (file) => await createFileValues(file.Key, file.ratio)
@@ -114,13 +105,7 @@ const PostModal = ({
     if (isEditing) {
       setInitialFiles();
     }
-  }, [isEditing, formik, initialFiles]);
-
-  useEffect(() => {
-    if (isEditing && formik.values.files.length > 0) {
-      setToggleDropZone(true);
-    }
-  }, [formik.values.files, isEditing]);
+  }, []);
 
   const copyObjectsInUse = async (files: CustomFile[], body: string) => {
     const fileInfos = files.map((file) => ({
@@ -227,14 +212,13 @@ const PostModal = ({
           {formik.errors.body && (
             <span className="text-sm text-red-500">{formik.errors.body}</span>
           )}
-          {toggleDropZone && <DropZone formik={formik} isEditing={isEditing} />}
 
-          <div className="mt-5">
-            <HiOutlinePhotograph
-              onClick={() => setToggleDropZone(true)}
-              className="h-8 w-8 hover:cursor-pointer"
-            />
-          </div>
+          <DropZone formik={formik} isEditing={isEditing} />
+
+          {formik.values.files.length > 0 && (
+            <Preview files={formik.values.files} setFiles={setFiles} isEditing={isEditing} />
+          )}
+
           <div className="mt-5 flex flex-row space-x-5">
             <button
               type="submit"
@@ -254,6 +238,9 @@ const PostModal = ({
             </button>
           </div>
         </form>
+        {/* <code>
+          <pre>{JSON.stringify(formik, null, 4)}</pre>
+        </code> */}
       </div>
     </>
   );

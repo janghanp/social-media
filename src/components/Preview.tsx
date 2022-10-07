@@ -12,8 +12,8 @@ import SwiperNextButton from './SwiperNextButton';
 
 interface Props {
   files: CustomFile[];
-  setFiles: React.Dispatch<React.SetStateAction<CustomFile[]>>;
   isEditing: boolean;
+  setFiles: React.Dispatch<React.SetStateAction<CustomFile[]>>;
 }
 
 const Preview = ({ files, setFiles, isEditing }: Props) => {
@@ -27,7 +27,7 @@ const Preview = ({ files, setFiles, isEditing }: Props) => {
     if (isEditing) {
       setEditInitialized(true);
     }
-  }, [setEditInitialized, isEditing]);
+  }, []);
 
   return (
     <div className="mt-5 box-content h-auto w-auto overflow-hidden rounded-md border border-primary">

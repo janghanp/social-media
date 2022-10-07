@@ -5,43 +5,22 @@ import { MdClose, MdOutlineModeEdit } from 'react-icons/md';
 
 import { CustomFile } from '../types';
 import ImageCropModal from './ImageCropModal';
+import { previewItemRatio } from '../lib/previewItemRatio';
 
 interface Props {
   file: CustomFile;
-  setFiles: React.Dispatch<React.SetStateAction<CustomFile[]>>;
   isEditing: boolean;
   editInitialized: boolean;
+  setFiles: React.Dispatch<React.SetStateAction<CustomFile[]>>;
 }
 
 const PreviewImageItem = ({
   file,
-  setFiles,
   isEditing,
   editInitialized,
+  setFiles,
 }: Props) => {
-  let width, height, px, py;
-
-  if (file.aspectInit?.value === 1) {
-    width = 564;
-    height = 564;
-    px = 'px-0';
-    py = 'py-0';
-  } else if (file.aspectInit && file.aspectInit.value < 1) {
-    width = 451;
-    height = 564;
-    px = 'px-[10%]';
-    py = 'py-0';
-  } else if (file.aspectInit && file.aspectInit.value > 1) {
-    width = 564;
-    height = 317;
-    px = 'px-0';
-    py = 'py-[21.9%]';
-  } else {
-    width = 564;
-    height = 564;
-    px = 'px-0';
-    py = 'py-0';
-  }
+  const { width, height, px, py } = previewItemRatio(file.aspectInit!.value);
 
   const [imageCropModal, setImageCropModal] = useState<boolean>(false);
 
@@ -84,7 +63,7 @@ const PreviewImageItem = ({
     } else {
       uploadFile();
     }
-  }, [file.croppedImage, editInitialized, file, isEditing, setFiles]);
+  }, [file.croppedImage]);
 
   const deleteHandler = () => {
     URL.revokeObjectURL(file.preview);
