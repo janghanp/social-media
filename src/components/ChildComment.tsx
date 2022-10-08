@@ -86,9 +86,7 @@ const ChildComment = ({
 
   const deleteCommentHandler = async () => {
     setIsControlMenuOpen(false);
-    setChildrenComments((prevState) =>
-      prevState.filter((child) => child.id !== childComment.id)
-    );
+    setChildrenComments((prevState) => prevState.filter((child) => child.id !== childComment.id));
 
     setChildrenCount((prevState) => prevState - 1);
 
@@ -107,18 +105,11 @@ const ChildComment = ({
     <>
       <div className="group flex w-full flex-row items-start justify-start gap-x-2">
         <div className="avatar flex-none overflow-hidden rounded-full">
-          <Image
-            src={childComment.user.image}
-            width={40}
-            height={40}
-            alt="user-image"
-          />
+          <Image src={childComment.user.image} width={40} height={40} alt="user-image" />
         </div>
         <div className="-mt-2 flex flex-col">
           <div>
-            <span className="mr-3 text-sm font-bold">
-              {childComment.user.username}
-            </span>
+            <span className="mr-3 text-sm font-bold">{childComment.user.username}</span>
             <span className="mr-1 text-sm text-blue-900 hover:cursor-pointer">
               @{childComment.mentionUser}
             </span>
@@ -135,19 +126,12 @@ const ChildComment = ({
               <div className="flex gap-x-3 font-semibold">
                 <span
                   onClick={likeCommentHandler}
-                  className={`hover:cursor-pointer ${
-                    isLiked && 'text-red-400'
-                  }`}
+                  className={`hover:cursor-pointer ${isLiked && 'text-red-400'}`}
                 >
                   Like
                 </span>
                 <span
-                  onClick={() =>
-                    replyHandler(
-                      childComment.user.username,
-                      childComment.parentId!
-                    )
-                  }
+                  onClick={() => replyHandler(childComment.user.username, childComment.parentId!)}
                   className="hover:cursor-pointer"
                 >
                   Reply

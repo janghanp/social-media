@@ -8,10 +8,7 @@ interface Props {
   refetchNotifications: () => void;
 }
 
-const NotificationOption = ({
-  setIsNotificationOpen,
-  refetchNotifications,
-}: Props) => {
+const NotificationOption = ({ setIsNotificationOpen, refetchNotifications }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const clickHanlder = async () => {

@@ -1,57 +1,37 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 import classNames from 'classnames';
-import { FormikProps } from 'formik';
+import { FormikErrors, FormikProps } from 'formik';
 import { HiOutlineUpload } from 'react-icons/hi';
 
 import { CustomFile, FormikValues } from '../types';
-// import Preview from './Preview';
 
 interface Props {
+  error: string | string[] | FormikErrors<CustomFile>[] | undefined;
   formik: FormikProps<FormikValues>;
-  isEditing: boolean;
 }
 
-const DropZone = ({ formik, isEditing }: Props) => {
-  const firstRender = useRef<boolean>(true);
-
-  //hoist up the state?
-  const [files, setFiles] = useState<CustomFile[]>(formik.values.files);
-
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-    } else {
-      formik.setFieldValue('files', files, true);
-      formik.setFieldTouched('files', true, true);
-    }
-  }, [files]);
-
-  // useEffect(() => {
-  //   if (isEditing && formik.values.files.length > 0) {
-  //     setFiles(formik.values.files);
-  //   }
-  // }, [formik.values.files]);
-
+const DropZone = ({ error, formik }: Props) => {
   const onDropHandler = useCallback(
     async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (rejectedFiles.length) {
         return;
       }
 
-      setFiles((prevState) => {
-        const newAddedFiles = acceptedFiles.map((file) => {
-          return Object.assign(file, {
-            preview: URL.createObjectURL(file),
-            uploaded: false,
-            isUploading: false,
-          });
+      //set files into the formik directly.
+      const newAddedFiles = acceptedFiles.map((file) => {
+        return Object.assign(file, {
+          preview: URL.createObjectURL(file),
+          uploaded: false,
+          isUploading: false,
         });
-
-        return [...prevState, ...newAddedFiles];
       });
+
+      const newFiles = [...formik.values.files, ...newAddedFiles];
+
+      formik.setFieldValue('files', newFiles);
     },
-    []
+    [formik.values.files]
   );
 
   const fileSizeValidator = (file: File) => {
@@ -65,26 +45,25 @@ const DropZone = ({ formik, isEditing }: Props) => {
     return null;
   };
 
-  const { getRootProps, getInputProps, isDragActive, fileRejections } =
-    useDropzone({
-      multiple: true,
-      useFsAccessApi: false,
-      accept: {
-        'image/jpeg': ['.jpeg', '.jpg'],
-        'image/png': ['.png'],
-        'image/gif': ['.gif'],
-        'image/webp': ['.webp'],
-      },
-      onDrop: onDropHandler,
-      validator: fileSizeValidator,
-    });
+  const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
+    multiple: true,
+    useFsAccessApi: false,
+    accept: {
+      'image/jpeg': ['.jpeg', '.jpg'],
+      'image/png': ['.png'],
+      'image/gif': ['.gif'],
+      'image/webp': ['.webp'],
+    },
+    onDrop: onDropHandler,
+    validator: fileSizeValidator,
+  });
 
   const dragAreaClasses = classNames({
     'border-2 border-dashed rounded-lg max-h-80 overflow-auto': true,
     'bg-gray-200': isDragActive,
     'border-warning': fileRejections.length > 0,
     'border-gray-500': fileRejections.length === 0,
-    'border-red-500': formik.errors.files,
+    'border-red-500': error,
   });
 
   return (
@@ -101,19 +80,11 @@ const DropZone = ({ formik, isEditing }: Props) => {
         </div>
       </section>
 
-      {formik.errors.files && (
-        <span className="text-red-500">{formik.errors.files as string}</span>
-      )}
+      {error && <span className="text-red-500">{error as string}</span>}
 
       {fileRejections.length > 0 && (
-        <div className="mt-2 text-sm text-warning">
-          {fileRejections[0].errors[0].message}
-        </div>
+        <div className="mt-2 text-sm text-warning">{fileRejections[0].errors[0].message}</div>
       )}
-
-      {/* {files.length > 0 && (
-        <Preview files={files} setFiles={setFiles} isEditing={isEditing} />
-      )} */}
     </>
   );
 };

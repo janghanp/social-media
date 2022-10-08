@@ -32,8 +32,7 @@ const Post = ({ post }: Props) => {
   const { data: session } = useSession();
 
   const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
-  const [isPostDetailModalOpen, setIsPostDetailModalOpen] =
-    useState<boolean>(false);
+  const [isPostDetailModalOpen, setIsPostDetailModalOpen] = useState<boolean>(false);
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
 
   // useEffect(() => {
@@ -74,9 +73,7 @@ const Post = ({ post }: Props) => {
       postId={post.id}
       postAuthorId={post.userId}
       postThumbnail={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${post.files[0].Key}`}
-      initialIsLiked={
-        session ? post.likedByIds.includes(session!.user.id) : false
-      }
+      initialIsLiked={session ? post.likedByIds.includes(session!.user.id) : false}
       initialLikesCount={post._count.likedBy}
       initialPreviewComments={post.comments}
       initialTotalCommentsCount={post._count.comments}
@@ -88,16 +85,10 @@ const Post = ({ post }: Props) => {
               onClick={avatarClickHandler}
               className="avatar overflow-hidden rounded-full hover:cursor-pointer"
             >
-              <Image
-                src={post.user.image}
-                width={40}
-                height={40}
-                alt="userImage"
-              />
+              <Image src={post.user.image} width={40} height={40} alt="userImage" />
             </div>
             <span className="text-sm lowercase text-gray-500">
-              {post.user.username} &nbsp;• &nbsp;{' '}
-              {dayjs().to(dayjs(post.createdAt))}
+              {post.user.username} &nbsp;• &nbsp; {dayjs().to(dayjs(post.createdAt))}
             </span>
           </div>
           {session?.user.id === post.userId && (
@@ -113,9 +104,7 @@ const Post = ({ post }: Props) => {
         <div className="p-3">
           <Reaction openPostDetailModal={openPostDetailModal} />
           <div className="mt-5">
-            <span className="mr-3 text-sm font-bold text-primary">
-              {post.user.username}
-            </span>
+            <span className="mr-3 text-sm font-bold text-primary">{post.user.username}</span>
             <span>{post.body}</span>
           </div>
           <PreviewComments openDetailPostModal={openPostDetailModal} />

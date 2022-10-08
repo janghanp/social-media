@@ -3,10 +3,7 @@ import { getToken } from 'next-auth/jwt';
 
 import { prisma } from '../../lib/prisma';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
@@ -52,8 +49,7 @@ export default async function handler(
   }
 
   if (req.method === 'POST') {
-    const { postId, comment: body }: { postId: string; comment: string } =
-      req.body;
+    const { postId, comment: body }: { postId: string; comment: string } = req.body;
 
     try {
       const comment = await prisma.comment.create({
@@ -101,11 +97,8 @@ export default async function handler(
   }
 
   if (req.method === 'DELETE') {
-    const {
-      commentId,
-      postId,
-      isChild,
-    }: { commentId: string; postId: string; isChild: boolean } = req.body;
+    const { commentId, postId, isChild }: { commentId: string; postId: string; isChild: boolean } =
+      req.body;
 
     try {
       if (isChild) {
@@ -149,8 +142,7 @@ export default async function handler(
   }
 
   if (req.method === 'PUT') {
-    const { commentId, comment }: { commentId: string; comment: string } =
-      req.body;
+    const { commentId, comment }: { commentId: string; comment: string } = req.body;
 
     try {
       const updatedComment = await prisma.comment.update({
@@ -171,9 +163,7 @@ export default async function handler(
         },
       });
 
-      return res
-        .status(200)
-        .json({ message: 'Successfully updated', updatedComment });
+      return res.status(200).json({ message: 'Successfully updated', updatedComment });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: 'Something went wrong...' });

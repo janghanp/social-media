@@ -40,10 +40,7 @@ const CommentsList = ({
               {isLoadingMore ? (
                 <SyncLoader size={8} color="gray" />
               ) : (
-                <AiOutlinePlusCircle
-                  className="h-6 w-6 hover:cursor-pointer"
-                  onClick={loadMore}
-                />
+                <AiOutlinePlusCircle className="h-6 w-6 hover:cursor-pointer" onClick={loadMore} />
               )}
             </>
           )}

@@ -75,8 +75,7 @@ const CommentSection = ({ post }: Props) => {
   const [currentComments, setCurrentComments] = useState<CommentType[]>([]);
   const [skip, setSkip] = useState<number>(0);
 
-  const { postThumbnail, setTotalCommentsCount, setPreviewComments } =
-    usePostContext();
+  const { postThumbnail, setTotalCommentsCount, setPreviewComments } = usePostContext();
 
   useEffect(() => {
     async function fetchComments(): Promise<void> {
@@ -114,9 +113,7 @@ const CommentSection = ({ post }: Props) => {
     setIsLoadingMore(true);
 
     const { data } = await axios.get(
-      `/api/comment?postId=${post.id}&currentPage=${
-        currentPage + 1
-      }&skip=${skip}`
+      `/api/comment?postId=${post.id}&currentPage=${currentPage + 1}&skip=${skip}`
     );
 
     if (data.length < 20) {
@@ -223,17 +220,11 @@ const CommentSection = ({ post }: Props) => {
       },
     });
 
-    const comment = currentComments.filter(
-      (currentComment) => currentComment.id === commentId
-    )[0];
+    const comment = currentComments.filter((currentComment) => currentComment.id === commentId)[0];
 
-    setTotalCommentsCount(
-      (prevState) => prevState - (comment._count.children + 1)
-    );
+    setTotalCommentsCount((prevState) => prevState - (comment._count.children + 1));
     setCurrentComments((prevState) => {
-      const newCurrentComments = prevState.filter(
-        (prevComment) => prevComment.id !== commentId
-      );
+      const newCurrentComments = prevState.filter((prevComment) => prevComment.id !== commentId);
       setPreviewComments(newCurrentComments.slice(0, 2));
 
       return newCurrentComments;
@@ -255,32 +246,22 @@ const CommentSection = ({ post }: Props) => {
             <Image src={post.user.image} width={40} height={40} alt="Image" />
           </div>
           <span className="text-sm text-gray-500">
-            {post.user.username} &nbsp;• &nbsp;{' '}
-            {dayjs().to(dayjs(post.createdAt))}
+            {post.user.username} &nbsp;• &nbsp; {dayjs().to(dayjs(post.createdAt))}
           </span>
         </div>
         <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
           <div className="flex w-auto gap-x-2 p-3">
             <div className="avatar overflow-hidden">
               <div className="flex h-[40px]  w-[40px] items-center justify-center rounded-full">
-                <Image
-                  src={post.user.image}
-                  width={40}
-                  height={40}
-                  alt="Image"
-                />
+                <Image src={post.user.image} width={40} height={40} alt="Image" />
               </div>
             </div>
             <div className="flex flex-1 flex-col">
               <div>
-                <span className="mr-3 text-sm font-bold">
-                  {post.user.username}
-                </span>
+                <span className="mr-3 text-sm font-bold">{post.user.username}</span>
                 <span className="text-sm">{post.body}</span>
               </div>
-              <span className="text-xs text-gray-500">
-                {dayjs().to(dayjs(post.createdAt))}
-              </span>
+              <span className="text-xs text-gray-500">{dayjs().to(dayjs(post.createdAt))}</span>
             </div>
           </div>
           <CommentsList

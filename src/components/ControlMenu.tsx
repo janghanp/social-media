@@ -32,10 +32,7 @@ const ControlMenu = ({
               Are you sure you want to delete this {type}?
             </div>
             <div className="mt-5 flex items-center justify-center gap-x-3">
-              <button
-                onClick={deleteHandler}
-                className="btn btn-outline btn-warning"
-              >
+              <button onClick={deleteHandler} className="btn btn-outline btn-warning">
                 yes
               </button>
               <button

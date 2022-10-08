@@ -1,10 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import {
-  S3Client,
-  CopyObjectCommand,
-  DeleteObjectCommand,
-} from '@aws-sdk/client-s3';
+import { S3Client, CopyObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 import { prisma } from '../../lib/prisma';
 
@@ -38,10 +34,7 @@ const deleteObject = (key: string) => {
   s3.send(deleteCommand);
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     const { pageNumber } = req.query;
 
@@ -89,10 +82,8 @@ export default async function handler(
   }
 
   if (req.method === 'POST') {
-    const {
-      body,
-      fileInfos,
-    }: { body: string; fileInfos: { Key: string; ratio: number }[] } = req.body;
+    const { body, fileInfos }: { body: string; fileInfos: { Key: string; ratio: number }[] } =
+      req.body;
 
     try {
       await Promise.all(fileInfos.map((fileInfo) => copyObject(fileInfo.Key)));
@@ -167,21 +158,15 @@ export default async function handler(
 
     const currentkeys = currentFiles.map((currentFile) => currentFile.Key);
 
-    const intersectionFiles = newFiles.filter((newFile) =>
-      currentkeys.includes(newFile.Key)
-    );
+    const intersectionFiles = newFiles.filter((newFile) => currentkeys.includes(newFile.Key));
 
-    const intersectionKeys = intersectionFiles.map(
-      (interFile) => interFile.Key
-    );
+    const intersectionKeys = intersectionFiles.map((interFile) => interFile.Key);
 
     const filesToDelete = currentFiles.filter(
       (currentFile) => !intersectionKeys.includes(currentFile.Key)
     );
 
-    const filesToCopy = newFiles.filter(
-      (newFile) => !intersectionKeys.includes(newFile.Key)
-    );
+    const filesToCopy = newFiles.filter((newFile) => !intersectionKeys.includes(newFile.Key));
 
     // //Copy object
     await Promise.all(filesToCopy.map((file) => copyObject(file.Key)));

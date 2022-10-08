@@ -51,9 +51,7 @@ const Login: NextPage = () => {
         </div>
       )}
       <div className="mx-auto w-full max-w-md text-2xl">
-        <div className="mt-2 text-center text-3xl font-bold text-primary">
-          Welcome
-        </div>
+        <div className="mt-2 text-center text-3xl font-bold text-primary">Welcome</div>
       </div>
 
       <div className="mx-auto mt-4 w-full max-w-md border border-primary bg-white p-8 shadow-md">

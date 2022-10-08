@@ -13,10 +13,7 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ mesage: 'Method not allowed' });
   }
@@ -45,8 +42,6 @@ export default async function handler(
     res.status(200).json({ uploadURL, Key });
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({ message: 'Something went wrong please try again...' });
+    res.status(500).json({ message: 'Something went wrong please try again...' });
   }
 }

@@ -3,10 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { prisma } from '../../lib/prisma';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
@@ -18,8 +15,7 @@ export default async function handler(
       requesterId,
       receiverId,
       unfollow,
-    }: { requesterId: string; receiverId: string; unfollow: boolean } =
-      req.body;
+    }: { requesterId: string; receiverId: string; unfollow: boolean } = req.body;
 
     let updatedCurrentUser: User;
 
@@ -37,9 +33,7 @@ export default async function handler(
           },
           data: {
             followingIds: {
-              set: requester?.followingIds.filter(
-                (followingId) => followingId !== receiverId
-              ),
+              set: requester?.followingIds.filter((followingId) => followingId !== receiverId),
             },
           },
         });
@@ -56,9 +50,7 @@ export default async function handler(
           },
           data: {
             followedByIds: {
-              set: postAuthor?.followedByIds.filter(
-                (followedById) => followedById !== requesterId
-              ),
+              set: postAuthor?.followedByIds.filter((followedById) => followedById !== requesterId),
             },
           },
         });

@@ -25,27 +25,20 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
     !!currentUser?.followingIds.find((id) => id === postAuthor.id)
   );
 
-  const [followerCounts, setFollowerCounts] = useState<number>(
-    postAuthor._count!.followedBy
-  );
+  const [followerCounts, setFollowerCounts] = useState<number>(postAuthor._count!.followedBy);
 
-  const [followingCounts, setFollowingCounts] = useState<number>(
-    postAuthor._count!.following
-  );
+  const [followingCounts, setFollowingCounts] = useState<number>(postAuthor._count!.following);
 
-  const [toggleFriendshipModal, setToggleFriendshipModal] =
-    useState<FriendshipModalType>({
-      isOpen: false,
-      status: '',
-    });
+  const [toggleFriendshipModal, setToggleFriendshipModal] = useState<FriendshipModalType>({
+    isOpen: false,
+    status: '',
+  });
 
   useEffect(() => {
     //Props as an initial state.
     setFollowerCounts(postAuthor._count!.followedBy);
     setFollowingCounts(postAuthor._count!.following);
-    setIsFollowing(
-      !!currentUser?.followingIds.find((id) => id === postAuthor.id)
-    );
+    setIsFollowing(!!currentUser?.followingIds.find((id) => id === postAuthor.id));
   }, [postAuthor, currentUser?.followingIds]);
 
   const toggleFriendship = async (
@@ -104,12 +97,7 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
     <>
       <div className="flex h-52 w-full flex-row items-start justify-center gap-x-10 border-b border-gray-300">
         <div className="avatar overflow-hidden rounded-full border">
-          <Image
-            src={postAuthor!.image}
-            width={125}
-            height={125}
-            alt={postAuthor?.username}
-          />
+          <Image src={postAuthor!.image} width={125} height={125} alt={postAuthor?.username} />
         </div>
         <div className="flex flex-col gap-y-5">
           <div className="flex gap-x-5">
@@ -117,14 +105,10 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
             {currentUser?.username !== postAuthor.username && (
               <button
                 className={`btn ${!isFollowing && 'btn-outline'} btn-sm px-10`}
-                onClick={() =>
-                  toggleFriendship(currentUser!.id, postAuthor.id, isFollowing)
-                }
+                onClick={() => toggleFriendship(currentUser!.id, postAuthor.id, isFollowing)}
               >
                 {isFollowing ? (
-                  <span className="text-sm font-semibold normal-case">
-                    Following
-                  </span>
+                  <span className="text-sm font-semibold normal-case">Following</span>
                 ) : (
                   <HiUser className="h-5 w-5" />
                 )}
@@ -155,9 +139,7 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
         <FriendshipModal
           postAuthorId={postAuthor.id}
           status={toggleFriendshipModal.status}
-          closeFriendshipModal={() =>
-            setToggleFriendshipModal({ isOpen: false, status: '' })
-          }
+          closeFriendshipModal={() => setToggleFriendshipModal({ isOpen: false, status: '' })}
           toggleFriendship={toggleFriendship}
         />
       )}

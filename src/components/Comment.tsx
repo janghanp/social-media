@@ -48,9 +48,7 @@ const Comment = ({
   const { postThumbnail } = usePostContext();
 
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
-  const [likesCount, setLikesCount] = useState<number>(
-    comment._count ? comment._count.likedBy : 0
-  );
+  const [likesCount, setLikesCount] = useState<number>(comment._count ? comment._count.likedBy : 0);
   const [isLiked, setIsLiked] = useState<boolean>(
     session && comment.likedByIds.includes(session.user.id) ? true : false
   );
@@ -174,18 +172,11 @@ const Comment = ({
       <div className="group my-1 flex w-full flex-row items-center justify-between gap-x-2 break-all">
         <div className="flex w-full flex-row items-start justify-start gap-x-2">
           <div className="avatar flex-none overflow-hidden rounded-full">
-            <Image
-              src={comment.user.image}
-              width={40}
-              height={40}
-              alt={comment.user.id}
-            />
+            <Image src={comment.user.image} width={40} height={40} alt={comment.user.id} />
           </div>
           <div className="-mt-2 flex flex-col">
             <div>
-              <span className="mr-3 text-sm font-bold">
-                {comment.user.username}
-              </span>
+              <span className="mr-3 text-sm font-bold">{comment.user.username}</span>
               <span className="text-sm">{comment.comment}</span>
             </div>
             <div className="mt-2 flex h-5 gap-x-2 text-xs text-gray-500">
@@ -199,22 +190,17 @@ const Comment = ({
                 <div className="flex gap-x-3 font-semibold">
                   <span
                     onClick={likeCommentHandler}
-                    className={`hover:cursor-pointer ${
-                      isLiked && 'text-red-400'
-                    }`}
+                    className={`hover:cursor-pointer ${isLiked && 'text-red-400'}`}
                   >
                     Like
                   </span>
                   <span
-                    onClick={() =>
-                      replyHandler(comment.user.username, comment.id)
-                    }
+                    onClick={() => replyHandler(comment.user.username, comment.id)}
                     className="hover:cursor-pointer"
                   >
                     Reply
                   </span>
-                  {(session?.user.id === comment.userId ||
-                    session?.user.id === postAuthorId) && (
+                  {(session?.user.id === comment.userId || session?.user.id === postAuthorId) && (
                     <div
                       onClick={() => setIsControlMenuOpen(true)}
                       className="hidden hover:cursor-pointer group-hover:block"

@@ -59,9 +59,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {isPostModalOpen && (
-        <DynamicPostModal setIsPostModalOpen={setIsPostModalOpen} />
-      )}
+      {isPostModalOpen && <DynamicPostModal setIsPostModalOpen={setIsPostModalOpen} />}
     </>
   );
 };

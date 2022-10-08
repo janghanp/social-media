@@ -49,10 +49,7 @@ const NotificationList = ({
 
   return (
     <>
-      <div
-        onClick={() => setIsNotificationOpen(false)}
-        className="fixed inset-0 z-30"
-      ></div>
+      <div onClick={() => setIsNotificationOpen(false)} className="fixed inset-0 z-30"></div>
       <motion.div
         initial={{ opacity: 0, y: -60 }}
         animate={{ opacity: 1, y: -40 }}

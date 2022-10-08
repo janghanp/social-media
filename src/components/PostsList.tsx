@@ -12,10 +12,7 @@ interface Props {
 const PostsList = ({ initialPosts }: Props) => {
   const [pageNumber, setPageNumber] = useState<number>(1);
 
-  const { posts, isLoading, error, hasMore } = usePosts(
-    pageNumber,
-    initialPosts
-  );
+  const { posts, isLoading, error, hasMore } = usePosts(pageNumber, initialPosts);
 
   const observerRef = useRef<IntersectionObserver>();
 
@@ -71,9 +68,7 @@ const PostsList = ({ initialPosts }: Props) => {
         </div>
       )}
 
-      {error && (
-        <div className="mt-5 text-sm text-warning">Please try again...</div>
-      )}
+      {error && <div className="mt-5 text-sm text-warning">Please try again...</div>}
     </div>
   );
 };

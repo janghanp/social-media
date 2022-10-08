@@ -4,10 +4,7 @@ import { getToken } from 'next-auth/jwt';
 import { prisma } from '../../lib/prisma';
 import { Type } from '@prisma/client';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
@@ -93,12 +90,7 @@ export default async function handler(
         //A usermight like your several posts.
         const hasSentWithLikePost = await prisma.notification.findFirst({
           where: {
-            AND: [
-              { senderId },
-              { receiverId },
-              { type: 'LIKEPOST' },
-              { targetId },
-            ],
+            AND: [{ senderId }, { receiverId }, { type: 'LIKEPOST' }, { targetId }],
           },
         });
 
@@ -112,12 +104,7 @@ export default async function handler(
         //A user might like your several comments.
         const hasSentWithLikeComment = await prisma.notification.findFirst({
           where: {
-            AND: [
-              { senderId },
-              { receiverId },
-              { type: 'LIKECOMMENT' },
-              { targetId },
-            ],
+            AND: [{ senderId }, { receiverId }, { type: 'LIKECOMMENT' }, { targetId }],
           },
         });
 

@@ -1,10 +1,4 @@
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useState,
-} from 'react';
+import { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
 
 import { Comment as CommentType } from '../types';
 
@@ -59,15 +53,10 @@ export function PostProvider({
   postAuthorId,
   postThumbnail,
 }: Props) {
-  const [previewComments, setPreviewComments] = useState<CommentType[]>(
-    initialPreviewComments
-  );
-  const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
-    initialTotalCommentsCount
-  );
+  const [previewComments, setPreviewComments] = useState<CommentType[]>(initialPreviewComments);
+  const [totalCommentsCount, setTotalCommentsCount] = useState<number>(initialTotalCommentsCount);
   const [isLiked, setIsLiked] = useState<boolean>(initialIsLiked);
-  const [totalLikesCount, setTotalLikesCount] =
-    useState<number>(initialLikesCount);
+  const [totalLikesCount, setTotalLikesCount] = useState<number>(initialLikesCount);
 
   return (
     <postContext.Provider

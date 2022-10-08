@@ -13,11 +13,7 @@ interface Props {
   postAuthorId: string;
   status: string;
   closeFriendshipModal: () => void;
-  toggleFriendship: (
-    requesterId: string,
-    receiverId: string,
-    isFollowing: boolean
-  ) => void;
+  toggleFriendship: (requesterId: string, receiverId: string, isFollowing: boolean) => void;
 }
 
 const FriendshipModal = ({

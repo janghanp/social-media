@@ -54,10 +54,7 @@ const ImageSlide = ({ files }: Props) => {
       {swiperSlide}
       <div>
         <SwiperPrevButton currentIndex={currentIndex} />
-        <SwiperNextButton
-          currentIndex={currentIndex}
-          fileLength={files!.length}
-        />
+        <SwiperNextButton currentIndex={currentIndex} fileLength={files!.length} />
       </div>
     </Swiper>
   );

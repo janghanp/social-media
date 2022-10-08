@@ -66,10 +66,7 @@ const Profile: NextPage<Props> = ({ postAuthor, posts }: Props) => {
   return (
     <>
       <div className="container mx-auto mt-16 flex max-w-4xl flex-col px-2 pt-10 lg:px-0">
-        <DynamicUserInfo
-          postAuthor={postAuthor}
-          totalPostsCount={posts.length}
-        />
+        <DynamicUserInfo postAuthor={postAuthor} totalPostsCount={posts.length} />
         <DynamicUserPosts posts={posts} />
       </div>
     </>

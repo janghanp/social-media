@@ -37,10 +37,7 @@ const PostDetailModal = ({ postId, closeModal }: Props) => {
 
   return (
     <>
-      <div
-        onClick={closeModal}
-        className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
-      ></div>
+      <div onClick={closeModal} className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"></div>
       {error && <div className="text-red-500">failed to load</div>}
 
       {!post && !error ? (
@@ -52,10 +49,7 @@ const PostDetailModal = ({ postId, closeModal }: Props) => {
       ) : (
         <div className="fixed left-1/2 top-1/2 z-40 h-auto w-3/5 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-3 shadow-lg md:w-11/12 lg:w-10/12 xl:w-[1150px]">
           <div className="mb-2 flex w-full items-center justify-end">
-            <button
-              onClick={closeModal}
-              className={`btn btn-outline btn-circle btn-sm border-2`}
-            >
+            <button onClick={closeModal} className={`btn btn-outline btn-circle btn-sm border-2`}>
               ✕
             </button>
           </div>

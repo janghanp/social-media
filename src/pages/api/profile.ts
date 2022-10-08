@@ -12,10 +12,7 @@ const s3 = new S3Client({
   },
 });
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {

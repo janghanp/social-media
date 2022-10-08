@@ -3,10 +3,7 @@ import { getToken } from 'next-auth/jwt';
 
 import { prisma } from '../../lib/prisma';
 
-export default async function hanlder(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function hanlder(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
@@ -58,9 +55,7 @@ export default async function hanlder(
         },
       });
 
-      return res
-        .status(201)
-        .json({ message: 'Successfully created', newCommentWithUser });
+      return res.status(201).json({ message: 'Successfully created', newCommentWithUser });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: 'Something went wrong...' });

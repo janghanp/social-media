@@ -60,10 +60,7 @@ const Settings: NextPage = () => {
     validationSchema: UserInfoValidationSchema,
     validateOnBlur: true,
     validateOnChange: true,
-    onSubmit: async (
-      values: UserInfo,
-      formikHelpers: FormikHelpers<UserInfo>
-    ) => {
+    onSubmit: async (values: UserInfo, formikHelpers: FormikHelpers<UserInfo>) => {
       setIsLoading(true);
 
       try {
@@ -149,12 +146,7 @@ const Settings: NextPage = () => {
       <div className="mt-5 flex w-full flex-col items-center">
         <div className={`avatar relative mb-3`}>
           <div className={`relative w-28 rounded-full`}>
-            <Image
-              src={preview || currentUser!.image}
-              width={112}
-              height={112}
-              alt="userProfile"
-            />
+            <Image src={preview || currentUser!.image} width={112} height={112} alt="userProfile" />
             {imageLoading && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-200 bg-opacity-50 pl-2">
                 <FadeLoader margin={5} />
@@ -163,9 +155,7 @@ const Settings: NextPage = () => {
           </div>
         </div>
 
-        {imageError && (
-          <span className="mb-2 text-sm text-warning">{imageError}</span>
-        )}
+        {imageError && <span className="mb-2 text-sm text-warning">{imageError}</span>}
         <input
           type="file"
           ref={fileInputRef}
@@ -238,32 +228,27 @@ const Settings: NextPage = () => {
               disabled={isLoading}
             />
             {formik.errors.userName && (
-              <span className="text-sm text-red-500">
-                {formik.errors.userName}
-              </span>
+              <span className="text-sm text-red-500">{formik.errors.userName}</span>
             )}
           </div>
 
           <div className="mt-5 flex max-w-xl flex-row space-x-5">
             <button
               type="submit"
-              className={`btn btn-outline border-2 ${
-                isLoading && 'btn-disabled'
-              }`}
+              className={`btn btn-outline border-2 ${isLoading && 'btn-disabled'}`}
               disabled={
                 isLoading ||
                 (currentUser!.name === formik.values.name &&
                   currentUser!.username === formik.values.userName)
               }
             >
-              {isLoading ? (
-                <SyncLoader color="gray" size={8} margin={6} />
-              ) : (
-                'Update'
-              )}
+              {isLoading ? <SyncLoader color="gray" size={8} margin={6} /> : 'Update'}
             </button>
           </div>
         </form>
+        <code>
+          <pre>{JSON.stringify(formik, null, 4)}</pre>
+        </code>
       </div>
     </div>
   );

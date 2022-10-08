@@ -65,9 +65,7 @@ const Reaction = ({ openPostDetailModal }: Props) => {
         onClick={likePostHandler}
         className="flex items-center justify-center space-x-2 rounded-lg px-2 py-1 transition duration-200 hover:cursor-pointer hover:bg-gray-300/50"
       >
-        <AiOutlineHeart
-          className={`h-6 w-6 ${isLiked ? 'fill-red-500' : ''}`}
-        />
+        <AiOutlineHeart className={`h-6 w-6 ${isLiked ? 'fill-red-500' : ''}`} />
         <span>{totalLikesCount}</span>
       </div>
       <div

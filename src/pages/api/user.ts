@@ -3,10 +3,7 @@ import { getToken } from 'next-auth/jwt';
 
 import { prisma } from '../../lib/prisma';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (req.method === 'GET') {
@@ -56,9 +53,7 @@ export default async function handler(
       });
 
       if (user) {
-        return res
-          .status(400)
-          .json({ message: 'This username is already taken.' });
+        return res.status(400).json({ message: 'This username is already taken.' });
       }
 
       const updatedUser = await prisma.user.update({

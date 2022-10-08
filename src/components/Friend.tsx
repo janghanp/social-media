@@ -8,11 +8,7 @@ import { useCurrentUserState } from '../store';
 interface Props {
   friend: User;
   closeFriendshipModal: () => void;
-  toggleFriendship: (
-    requesterId: string,
-    receiverId: string,
-    isFollowing: boolean
-  ) => void;
+  toggleFriendship: (requesterId: string, receiverId: string, isFollowing: boolean) => void;
 }
 
 const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
@@ -20,15 +16,12 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
 
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
-  const [isCurrenUserFollowingThisUser, setIsCurrentUserFollowingThisUser] =
-    useState<boolean>(
-      !!friend.followedByIds.find((id) => id === currentUser!.id)
-    );
+  const [isCurrenUserFollowingThisUser, setIsCurrentUserFollowingThisUser] = useState<boolean>(
+    !!friend.followedByIds.find((id) => id === currentUser!.id)
+  );
 
   useEffect(() => {
-    setIsCurrentUserFollowingThisUser(
-      !!friend.followedByIds.find((id) => id === currentUser!.id)
-    );
+    setIsCurrentUserFollowingThisUser(!!friend.followedByIds.find((id) => id === currentUser!.id));
   }, [friend.followedByIds, currentUser]);
 
   const isMe = friend.id === currentUser!.id;
@@ -66,9 +59,7 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
         <button
           onClick={toggleFriendshipHandler}
           className={`rounded-md border-2 border-black px-3 py-1 ${
-            !isCurrenUserFollowingThisUser
-              ? 'bg-white text-black'
-              : 'bg-black text-white'
+            !isCurrenUserFollowingThisUser ? 'bg-white text-black' : 'bg-black text-white'
           }`}
         >
           <span className="text-sm font-semibold">

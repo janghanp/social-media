@@ -19,10 +19,7 @@ export const config = {
   },
 };
 
-export default async function hanlder(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function hanlder(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {

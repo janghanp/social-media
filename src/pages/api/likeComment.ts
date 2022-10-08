@@ -3,10 +3,7 @@ import { getToken } from 'next-auth/jwt';
 
 import { prisma } from '../../lib/prisma';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const jwt = await getToken({ req, secret: process.env.SECRET });
 
   if (!jwt) {
@@ -14,11 +11,8 @@ export default async function handler(
   }
 
   if (req.method === 'POST') {
-    const {
-      commentId,
-      userId,
-      dislike,
-    }: { commentId: string; userId: string; dislike: boolean } = req.body;
+    const { commentId, userId, dislike }: { commentId: string; userId: string; dislike: boolean } =
+      req.body;
 
     try {
       if (dislike) {
@@ -34,9 +28,7 @@ export default async function handler(
           },
           data: {
             likedCommentsIds: {
-              set: user?.likedCommentsIds.filter(
-                (likedCommentId) => likedCommentId !== commentId
-              ),
+              set: user?.likedCommentsIds.filter((likedCommentId) => likedCommentId !== commentId),
             },
           },
         });
@@ -53,9 +45,7 @@ export default async function handler(
           },
           data: {
             likedByIds: {
-              set: comment?.likedByIds.filter(
-                (likedById) => likedById !== userId
-              ),
+              set: comment?.likedByIds.filter((likedById) => likedById !== userId),
             },
           },
         });
