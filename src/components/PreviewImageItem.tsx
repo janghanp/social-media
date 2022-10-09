@@ -1,40 +1,19 @@
-import { useState, useEffect, memo } from 'react';
+import { memo } from 'react';
 import Image from 'next/image';
 import { MdClose, MdOutlineModeEdit } from 'react-icons/md';
 
 import { CustomFile } from '../types';
-import ImageCropModal from './ImageCropModal';
 import { previewItemRatio } from '../lib/previewItemRatio';
-import { FormikErrors, FormikValues } from 'formik';
 
 interface Props {
   file: CustomFile;
   isEditing: boolean;
-  editInitialized: boolean;
   deleteFileFromFormik: (file: CustomFile) => void;
-  uploadFileToS3: (file: CustomFile) => void;
   setImageToCrop: React.Dispatch<React.SetStateAction<CustomFile | undefined>>;
 }
 
-const PreviewImageItem = ({
-  file,
-  isEditing,
-  editInitialized,
-  deleteFileFromFormik,
-  uploadFileToS3,
-  setImageToCrop,
-}: Props) => {
-  useEffect(() => {
-    if (isEditing && !editInitialized) {
-      return;
-    } else {
-      uploadFileToS3(file);
-    }
-  }, [file.croppedImage]);
-
+const PreviewImageItem = ({ file, deleteFileFromFormik, setImageToCrop }: Props) => {
   const { width, height, px, py } = previewItemRatio(file.aspectInit?.value);
-
-  console.log({ width, height, px, py });
 
   return (
     <>
@@ -51,9 +30,9 @@ const PreviewImageItem = ({
         <MdOutlineModeEdit className="mr-1 h-6 w-6 self-center stroke-0 text-center" />
         <span>Edit</span>
       </div>
-      <div className={`h-auto w-auto ${px} ${py} bg-white border border-red-500`}>
+      <div className={`h-auto w-auto ${px} ${py} flex items-center justify-center`}>
         <Image
-          layout="responsive"
+          layout="fixed"
           objectFit="cover"
           width={width}
           height={height}

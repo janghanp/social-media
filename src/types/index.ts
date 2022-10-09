@@ -50,9 +50,8 @@ export interface Comment {
 }
 
 export interface CustomFile extends File {
+  id: string;
   preview: string;
-  uploaded: boolean;
-  isUploading: boolean;
   type: string;
   croppedPreview?: string;
   croppedImage?: Blob;

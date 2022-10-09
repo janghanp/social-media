@@ -6,16 +6,15 @@ import Image from 'next/image';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { AiOutlineEllipsis } from 'react-icons/ai';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 import { Post as PostType } from '../types';
 import ControlMenu from './ControlMenu';
 import PostModal from './PostModal';
 import ImageSlide from './ImageSlide';
-// import { preventScroll } from '../lib/preventScroll';
 import Reaction from './Reaction';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 import PreviewComments from './PreviewComments';
 import { PostProvider } from '../context/postContext';
 import PostDetailModal from '../components/PostDetailModal';
@@ -34,10 +33,6 @@ const Post = ({ post }: Props) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
   const [isPostDetailModalOpen, setIsPostDetailModalOpen] = useState<boolean>(false);
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   preventScroll(!!router.query.postId, isControlMenuOpen);
-  // }, [router.query.postId, isControlMenuOpen]);
 
   const deletePostHandler = async () => {
     await axios.delete('/api/post', {

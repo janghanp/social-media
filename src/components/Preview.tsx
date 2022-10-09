@@ -1,22 +1,20 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState} from 'react';
 import { Pagination, Navigation, EffectFade } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FormikErrors } from 'formik';
-import produce from 'immer';
-
-import { CustomFile, FormikValues } from '../types';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/css/effect-fade';
+
+import { CustomFile, FormikValues } from '../types';
 import PreviewImageItem from './PreviewImageItem';
 import SwiperPrevButton from './SwiperPrevButton';
 import SwiperNextButton from './SwiperNextButton';
-import axios from 'axios';
 import ImageCropModal from './ImageCropModal';
 
 interface Props {
-  formikFiles: CustomFile[];
   isEditing: boolean;
+  formikFiles: CustomFile[];
   setFieldValue: (
     field: string,
     value: any,
@@ -29,53 +27,11 @@ const Preview = ({ formikFiles, isEditing, setFieldValue }: Props) => {
   const nextRef = useRef<HTMLDivElement>(null);
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [editInitialized, setEditInitialized] = useState<boolean>(false);
-  // const [isImageCropModalOpen, setIsImageCropModalOpen] = useState<boolean>(false);
   const [imageToCrop, setImageToCrop] = useState<CustomFile>();
-
-  useEffect(() => {
-    if (isEditing) {
-      setEditInitialized(true);
-    }
-  }, []);
-
-  const uploadFileToS3 = async (file: CustomFile) => {
-    //1. set isUploading to true.
-    const newFiles = produce(formikFiles, (draftState) => {
-      draftState.forEach((draftStateFile) => {
-        if (draftStateFile === file) {
-          draftStateFile.uploaded = false;
-          draftStateFile.isUploading = true;
-        }
-      });
-    });
-
-    setFieldValue('files', newFiles);
-
-    //2.upload the file to the bucket
-    const formData = new FormData();
-    formData.append('file', file.croppedImage || file);
-    const { data } = await axios.post('/api/upload', formData);
-
-    //3. update values of the corrsponding file.
-    const anotherNewFiles = produce(formikFiles, (draftState) => {
-      draftState.forEach((draftStateFile) => {
-        if (draftStateFile === file) {
-          draftStateFile.Key = data.Key;
-          draftStateFile.uploaded = true;
-          draftStateFile.isUploading = false;
-        }
-      });
-    });
-
-    setFieldValue('files', anotherNewFiles);
-  };
 
   const deleteFileFromFormik = (file: CustomFile) => {
     URL.revokeObjectURL(file.preview);
-
     const filteredFiles = formikFiles.filter((formikFile) => formikFile !== file);
-
     setFieldValue('files', filteredFiles);
   };
 
@@ -101,9 +57,7 @@ const Preview = ({ formikFiles, isEditing, setFieldValue }: Props) => {
               <PreviewImageItem
                 file={file}
                 isEditing={isEditing}
-                editInitialized={editInitialized}
                 deleteFileFromFormik={deleteFileFromFormik}
-                uploadFileToS3={uploadFileToS3}
                 setImageToCrop={setImageToCrop}
               />
             </SwiperSlide>

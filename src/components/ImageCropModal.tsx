@@ -1,13 +1,19 @@
-import { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback, useEffect } from 'react';
 import ReactDom from 'react-dom';
 import Cropper from 'react-easy-crop';
 import { Point, Area } from 'react-easy-crop/types';
 import FadeLoader from 'react-spinners/FadeLoader';
-import produce from 'immer';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CustomFile } from '../types';
 import getCroppedImg from '../lib/cropImage';
 import { FormikErrors, FormikValues } from 'formik';
+
+const aspectRatios = [
+  { value: 1 / 1, text: '1/1' },
+  { value: 4 / 5, text: '4/5' },
+  { value: 16 / 9, text: '16/9' },
+];
 
 interface Props {
   file: CustomFile;
@@ -20,17 +26,13 @@ interface Props {
   ) => Promise<FormikErrors<FormikValues>> | Promise<void>;
 }
 
-const aspectRatios = [
-  { value: 1 / 1, text: '1/1' },
-  { value: 4 / 5, text: '4/5' },
-  { value: 16 / 9, text: '16/9' },
-];
-
 const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(file.zoomInit || 1);
   const [crop, setCrop] = useState<Point>(file.cropInit || { x: 0, y: 0 });
-  const [aspect, setAspect] = useState<{ value: number; text: string }>(aspectRatios[0]);
+  const [aspect, setAspect] = useState<{ value: number; text: string }>(
+    file.aspectInit || aspectRatios[0]
+  );
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>({
     width: 0,
     height: 0,
@@ -38,39 +40,79 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
     y: 0,
   });
 
+  useEffect(() => {
+    if (file.aspectInit) {
+      setAspect(file.aspectInit);
+    }
+
+    if (file.zoomInit) {
+      setZoom(file.zoomInit);
+    }
+
+    if (file.cropInit) {
+      setCrop(file.cropInit);
+    }
+  }, [file.aspectInit, file.zoomInit, file.cropInit]);
+
   const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
-  const onReset = () => {
-    // setFiles((prevState) => {
-    //   const newFiles = prevState.map((f) => {
-    //     if (f === file) {
-    //       f.zoomInit = undefined;
-    //       f.cropInit = undefined;
-    //       f.aspectInit = undefined;
-    //       f.croppedPreview = undefined;
-    //       f.croppedImage = undefined;
-    //       URL.revokeObjectURL(f.croppedPreview!);
-    //       return f;
-    //     } else {
-    //       return f;
-    //     }
-    //   });
-    //   return newFiles;
-    // });
+  const onCrop = async () => {
+    setIsLoading(true);
 
-    const newFiles = produce(formikFiles, (draftState) => {
-      draftState.forEach((draftStateFile) => {
-        if (draftStateFile === file) {
-          draftStateFile.zoomInit = undefined;
-          draftStateFile.cropInit = undefined;
-          draftStateFile.aspectInit = undefined;
-          draftStateFile.croppedPreview = undefined;
-          draftStateFile.croppedImage = undefined;
-          URL.revokeObjectURL(draftStateFile.croppedPreview!);
-        }
-      });
+    const { croppedImageUrl, croppedImageFile }: any = await getCroppedImg(
+      file.preview,
+      croppedAreaPixels
+    );
+
+    const deepCloendFormikFiles = formikFiles.map((formikFile) => {
+      return {
+        ...formikFile,
+      };
+    });
+
+    const newFiles = deepCloendFormikFiles.map((deepClonedFormikFile) => {
+      if (file.id === deepClonedFormikFile.id) {
+        deepClonedFormikFile.id = uuidv4();
+        deepClonedFormikFile.zoomInit = zoom;
+        deepClonedFormikFile.cropInit = crop;
+        deepClonedFormikFile.aspectInit = aspect;
+        deepClonedFormikFile.croppedImage = croppedImageFile;
+        deepClonedFormikFile.croppedPreview = croppedImageUrl;
+
+        return deepClonedFormikFile;
+      }
+
+      return deepClonedFormikFile;
+    });
+
+    setFieldValue('files', newFiles);
+
+    setIsLoading(false);
+    setImageToCrop(undefined);
+  };
+
+  const onReset = () => {
+    const deepCloendFormikFiles = formikFiles.map((formikFile) => {
+      return {
+        ...formikFile,
+      };
+    });
+
+    const newFiles = deepCloendFormikFiles.map((deepClonedFormikFile) => {
+      if (file.id === deepClonedFormikFile.id) {
+        deepClonedFormikFile.zoomInit = undefined;
+        deepClonedFormikFile.cropInit = undefined;
+        deepClonedFormikFile.aspectInit = undefined;
+        deepClonedFormikFile.croppedPreview = undefined;
+        deepClonedFormikFile.croppedImage = undefined;
+        URL.revokeObjectURL(deepClonedFormikFile.croppedPreview!);
+
+        return deepClonedFormikFile;
+      }
+
+      return deepClonedFormikFile;
     });
 
     setFieldValue('files', newFiles);
@@ -84,50 +126,6 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
       x: 0,
       y: 0,
     });
-    setImageToCrop(undefined);
-  };
-
-  const onCrop = async () => {
-    setIsLoading(true);
-
-    const { croppedImageUrl, croppedImageFile }: any = await getCroppedImg(
-      file.preview,
-      croppedAreaPixels
-    );
-
-    // setFiles((prevState) => {
-    //   const newFiles = prevState.map((f) => {
-    //     if (f === file) {
-    //       f.zoomInit = zoom;
-    //       f.cropInit = crop;
-    //       f.aspectInit = aspect;
-    //       f.croppedImage = croppedImageFile;
-    //       f.croppedPreview = croppedImageUrl;
-    //       return f;
-    //     } else {
-    //       return f;
-    //     }
-    //   });
-    //   return newFiles;
-    // });
-
-    console.log(croppedImageFile);
-
-    const newFiles = produce(formikFiles, (draftState) => {
-      draftState.forEach((draftStateFile) => {
-        if (draftStateFile === file) {
-          draftStateFile.zoomInit = zoom;
-          draftStateFile.cropInit = crop;
-          draftStateFile.aspectInit = aspect;
-          draftStateFile.croppedImage = croppedImageFile;
-          draftStateFile.croppedPreview = croppedImageUrl;
-        }
-      });
-    });
-
-    setFieldValue('files', newFiles);
-
-    setIsLoading(false);
     setImageToCrop(undefined);
   };
 

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import axios from 'axios';
 import FadeLoader from 'react-spinners/FadeLoader';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CustomFile, FormikValues } from '../types';
 import { PostValidationSchema } from '../lib/validation';
@@ -24,8 +25,9 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
 
   const router = useRouter();
 
-  const [isSubmited, setIsSubmitted] = useState<boolean>(false);
+  const [issubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isStillUploading, setIsStillUploading] = useState<boolean>(false);
 
   const formik = useFormik<FormikValues>({
     initialValues: {
@@ -35,19 +37,18 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
     validationSchema: PostValidationSchema,
     validateOnBlur: true,
     validateOnChange: true,
-    onSubmit: async (values: FormikValues, _formikHelpers: FormikHelpers<FormikValues>) => {
+    onSubmit: async (values: FormikValues, formikHelpers: FormikHelpers<FormikValues>) => {
       const { files, body } = values;
 
       if (files.length === 0) {
-        _formikHelpers.setFieldError('files', 'You need to upload one photo at least.');
-
+        formikHelpers.setFieldError('files', 'You need to upload one photo at least.');
         return;
       }
 
       setIsLoading(true);
 
-      if (stillUploading(files)) {
-        setIsSubmitted(true);
+      if (isStillUploading) {
+        setIsSubmitting(true);
         return;
       }
 
@@ -64,11 +65,12 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
     },
   });
 
+  //When submitting, check if there is still a file uploading.
   useEffect(() => {
     const checkUploading = async () => {
       const { files, body } = formik.values;
 
-      if (!stillUploading(files) && isSubmited) {
+      if (!isStillUploading && issubmitting) {
         if (isEditing && postId) {
           await updatePost(postId, files, body);
         } else {
@@ -82,11 +84,21 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
       }
     };
 
-    if (isSubmited) {
+    if (issubmitting) {
       checkUploading();
     }
-  }, [formik.values.files]);
+  }, [
+    postId,
+    formik.values,
+    issubmitting,
+    router,
+    isEditing,
+    isStillUploading,
+    setIsLoading,
+    setIsPostModalOpen,
+  ]);
 
+  //When editing
   useEffect(() => {
     const setInitialFiles = async () => {
       Promise.all(
@@ -96,10 +108,10 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
       });
     };
 
-    if (isEditing) {
+    if (isEditing && formik.values.files.length === 0) {
       setInitialFiles();
     }
-  }, []);
+  }, [initialFiles, isEditing, formik]);
 
   const copyObjectsInUse = async (files: CustomFile[], body: string) => {
     const fileInfos = files.map((file) => ({
@@ -122,12 +134,6 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
     await axios.put('/api/post', { postId, body, fileInfos });
   };
 
-  const stillUploading = (files: CustomFile[]) => {
-    const loadings = files.map((file) => file.isUploading);
-
-    return loadings.includes(true);
-  };
-
   const createFileValues = async (Key: string, ratio: number) => {
     const blobImage = await fetch(`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${Key}`).then(
       (response) => response.blob()
@@ -136,11 +142,10 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
     const previewUrl = URL.createObjectURL(blobImage);
 
     return {
+      id: uuidv4(),
       preview: previewUrl,
       Key,
       aspectInit: { value: ratio, text: ratio.toString() },
-      uploaded: true,
-      isUploading: false,
       type: blobImage.type,
     };
   };
@@ -197,7 +202,12 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
           ></textarea>
           {formik.errors.body && <span className="text-sm text-red-500">{formik.errors.body}</span>}
 
-          <DropZone error={formik.errors.files} formik={formik} />
+          <DropZone
+            error={formik.errors.files}
+            formikFiles={formik.values.files}
+            setFieldValue={formik.setFieldValue}
+            setIsStillUploading={setIsStillUploading}
+          />
 
           {formik.values.files.length > 0 && (
             <Preview
@@ -225,7 +235,8 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
           </div>
         </form>
         <code>
-          <pre>{JSON.stringify(formik, null, 4)}</pre>
+          <pre>isStillUplading: {JSON.stringify(isStillUploading, null, 4)}</pre>
+          <pre>{JSON.stringify(formik.values.files, null, 4)}</pre>
         </code>
       </div>
     </>

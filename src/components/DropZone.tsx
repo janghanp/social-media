@@ -1,37 +1,115 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo, useEffect, useRef } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 import classNames from 'classnames';
-import { FormikErrors, FormikProps } from 'formik';
+import { FormikErrors } from 'formik';
 import { HiOutlineUpload } from 'react-icons/hi';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CustomFile, FormikValues } from '../types';
+import axios from 'axios';
 
 interface Props {
   error: string | string[] | FormikErrors<CustomFile>[] | undefined;
-  formik: FormikProps<FormikValues>;
+  formikFiles: CustomFile[];
+  setIsStillUploading: React.Dispatch<React.SetStateAction<boolean>>;
+  setFieldValue: (
+    field: string,
+    value: any,
+    shouldValidate?: boolean | undefined
+  ) => Promise<FormikErrors<FormikValues>> | Promise<void>;
 }
 
-const DropZone = ({ error, formik }: Props) => {
+const DropZone = ({ error, formikFiles, setFieldValue, setIsStillUploading }: Props) => {
+  const formikFilesRef = useRef<CustomFile[]>([]);
+
+  const uploadFileToS3 = useCallback(async (file: CustomFile) => {
+    const formData = new FormData();
+    formData.append('file', file.croppedImage || file);
+    const { data } = await axios.post('/api/upload', formData);
+
+    return { Key: data.Key, id: file.id };
+  }, []);
+
+  //When finding a croppedImage re-upload that image.
+  useEffect(() => {
+    const checkToReUpload = async () => {
+      const refIds = formikFilesRef.current.map((formikFile) => formikFile.id);
+
+      const fileToReUpload = formikFiles.filter((formikFile) => {
+        return formikFile.id && !refIds.includes(formikFile.id);
+      })[0];
+
+      if (fileToReUpload) {
+        console.log('reupload');
+        const { Key, id } = await uploadFileToS3(fileToReUpload);
+
+        formikFiles.forEach((formikFile) => {
+          if (formikFile.id === id) {
+            formikFile.Key = Key;
+          }
+        });
+
+        formikFilesRef.current = formikFiles;
+      }
+    };
+
+    if (formikFiles.length === formikFilesRef.current.length) {
+      checkToReUpload();
+    }
+  }, [formikFiles, formikFilesRef, uploadFileToS3]);
+
   const onDropHandler = useCallback(
     async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (rejectedFiles.length) {
         return;
       }
 
-      //set files into the formik directly.
-      const newAddedFiles = acceptedFiles.map((file) => {
+      setIsStillUploading(true);
+
+      const newAddedFiles: CustomFile[] = acceptedFiles.map((file) => {
         return Object.assign(file, {
+          id: uuidv4(),
           preview: URL.createObjectURL(file),
-          uploaded: false,
-          isUploading: false,
         });
       });
 
-      const newFiles = [...formik.values.files, ...newAddedFiles];
+      const newFiles = [...formikFiles, ...newAddedFiles];
+      setFieldValue('files', newFiles);
 
-      formik.setFieldValue('files', newFiles);
+      Promise.all(newAddedFiles.map((newAddedFile) => uploadFileToS3(newAddedFile)))
+        .then((results) => {
+          console.log({ results });
+
+          const deepCloendNewFiles = newFiles.map((newFile) => {
+            return {
+              ...newFile,
+            };
+          });
+
+          const newFilesWithKey = deepCloendNewFiles.map((deepClonedFile) => {
+            if (!deepClonedFile.Key) {
+              results.forEach((result) => {
+                if (deepClonedFile.id === result.id) {
+                  deepClonedFile.Key = result.Key;
+                }
+              });
+            }
+
+            return deepClonedFile;
+          });
+
+          setFieldValue('files', newFilesWithKey);
+          formikFilesRef.current = newFilesWithKey;
+        })
+        .catch((err) => {
+          console.log(err);
+          console.log('error occured while uploading files...');
+        })
+        .finally(() => {
+          setIsStillUploading(false);
+        });
     },
-    [formik.values.files]
+    [formikFiles, setFieldValue, setIsStillUploading, uploadFileToS3]
   );
 
   const fileSizeValidator = (file: File) => {
@@ -66,6 +144,8 @@ const DropZone = ({ error, formik }: Props) => {
     'border-red-500': error,
   });
 
+  console.log('Dropzone render');
+
   return (
     <>
       <section className="relative mt-5 rounded-lg transition duration-200 hover:cursor-pointer hover:bg-black/10">
@@ -89,4 +169,23 @@ const DropZone = ({ error, formik }: Props) => {
   );
 };
 
-export default DropZone;
+export default memo(DropZone, (prevProps, nextProps) => {
+  // if (prevProps.error === prevProps.error) {
+  //   console.log(true);
+  // }
+
+  if (prevProps.formikFiles === nextProps.formikFiles) {
+    console.log('same');
+  } else {
+    console.log('nope');
+  }
+
+  // if (prevProps.setFieldValue === prevProps.setFieldValue) {
+  //   console.log(true);
+  // }
+
+  // if (prevProps.setIsStillUploading === prevProps.setIsStillUploading) {
+  //   console.log(true);
+  // }
+  return false;
+});
