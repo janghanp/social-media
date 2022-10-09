@@ -1,4 +1,4 @@
-import { useRef, useState} from 'react';
+import { useRef, useState } from 'react';
 import { Pagination, Navigation, EffectFade } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FormikErrors } from 'formik';

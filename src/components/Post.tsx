@@ -54,6 +54,11 @@ const Post = ({ post }: Props) => {
   };
 
   const openPostDetailModal = () => {
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+
     window.history.replaceState({}, '', `/posts/${post.id}`);
     setIsPostDetailModalOpen(true);
   };
