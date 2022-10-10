@@ -237,10 +237,6 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
             </button>
           </div>
         </form>
-        <code>
-          <pre>isStillUplading: {JSON.stringify(isStillUploading, null, 4)}</pre>
-          <pre>{JSON.stringify(formik.values.files, null, 4)}</pre>
-        </code>
       </div>
     </>
   );
