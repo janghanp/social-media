@@ -4,6 +4,7 @@ import Cropper from 'react-easy-crop';
 import { Point, Area } from 'react-easy-crop/types';
 import FadeLoader from 'react-spinners/FadeLoader';
 import { v4 as uuidv4 } from 'uuid';
+import assignIn from 'lodash.assignin';
 
 import { CustomFile } from '../types';
 import getCroppedImg from '../lib/cropImage';
@@ -66,13 +67,21 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
       croppedAreaPixels
     );
 
-    const deepCloendFormikFiles = formikFiles.map((formikFile) => {
-      return {
-        ...formikFile,
-      };
+    const deepClonedFormikFiles: CustomFile[] = formikFiles.map((formikFile) => {
+      console.log({ previousFile: formikFile });
+
+      URL.revokeObjectURL(formikFile.preview);
+
+      const newFile = new File([formikFile], formikFile.name, { type: formikFile.type });
+
+      return Object.assign(newFile, {
+        id: formikFile.id,
+        preview: URL.createObjectURL(newFile),
+        Key: formikFile.Key,
+      });
     });
 
-    const newFiles = deepCloendFormikFiles.map((deepClonedFormikFile) => {
+    const newFiles = deepClonedFormikFiles.map((deepClonedFormikFile) => {
       if (file.id === deepClonedFormikFile.id) {
         deepClonedFormikFile.id = uuidv4();
         deepClonedFormikFile.zoomInit = zoom;
@@ -94,19 +103,27 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
   };
 
   const onReset = () => {
-    const deepCloendFormikFiles = formikFiles.map((formikFile) => {
-      return {
-        ...formikFile,
-      };
+    const deepClonedFormikFiles: CustomFile[] = formikFiles.map((formikFile) => {
+      URL.revokeObjectURL(formikFile.preview);
+
+      const newFile = new File([formikFile], formikFile.name, { type: formikFile.type });
+
+      return Object.assign(newFile, {
+        id: formikFile.id,
+        preview: URL.createObjectURL(file),
+        Key: formikFile.Key,
+      });
     });
 
-    const newFiles = deepCloendFormikFiles.map((deepClonedFormikFile) => {
+    const newFiles = deepClonedFormikFiles.map((deepClonedFormikFile) => {
       if (file.id === deepClonedFormikFile.id) {
+        deepClonedFormikFile.id = uuidv4();
         deepClonedFormikFile.zoomInit = undefined;
         deepClonedFormikFile.cropInit = undefined;
         deepClonedFormikFile.aspectInit = undefined;
         deepClonedFormikFile.croppedPreview = undefined;
         deepClonedFormikFile.croppedImage = undefined;
+        deepClonedFormikFile.Key = undefined;
         URL.revokeObjectURL(deepClonedFormikFile.croppedPreview!);
 
         return deepClonedFormikFile;

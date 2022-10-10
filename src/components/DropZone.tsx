@@ -24,7 +24,15 @@ const DropZone = ({ error, formikFiles, setFieldValue, setIsStillUploading }: Pr
 
   const uploadFileToS3 = useCallback(async (file: CustomFile) => {
     const formData = new FormData();
+
     formData.append('file', file.croppedImage || file);
+
+    console.log('check formData');
+    //inspect formData if it has a file in it.
+    for (const pair of formData.entries()) {
+      console.dir(pair[1]);
+    }
+
     const { data } = await axios.post('/api/upload', formData);
 
     return { Key: data.Key, id: file.id };
@@ -40,16 +48,55 @@ const DropZone = ({ error, formikFiles, setFieldValue, setIsStillUploading }: Pr
       })[0];
 
       if (fileToReUpload) {
-        console.log('reupload');
+        // console.log('reupload');
+        // console.log({ fileToReUpload });
+
         const { Key, id } = await uploadFileToS3(fileToReUpload);
 
-        formikFiles.forEach((formikFile) => {
+        console.log('Key: ', Key);
+        console.log('id: ', id);
+
+        console.log(formikFiles);
+
+        const finalFiles = formikFiles.map((formikFile) => {
+          URL.revokeObjectURL(formikFile.preview);
+
+          const newFile = new File([formikFile], formikFile.name, { type: formikFile.type });
+
           if (formikFile.id === id) {
-            formikFile.Key = Key;
+            return Object.assign(newFile, {
+              id: formikFile.id,
+              preview: URL.createObjectURL(newFile),
+              zoomInit: formikFile.zoomInit,
+              cropInit: formikFile.cropInit,
+              aspectInit: formikFile.aspectInit,
+              croppedImage: formikFile.croppedImage,
+              croppedPreview: formikFile.croppedPreview,
+              Key: Key,
+            });
           }
+
+          return Object.assign(newFile, {
+            id: formikFile.id,
+            preview: URL.createObjectURL(newFile),
+            zoomInit: formikFile.zoomInit,
+            cropInit: formikFile.cropInit,
+            aspectInit: formikFile.aspectInit,
+            croppedImage: formikFile.croppedImage,
+            croppedPreview: formikFile.croppedPreview,
+            Key: formikFile.Key,
+          });
         });
 
+        // formikFiles.forEach((formikFile) => {
+        //   if (formikFile.id === id) {
+        //     formikFile.Key = Key;
+        //   }
+        // });
+
         formikFilesRef.current = formikFiles;
+
+        setFieldValue('files', finalFiles);
       }
     };
 
@@ -73,29 +120,82 @@ const DropZone = ({ error, formikFiles, setFieldValue, setIsStillUploading }: Pr
         });
       });
 
-      const newFiles = [...formikFiles, ...newAddedFiles];
+      const newFormkiFiles: CustomFile[] = formikFiles.map((formikFile) => {
+        URL.revokeObjectURL(formikFile.preview);
+
+        const newFile = new File([formikFile], formikFile.name, { type: formikFile.type });
+
+        return Object.assign(newFile, {
+          id: formikFile.id,
+          preview: URL.createObjectURL(newFile),
+          zoomInit: formikFile.zoomInit,
+          cropInit: formikFile.cropInit,
+          aspectInit: formikFile.aspectInit,
+          croppedImage: formikFile.croppedImage,
+          croppedPreview: formikFile.croppedPreview,
+          Key: formikFile.Key,
+        });
+      });
+
+      console.log({ newFormkiFiles });
+
+      const newFiles = newFormkiFiles.concat(newAddedFiles);
       setFieldValue('files', newFiles);
+
+      console.log({ newFiles });
 
       Promise.all(newAddedFiles.map((newAddedFile) => uploadFileToS3(newAddedFile)))
         .then((results) => {
-          console.log({ results });
+          const deepCloendNewFiles: CustomFile[] = newFiles.map((newFile) => {
+            //If it works make it a function to re-use in other components.
+            URL.revokeObjectURL(newFile.preview);
 
-          const deepCloendNewFiles = newFiles.map((newFile) => {
-            return {
-              ...newFile,
-            };
+            const finalFile = new File([newFile], newFile.name, { type: newFile.type });
+
+            return Object.assign(finalFile, {
+              id: newFile.id,
+              preview: URL.createObjectURL(finalFile),
+              Key: newFile.Key,
+            });
           });
 
-          const newFilesWithKey = deepCloendNewFiles.map((deepClonedFile) => {
-            if (!deepClonedFile.Key) {
-              results.forEach((result) => {
-                if (deepClonedFile.id === result.id) {
-                  deepClonedFile.Key = result.Key;
-                }
+          // const newFilesWithKey = deepCloendNewFiles.map((deepClonedFile) => {
+          //   if (!deepClonedFile.Key) {
+          //     results.forEach((result) => {
+          //       if (deepClonedFile.id === result.id) {
+          //         deepClonedFile.Key = result.Key;
+          //       }
+          //     });
+          //   }
+
+          //   return deepClonedFile;
+          // });
+
+          console.log({ deepCloendNewFiles });
+
+          const newFilesWithKey = deepCloendNewFiles.map((deepCloneFile) => {
+            URL.revokeObjectURL(deepCloneFile.preview);
+
+            const finalFile = new File([deepCloneFile], deepCloneFile.name, {
+              type: deepCloneFile.type,
+            });
+
+            if (!deepCloneFile.Key) {
+              const resultToUse = results.filter((result) => {
+                return deepCloneFile.id === result.id;
+              })[0];
+
+              return Object.assign(finalFile, {
+                id: deepCloneFile.id,
+                preview: URL.createObjectURL(finalFile),
+                Key: resultToUse.Key,
               });
             }
 
-            return deepClonedFile;
+            return Object.assign(finalFile, {
+              id: deepCloneFile.id,
+              preview: URL.createObjectURL(finalFile),
+            });
           });
 
           setFieldValue('files', newFilesWithKey);
@@ -169,23 +269,4 @@ const DropZone = ({ error, formikFiles, setFieldValue, setIsStillUploading }: Pr
   );
 };
 
-export default memo(DropZone, (prevProps, nextProps) => {
-  // if (prevProps.error === prevProps.error) {
-  //   console.log(true);
-  // }
-
-  if (prevProps.formikFiles === nextProps.formikFiles) {
-    console.log('same');
-  } else {
-    console.log('nope');
-  }
-
-  // if (prevProps.setFieldValue === prevProps.setFieldValue) {
-  //   console.log(true);
-  // }
-
-  // if (prevProps.setIsStillUploading === prevProps.setIsStillUploading) {
-  //   console.log(true);
-  // }
-  return false;
-});
+export default memo(DropZone);

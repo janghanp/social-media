@@ -1,11 +1,8 @@
 import { NextPage, GetServerSideProps } from 'next';
-import dynamic from 'next/dynamic';
 
 import { prisma } from '../lib/prisma';
 import { Post } from '../types';
 import PostsList from '../components/PostsList';
-
-// const DynamicPostsList = dynamic(() => import('../components/PostsList'));
 
 interface Props {
   initialPosts: Post[];
