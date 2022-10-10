@@ -4,6 +4,7 @@ import Cropper from 'react-easy-crop';
 import { Point, Area } from 'react-easy-crop/types';
 import FadeLoader from 'react-spinners/FadeLoader';
 import { v4 as uuidv4 } from 'uuid';
+import assignIn from 'lodash.assignin';
 
 import { CustomFile } from '../types';
 import getCroppedImg from '../lib/cropImage';
@@ -108,6 +109,7 @@ const ImageCropModal = ({ customFile, formikFiles, setImageToCrop, setFieldValue
         deepClonedFormikFile.aspectInit = undefined;
         deepClonedFormikFile.croppedPreview = undefined;
         deepClonedFormikFile.croppedImage = undefined;
+        deepClonedFormikFile.Key = undefined;
         URL.revokeObjectURL(deepClonedFormikFile.croppedPreview!);
 
         return deepClonedFormikFile;

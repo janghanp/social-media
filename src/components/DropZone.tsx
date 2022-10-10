@@ -62,7 +62,24 @@ const DropZone = ({ error, formikFiles, setFieldValue, setIsStillUploading }: Pr
           if (formikFile.id === targetId) {
             formikFile.Key = Key;
           }
+
+          return Object.assign(newFile, {
+            id: formikFile.id,
+            preview: URL.createObjectURL(newFile),
+            zoomInit: formikFile.zoomInit,
+            cropInit: formikFile.cropInit,
+            aspectInit: formikFile.aspectInit,
+            croppedImage: formikFile.croppedImage,
+            croppedPreview: formikFile.croppedPreview,
+            Key: formikFile.Key,
+          });
         });
+
+        // formikFiles.forEach((formikFile) => {
+        //   if (formikFile.id === id) {
+        //     formikFile.Key = Key;
+        //   }
+        // });
 
         formikFilesRef.current = formikFiles;
         setFieldValue('files', formikFiles);
