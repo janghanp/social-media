@@ -16,7 +16,7 @@ const aspectRatios = [
 ];
 
 interface Props {
-  file: CustomFile;
+  customFile: CustomFile;
   formikFiles: CustomFile[];
   setImageToCrop: React.Dispatch<React.SetStateAction<CustomFile | undefined>>;
   setFieldValue: (
@@ -26,12 +26,12 @@ interface Props {
   ) => Promise<FormikErrors<FormikValues>> | Promise<void>;
 }
 
-const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Props) => {
+const ImageCropModal = ({ customFile, formikFiles, setImageToCrop, setFieldValue }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [zoom, setZoom] = useState<number>(file.zoomInit || 1);
-  const [crop, setCrop] = useState<Point>(file.cropInit || { x: 0, y: 0 });
+  const [zoom, setZoom] = useState<number>(customFile.zoomInit || 1);
+  const [crop, setCrop] = useState<Point>(customFile.cropInit || { x: 0, y: 0 });
   const [aspect, setAspect] = useState<{ value: number; text: string }>(
-    file.aspectInit || aspectRatios[0]
+    customFile.aspectInit || aspectRatios[0]
   );
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>({
     width: 0,
@@ -41,18 +41,18 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
   });
 
   useEffect(() => {
-    if (file.aspectInit) {
-      setAspect(file.aspectInit);
+    if (customFile.aspectInit) {
+      setAspect(customFile.aspectInit);
     }
 
-    if (file.zoomInit) {
-      setZoom(file.zoomInit);
+    if (customFile.zoomInit) {
+      setZoom(customFile.zoomInit);
     }
 
-    if (file.cropInit) {
-      setCrop(file.cropInit);
+    if (customFile.cropInit) {
+      setCrop(customFile.cropInit);
     }
-  }, [file.aspectInit, file.zoomInit, file.cropInit]);
+  }, [customFile.aspectInit, customFile.zoomInit, customFile.cropInit]);
 
   const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -62,18 +62,18 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
     setIsLoading(true);
 
     const { croppedImageUrl, croppedImageFile }: any = await getCroppedImg(
-      file.preview,
+      customFile.preview,
       croppedAreaPixels
     );
 
-    const deepCloendFormikFiles = formikFiles.map((formikFile) => {
+    const clonedFormikFiles = formikFiles.map((formikFile) => {
       return {
         ...formikFile,
       };
     });
 
-    const newFiles = deepCloendFormikFiles.map((deepClonedFormikFile) => {
-      if (file.id === deepClonedFormikFile.id) {
+    const newFormikFiles = clonedFormikFiles.map((deepClonedFormikFile) => {
+      if (customFile.id === deepClonedFormikFile.id) {
         deepClonedFormikFile.id = uuidv4();
         deepClonedFormikFile.zoomInit = zoom;
         deepClonedFormikFile.cropInit = crop;
@@ -87,21 +87,22 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
       return deepClonedFormikFile;
     });
 
-    setFieldValue('files', newFiles);
+    setFieldValue('files', newFormikFiles);
 
     setIsLoading(false);
     setImageToCrop(undefined);
   };
 
   const onReset = () => {
-    const deepCloendFormikFiles = formikFiles.map((formikFile) => {
+    const clonedFormikFiles = formikFiles.map((formikFile) => {
       return {
         ...formikFile,
       };
     });
 
-    const newFiles = deepCloendFormikFiles.map((deepClonedFormikFile) => {
-      if (file.id === deepClonedFormikFile.id) {
+    const newFormikFiles = clonedFormikFiles.map((deepClonedFormikFile) => {
+      if (customFile.id === deepClonedFormikFile.id) {
+        deepClonedFormikFile.id = uuidv4();
         deepClonedFormikFile.zoomInit = undefined;
         deepClonedFormikFile.cropInit = undefined;
         deepClonedFormikFile.aspectInit = undefined;
@@ -115,7 +116,7 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
       return deepClonedFormikFile;
     });
 
-    setFieldValue('files', newFiles);
+    setFieldValue('files', newFormikFiles);
 
     setZoom(1);
     setCrop({ x: 0, y: 0 });
@@ -134,7 +135,7 @@ const ImageCropModal = ({ file, formikFiles, setImageToCrop, setFieldValue }: Pr
       (
       <div className="fixed top-1/2 left-1/2 z-40 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-white p-7 shadow-lg">
         <Cropper
-          image={file.preview}
+          image={customFile.preview}
           zoom={zoom}
           crop={crop}
           aspect={aspect.value}

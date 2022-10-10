@@ -6,26 +6,26 @@ import { CustomFile } from '../types';
 import { previewItemRatio } from '../lib/previewItemRatio';
 
 interface Props {
-  file: CustomFile;
+  customFile: CustomFile;
   isEditing: boolean;
-  deleteFileFromFormik: (file: CustomFile) => void;
+  deleteFileFromFormik: (customFile: CustomFile) => void;
   setImageToCrop: React.Dispatch<React.SetStateAction<CustomFile | undefined>>;
 }
 
-const PreviewImageItem = ({ file, deleteFileFromFormik, setImageToCrop }: Props) => {
-  const { width, height, px, py } = previewItemRatio(file.aspectInit?.value);
+const PreviewImageItem = ({ customFile, deleteFileFromFormik, setImageToCrop }: Props) => {
+  const { width, height, px, py } = previewItemRatio(customFile.aspectInit?.value);
 
   return (
     <>
       <div
-        onClick={() => deleteFileFromFormik(file)}
+        onClick={() => deleteFileFromFormik(customFile)}
         className="btn btn-circle btn-sm absolute top-3 right-3 z-10 border-none bg-black/50 hover:bg-black/30"
       >
         <MdClose />
       </div>
       <div
         className="absolute top-3 left-3 z-10 flex flex-row items-center justify-center rounded-md bg-black/50 p-2 text-white hover:cursor-pointer hover:bg-black/30"
-        onClick={() => setImageToCrop(file)}
+        onClick={() => setImageToCrop(customFile)}
       >
         <MdOutlineModeEdit className="mr-1 h-6 w-6 self-center stroke-0 text-center" />
         <span>Edit</span>
@@ -36,7 +36,7 @@ const PreviewImageItem = ({ file, deleteFileFromFormik, setImageToCrop }: Props)
           objectFit="cover"
           width={width}
           height={height}
-          src={file.croppedPreview || file.preview}
+          src={customFile.croppedPreview || customFile.preview}
           alt="image"
         />
       </div>

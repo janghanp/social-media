@@ -102,7 +102,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
   useEffect(() => {
     const setInitialFiles = async () => {
       Promise.all(
-        initialFiles!.map(async (file) => await createFileValues(file.Key, file.ratio))
+        initialFiles!.map(async (file) => await createCustomFile(file.Key, file.ratio))
       ).then((files) => {
         formik.setFieldValue('files', files, false);
       });
@@ -134,19 +134,22 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
     await axios.put('/api/post', { postId, body, fileInfos });
   };
 
-  const createFileValues = async (Key: string, ratio: number) => {
+  const createCustomFile = async (Key: string, ratio: number) => {
     const blobImage = await fetch(`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${Key}`).then(
-      (response) => response.blob()
+      (response) => {
+        return response.blob();
+      }
     );
 
+    const blobToFile = new File([blobImage], Key, { type: `image/${Key.split('.')[1]}` });
     const previewUrl = URL.createObjectURL(blobImage);
 
     return {
       id: uuidv4(),
+      image: blobToFile,
       preview: previewUrl,
       Key,
       aspectInit: { value: ratio, text: ratio.toString() },
-      type: blobImage.type,
     };
   };
 

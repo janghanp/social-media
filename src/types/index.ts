@@ -49,10 +49,10 @@ export interface Comment {
   mentionUser?: string;
 }
 
-export interface CustomFile extends File {
+export interface CustomFile {
   id: string;
+  image: File;
   preview: string;
-  type: string;
   croppedPreview?: string;
   croppedImage?: Blob;
   zoomInit?: number;

@@ -29,10 +29,10 @@ const Preview = ({ formikFiles, isEditing, setFieldValue }: Props) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [imageToCrop, setImageToCrop] = useState<CustomFile>();
 
-  const deleteFileFromFormik = (file: CustomFile) => {
-    URL.revokeObjectURL(file.preview);
-    const filteredFiles = formikFiles.filter((formikFile) => formikFile !== file);
-    setFieldValue('files', filteredFiles);
+  const deleteFileFromFormik = (customFile: CustomFile) => {
+    URL.revokeObjectURL(customFile.preview);
+    const filteredCustomFiles = formikFiles.filter((formikFile) => formikFile !== customFile);
+    setFieldValue('files', filteredCustomFiles);
   };
 
   return (
@@ -52,10 +52,10 @@ const Preview = ({ formikFiles, isEditing, setFieldValue }: Props) => {
             setCurrentIndex(slide.activeIndex);
           }}
         >
-          {formikFiles.map((file, index) => (
+          {formikFiles.map((formikFile, index) => (
             <SwiperSlide key={index}>
               <PreviewImageItem
-                file={file}
+                customFile={formikFile}
                 isEditing={isEditing}
                 deleteFileFromFormik={deleteFileFromFormik}
                 setImageToCrop={setImageToCrop}
@@ -69,7 +69,7 @@ const Preview = ({ formikFiles, isEditing, setFieldValue }: Props) => {
 
       {imageToCrop && (
         <ImageCropModal
-          file={imageToCrop}
+          customFile={imageToCrop}
           formikFiles={formikFiles}
           setImageToCrop={setImageToCrop}
           setFieldValue={setFieldValue}
