@@ -6,6 +6,7 @@ import { PropagateLoader } from 'react-spinners';
 import ImageSlide from './ImageSlide';
 import CommentSection from './CommentSection';
 import usePreventScroll from '../hooks/usePreventScroll';
+import useEscClose from '../hooks/useEscClose';
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -16,24 +17,8 @@ interface Props {
 const PostDetailModal = ({ postId, closeModal }: Props) => {
   const { data: post, error } = useSWR(`/api/detail/${postId}`, fetcher);
 
-  const keyEventHandler = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        closeModal();
-      }
-    },
-    [closeModal]
-  );
-
   usePreventScroll();
-
-  useEffect(() => {
-    document.addEventListener('keydown', keyEventHandler);
-
-    return () => {
-      document.removeEventListener('keydown', keyEventHandler);
-    };
-  }, [keyEventHandler]);
+  useEscClose({ close: closeModal });
 
   return (
     <>
@@ -54,8 +39,10 @@ const PostDetailModal = ({ postId, closeModal }: Props) => {
             </button>
           </div>
           <div className="grid grid-cols-5 gap-x-2">
-            <div className="relative z-10 col-span-5 w-full md:col-span-3">
-              <ImageSlide files={post.files} />
+            <div className="relative z-10 col-span-5 flex w-full justify-center md:col-span-3">
+              <div className="max-w-[470px]">
+                <ImageSlide files={post.files} />
+              </div>
             </div>
             <CommentSection post={post} />
           </div>

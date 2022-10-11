@@ -24,7 +24,7 @@ const ImageSlide = ({ files }: Props) => {
       const { width, height, px, py } = calculateRatio(file.ratio);
 
       return (
-        <SwiperSlide key={index}>
+        <SwiperSlide className="h-full" key={index}>
           <div className={`h-full w-full ${px} ${py} flex items-center justify-center`}>
             <Image
               src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`}

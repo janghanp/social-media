@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, memo } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';

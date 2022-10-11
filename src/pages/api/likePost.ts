@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(204).json({ mesasge: 'Successfully updated' });
       }
 
-      const user = await prisma.user.update({
+      await prisma.user.update({
         where: {
           id: userId,
         },
@@ -64,9 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       });
 
-      console.log(user);
-
-      const post = await prisma.post.update({
+      await prisma.post.update({
         where: {
           id: postId,
         },
@@ -76,8 +74,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
         },
       });
-
-      console.log(post);
 
       return res.status(204).json({ mesasge: 'Successfully updated' });
     } catch (err) {

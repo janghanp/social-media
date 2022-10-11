@@ -11,6 +11,7 @@ export const calculateRatio = (ratio: number) => {
     height = 265;
     px = 'px-0';
     py = 'py-[21.9%]';
+    // py = 'py-12';
   } else if (ratio < 1) {
     width = 376;
     height = 470;

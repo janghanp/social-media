@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import axios from 'axios';
 import FadeLoader from 'react-spinners/FadeLoader';
-import PropagateLoader from 'react-spinners/PropagateLoader';
 import { v4 as uuidv4 } from 'uuid';
+import useEscClose from '../hooks/useEscClose';
 
 import { CustomFile, FormikValues } from '../types';
 import { PostValidationSchema } from '../lib/validation';
@@ -23,6 +23,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
   const isEditing = initialFiles ? true : false;
 
   usePreventScroll();
+  useEscClose({ close: () => setIsPostModalOpen(false) });
 
   const router = useRouter();
 
