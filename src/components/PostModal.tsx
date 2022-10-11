@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FormikHelpers, useFormik } from 'formik';
 import axios from 'axios';
 import FadeLoader from 'react-spinners/FadeLoader';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CustomFile, FormikValues } from '../types';
@@ -28,6 +29,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
   const [issubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isStillUploading, setIsStillUploading] = useState<boolean>(false);
+  const [isInitializing, setIsInitializing] = useState<boolean>(false);
 
   const formik = useFormik<FormikValues>({
     initialValues: {
@@ -101,17 +103,21 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
   //When editing
   useEffect(() => {
     const setInitialFiles = async () => {
-      Promise.all(
+      setIsInitializing(true);
+
+      await Promise.all(
         initialFiles!.map(async (file) => await createCustomFile(file.Key, file.ratio))
       ).then((files) => {
         formik.setFieldValue('files', files, false);
       });
+
+      setIsInitializing(false);
     };
 
     if (isEditing && formik.values.files.length === 0) {
       setInitialFiles();
     }
-  }, [initialFiles, isEditing, formik]);
+  }, [initialFiles, isEditing, formik, setIsInitializing]);
 
   const copyObjectsInUse = async (files: CustomFile[], body: string) => {
     const fileInfos = files.map((file) => ({
@@ -180,7 +186,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
       )}
       <div
         className={`fixed top-10 ${
-          formik.values.files.length === 0 ? 'bottom-auto' : 'bottom-10'
+          formik.values.files.length !== 0 || isInitializing ? 'bottom-10' : 'bottom-auto'
         } left-1/2 z-40 w-[90%] -translate-x-1/2 overflow-y-auto rounded-md border-2 border-primary bg-white p-7 shadow-lg sm:w-[650px] sm:p-10`}
       >
         <h3 className="mb-5 text-xl font-bold sm:text-2xl">What is on your mind?</h3>
@@ -192,7 +198,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
         >
           ✕
         </button>
-        <form onSubmit={formik.handleSubmit}>
+        <form className="relative" onSubmit={formik.handleSubmit}>
           <textarea
             id="body"
             name="body"
@@ -212,6 +218,14 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
             setIsStillUploading={setIsStillUploading}
           />
 
+          {isInitializing && (
+            <div className="absolute left-1/2 z-30 -translate-x-1/2 pt-40">
+              <div className="pr-12">
+                <FadeLoader color="gray" />
+              </div>
+            </div>
+          )}
+
           {formik.values.files.length > 0 && (
             <Preview
               formikFiles={formik.values.files}
@@ -220,22 +234,24 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
             />
           )}
 
-          <div className="mt-5 flex flex-row space-x-5">
-            <button
-              type="submit"
-              className={`btn btn-outline border-2 ${isLoading && 'btn-disabled'}`}
-              disabled={isLoading ?? 'disabled'}
-            >
-              {isEditing ? 'Update' : 'Post'}
-            </button>
-            <button
-              onClick={cancelHandler}
-              className={`btn btn-ghost ${isLoading && 'btn-disabled'}`}
-              disabled={isLoading ?? 'disabled'}
-            >
-              Cancel
-            </button>
-          </div>
+          {!isInitializing && (
+            <div className="mt-5 flex flex-row space-x-5">
+              <button
+                type="submit"
+                className={`btn btn-outline border-2 ${isLoading && 'btn-disabled'}`}
+                disabled={isLoading ?? 'disabled'}
+              >
+                {isEditing ? 'Update' : 'Post'}
+              </button>
+              <button
+                onClick={cancelHandler}
+                className={`btn btn-ghost ${isLoading && 'btn-disabled'}`}
+                disabled={isLoading ?? 'disabled'}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </>
