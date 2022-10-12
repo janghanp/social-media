@@ -246,9 +246,6 @@ const Settings: NextPage = () => {
             </button>
           </div>
         </form>
-        <code>
-          <pre>{JSON.stringify(formik, null, 4)}</pre>
-        </code>
       </div>
     </div>
   );

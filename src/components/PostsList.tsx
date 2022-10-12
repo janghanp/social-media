@@ -49,13 +49,13 @@ const PostsList = ({ initialPosts }: Props) => {
       {posts.map((post, index) => {
         if (index + 1 === posts.length) {
           return (
-            <div className="w-[470px]" key={post.id} ref={lastElementRef}>
+            <div className="w-full max-w-[470px]" key={post.id} ref={lastElementRef}>
               <Post post={post} />
             </div>
           );
         } else {
           return (
-            <div className="w-[470px]" key={post.id}>
+            <div className="w-full max-w-[470px]" key={post.id}>
               <Post post={post} />
             </div>
           );

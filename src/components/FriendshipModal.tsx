@@ -36,7 +36,7 @@ const FriendshipModal = ({
         className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm"
       ></div>
 
-      <div className="fixed left-1/2 top-1/2 z-40 h-auto min-h-[500px] w-3/5 max-w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-5 shadow-lg md:w-11/12 lg:w-10/12 xl:w-[1150px]">
+      <div className="fixed left-1/2 top-1/2 z-40 h-auto min-h-[500px] w-5/6 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-5 shadow-lg sm:max-w-[400px] md:w-11/12 lg:w-10/12 xl:w-[1150px]">
         <div className="flex w-full flex-col items-center justify-center">
           {error && <div className="text-red-500">failed to load...</div>}
 

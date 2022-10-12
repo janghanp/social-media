@@ -40,7 +40,7 @@ const PostDetailModal = ({ postId, closeModal }: Props) => {
           </div>
           <div className="grid grid-cols-5 gap-x-2">
             <div className="relative z-10 col-span-5 flex w-full justify-center md:col-span-3">
-              <div className="max-w-[470px]">
+              <div className="w-full">
                 <ImageSlide files={post.files} />
               </div>
             </div>

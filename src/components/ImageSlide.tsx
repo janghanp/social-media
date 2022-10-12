@@ -25,15 +25,14 @@ const ImageSlide = ({ files }: Props) => {
 
       return (
         <SwiperSlide className="h-full" key={index}>
-          <div className={`h-full w-full ${px} ${py} flex items-center justify-center`}>
+          <div className={`h-auto w-auto ${px} ${py} bg-white`}>
             <Image
-              src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`}
+              layout="responsive"
+              objectFit="cover"
               width={width}
               height={height}
-              layout="fixed"
-              objectFit="cover"
+              src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${file.Key}`}
               alt="image"
-              priority={true}
             />
           </div>
         </SwiperSlide>

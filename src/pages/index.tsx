@@ -46,9 +46,7 @@ const Home: NextPage<Props> = ({ initialPosts }: Props) => {
   return (
     <>
       <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row  px-2 pt-10 lg:px-0">
-        <section className="flex w-full lg:w-3/5">
-          <PostsList initialPosts={initialPosts} />
-        </section>
+        <PostsList initialPosts={initialPosts} />
       </div>
     </>
   );

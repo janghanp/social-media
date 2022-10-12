@@ -174,7 +174,7 @@ const DropZone = ({ error, formikFiles, setFieldValue, setIsStillUploading }: Pr
           <input {...getInputProps()} />
           <div className="flex flex-col items-center justify-center space-y-2 py-5">
             <HiOutlineUpload className="h-6 w-6 text-gray-500" />
-            <p className="text-center text-base text-primary">
+            <p className="text-center text-sm text-primary sm:text-base">
               Drag and drop some files here, or click to select files
             </p>
           </div>

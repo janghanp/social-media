@@ -78,7 +78,7 @@ const Post = ({ post }: Props) => {
       initialPreviewComments={post.comments}
       initialTotalCommentsCount={post._count.comments}
     >
-      <div className="relative box-content h-auto w-full max-w-[470px] rounded-md border border-primary bg-white shadow-xl">
+      <div className="relative box-content h-auto w-full rounded-md border border-primary bg-white shadow-xl">
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center justify-center gap-x-3">
             <div

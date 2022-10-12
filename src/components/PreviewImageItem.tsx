@@ -30,9 +30,9 @@ const PreviewImageItem = ({ customFile, deleteFileFromFormik, setImageToCrop }: 
         <MdOutlineModeEdit className="mr-1 h-6 w-6 self-center stroke-0 text-center" />
         <span>Edit</span>
       </div>
-      <div className={`h-auto w-auto ${px} ${py} flex items-center justify-center bg-white`}>
+      <div className={`h-auto w-auto ${px} ${py} bg-white`}>
         <Image
-          layout="fixed"
+          layout="responsive"
           objectFit="cover"
           width={width}
           height={height}
