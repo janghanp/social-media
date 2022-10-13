@@ -95,8 +95,8 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
 
   return (
     <>
-      <div className="flex h-36 sm:h-52 w-full flex-row items-start justify-center gap-x-5 sm:gap-x-10 border-b border-gray-300">
-        <div className="avatar overflow-hidden rounded-full border w-20 h-20 sm:w-[125px] sm:h-[125px] flex-none">
+      <div className="flex h-36 w-full flex-row items-start justify-center gap-x-5 border-b border-gray-300 sm:h-52 sm:gap-x-10">
+        <div className="avatar h-20 w-20 flex-none overflow-hidden rounded-full border sm:h-[125px] sm:w-[125px]">
           <Image
             src={postAuthor!.image}
             width={125}
@@ -122,18 +122,18 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
             )}
           </div>
           <div className="flex gap-x-5 text-sm sm:text-base">
-            <span className='text-center'>
+            <span className="text-center">
               <span className="font-semibold">{totalPostsCount}</span> posts
             </span>
             <span
               onClick={() => showFriendshipModal('isFollowedBy')}
-              className="hover:cursor-pointer text-center"
+              className="text-center hover:cursor-pointer"
             >
               <span className="font-semibold">{followerCounts}</span> followers
             </span>
             <span
               onClick={() => showFriendshipModal('isFollowing')}
-              className="hover:cursor-pointer text-center"
+              className="text-center hover:cursor-pointer"
             >
               <span className="font-semibold">{followingCounts}</span> following
             </span>

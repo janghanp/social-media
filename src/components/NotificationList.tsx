@@ -53,7 +53,7 @@ const NotificationList = ({
       <motion.div
         initial={{ opacity: 0, y: -60 }}
         animate={{ opacity: 1, y: -40 }}
-        className="rounded-box absolute -right-16 sm:right-0 top-20 z-40 max-h-[550px] w-[300px] sm:w-[350px]  ma overflow-y-auto border-2 border-primary bg-base-100 shadow"
+        className="ma rounded-box absolute -right-16 top-20 z-40 max-h-[550px] w-[300px] overflow-y-auto  border-2 border-primary bg-base-100 shadow sm:right-0 sm:w-[350px]"
       >
         <div className="flex items-center justify-between py-3 px-5">
           <span className="text-lg font-semibold">Notifications</span>

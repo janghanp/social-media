@@ -21,7 +21,29 @@ const ImageSlide = ({ files }: Props) => {
 
   const swiperSlide = useMemo(() => {
     return files?.map((file, index) => {
-      const { width, height, px, py } = calculateRatio(file.ratio);
+      let width, height, px, py;
+
+      if (file.ratio === 1) {
+        width = 470;
+        height = 470;
+        px = 'px-0';
+        py = 'py-0';
+      } else if (file.ratio > 1) {
+        width = 470;
+        height = 265;
+        px = 'px-0';
+        py = 'py-[21.9%]';
+      } else if (file.ratio < 1) {
+        width = 376;
+        height = 470;
+        px = 'px-[10%]';
+        py = 'py-0';
+      } else {
+        width = 470;
+        height = 470;
+        px = 'px-0';
+        py = 'py-0';
+      }
 
       return (
         <SwiperSlide className="h-full" key={index}>

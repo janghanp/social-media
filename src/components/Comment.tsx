@@ -60,7 +60,7 @@ const Comment = ({
   );
 
   useEffect(() => {
-    if (childrenComments.length > 0) {
+    if (comment.newChildren) {
       setChildrenComments((prevState) => {
         const newChildrenComments = [...prevState, comment.newChildren!];
 
@@ -69,7 +69,7 @@ const Comment = ({
 
       setChildrenCount((prevState) => prevState + 1);
     }
-  }, [comment.newChildren, childrenComments.length]);
+  }, [comment.newChildren]);
 
   useEffect(() => {
     setChildrenCount(comment._count.children);

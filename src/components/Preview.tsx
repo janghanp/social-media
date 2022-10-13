@@ -37,7 +37,7 @@ const Preview = ({ formikFiles, isEditing, setFieldValue }: Props) => {
 
   return (
     <>
-      <div className="mt-5 box-content h-auto w-auto overflow-hidden rounded-md border border-primary">
+      <div className="mt-5 border border-primary rounded-md overflow-hidden">
         <Swiper
           effect="fade"
           allowTouchMove={false}

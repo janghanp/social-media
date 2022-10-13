@@ -52,9 +52,9 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
       <div className="flex">
         <div
           onClick={avatarClickHandler}
-          className="avatar overflow-hidden rounded-full hover:cursor-pointer flex-none h-[42px]"
+          className="avatar h-[42px] flex-none overflow-hidden rounded-full hover:cursor-pointer"
         >
-            <Image src={friend.image} width={40} height={40} alt="Image" />
+          <Image src={friend.image} width={40} height={40} alt="Image" />
         </div>
         <div className="flex flex-col pl-3">
           <span className="text-sm font-semibold">{trimText(friend.name)}</span>
@@ -68,7 +68,7 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
       ) : (
         <button
           onClick={toggleFriendshipHandler}
-          className={`flex-none rounded-md border-2 border-black px-3 py-[6px] absolute right-5 ${
+          className={`absolute right-5 flex-none rounded-md border-2 border-black px-3 py-[6px] ${
             !isCurrenUserFollowingThisUser ? 'bg-white text-black' : 'bg-black text-white'
           }`}
         >

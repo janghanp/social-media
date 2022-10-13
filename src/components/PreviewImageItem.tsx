@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { MdClose, MdOutlineModeEdit } from 'react-icons/md';
 
 import { CustomFile } from '../types';
-import { previewItemRatio } from '../lib/previewItemRatio';
 
 interface Props {
   customFile: CustomFile;
@@ -13,7 +12,29 @@ interface Props {
 }
 
 const PreviewImageItem = ({ customFile, deleteFileFromFormik, setImageToCrop }: Props) => {
-  const { width, height, px, py } = previewItemRatio(customFile.aspectInit?.value);
+  let width, height, px, py;
+
+  if (customFile.aspectInit?.value === 1) {
+    width = 564;
+    height = 564;
+    px = 'px-0';
+    py = 'py-0';
+  } else if (customFile.aspectInit && customFile.aspectInit.value < 1) {
+    width = 451;
+    height = 564;
+    px = 'px-[10%]';
+    py = 'py-0';
+  } else if (customFile.aspectInit && customFile.aspectInit.value > 1) {
+    width = 564;
+    height = 317;
+    px = 'px-0';
+    py = 'py-[21.9%]';
+  } else {
+    width = 564;
+    height = 564;
+    px = 'px-0';
+    py = 'py-0';
+  }
 
   return (
     <>
@@ -32,7 +53,7 @@ const PreviewImageItem = ({ customFile, deleteFileFromFormik, setImageToCrop }: 
       </div>
       <div className={`h-auto w-auto ${px} ${py} bg-white`}>
         <Image
-          layout="responsive"
+          layout="intrinsic"
           objectFit="cover"
           width={width}
           height={height}
