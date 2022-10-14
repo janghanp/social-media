@@ -5,7 +5,6 @@ import Image from 'next/image';
 
 import SwiperPrevButton from './SwiperPrevButton';
 import SwiperNextButton from './SwiperNextButton';
-import { calculateRatio } from '../lib/calculateRatio';
 import { FileInfo } from '../types';
 
 import 'swiper/css';
@@ -46,7 +45,7 @@ const ImageSlide = ({ files }: Props) => {
       }
 
       return (
-        <SwiperSlide className="h-full" key={index}>
+        <SwiperSlide key={index}>
           <div className={`h-auto w-auto ${px} ${py} bg-white`}>
             <Image
               layout="responsive"

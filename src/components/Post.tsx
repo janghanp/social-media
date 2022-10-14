@@ -34,21 +34,6 @@ const Post = ({ post }: Props) => {
   const [isPostDetailModalOpen, setIsPostDetailModalOpen] = useState<boolean>(false);
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
 
-  const deletePostHandler = async () => {
-    await axios.delete('/api/post', {
-      data: {
-        postId: post.id,
-      },
-    });
-
-    router.reload();
-  };
-
-  const editPostHandler = async () => {
-    setIsControlMenuOpen(false);
-    setIsPostModalOpen(true);
-  };
-
   const avatarClickHandler = () => {
     router.push(`/${post.user.username}`);
   };
@@ -66,6 +51,25 @@ const Post = ({ post }: Props) => {
   const closePostDetailModal = () => {
     window.history.replaceState({}, '', '/');
     setIsPostDetailModalOpen(false);
+  };
+
+  const deletePostHandler = async () => {
+    await axios.delete('/api/post', {
+      data: {
+        postId: post.id,
+      },
+    });
+
+    router.reload();
+  };
+
+  const editPostHandler = async () => {
+    if (isPostDetailModalOpen) {
+      closePostDetailModal();
+    }
+
+    setIsControlMenuOpen(false);
+    setIsPostModalOpen(true);
   };
 
   return (
@@ -121,7 +125,12 @@ const Post = ({ post }: Props) => {
       )}
 
       {isPostDetailModalOpen && (
-        <PostDetailModal postId={post.id} closeModal={closePostDetailModal} />
+        <PostDetailModal
+          postId={post.id}
+          closeModal={closePostDetailModal}
+          deletePostHandler={deletePostHandler}
+          editPostHandler={editPostHandler}
+        />
       )}
 
       {isControlMenuOpen && (

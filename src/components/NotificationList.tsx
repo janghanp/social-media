@@ -69,7 +69,7 @@ const NotificationList = ({
         ) : isLoading ? (
           <SkeletionLoader />
         ) : notifications?.length === 0 ? (
-          <div className='flex justify-center p-2'>so clean...</div>
+          <div className="flex justify-center p-2">so clean...</div>
         ) : (
           <ul className="relative flex flex-col overflow-y-hidden">
             {notifications?.map((notification) => {
