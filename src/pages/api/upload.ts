@@ -52,12 +52,14 @@ export default async function hanlder(req: NextApiRequest, res: NextApiResponse)
             Bucket: process.env.AWS_S3_BUCKET,
             Key: `profile/${Key}`,
             Body: file,
+            ContentType: type,
           };
         } else {
           input = {
             Bucket: process.env.AWS_S3_BUCKET,
             Key: `temp/${Key}`,
             Body: file,
+            ContentType: type,
           };
         }
 

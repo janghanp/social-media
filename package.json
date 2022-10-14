@@ -6,8 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write .",
-    "analyze": "ANALYZE=true yarn build"
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.100.0",

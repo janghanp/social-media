@@ -47,6 +47,8 @@ const NotificationList = ({
 
   const isLoading = !notifications && !error;
 
+  console.log(notifications);
+
   return (
     <>
       <div onClick={() => setIsNotificationOpen(false)} className="fixed inset-0 z-30"></div>
@@ -66,6 +68,8 @@ const NotificationList = ({
           <div className="text-red-500">failed to load... please try again</div>
         ) : isLoading ? (
           <SkeletionLoader />
+        ) : notifications?.length === 0 ? (
+          <div className='flex justify-center p-2'>so clean...</div>
         ) : (
           <ul className="relative flex flex-col overflow-y-hidden">
             {notifications?.map((notification) => {

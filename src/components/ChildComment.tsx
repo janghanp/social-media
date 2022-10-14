@@ -24,7 +24,6 @@ const ChildComment = ({
   setChildrenComments,
   setChildrenCount,
 }: Props) => {
-
   const { data: session } = useSession();
 
   const currentUser = useCurrentUserState((state) => state.currentUser);
