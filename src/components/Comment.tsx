@@ -26,6 +26,8 @@ interface Props {
   setCurrentCommentInput: React.Dispatch<SetStateAction<string>>;
   setCurrentComments: React.Dispatch<SetStateAction<CommentType[]>>;
   setReplyingCommentId: React.Dispatch<SetStateAction<string>>;
+  setReplyingCommentUserId: React.Dispatch<SetStateAction<string>>;
+  setIsReplyOfReply: React.Dispatch<SetStateAction<boolean>>;
   deleteComment: (commentId: string, postId: string) => void;
 }
 
@@ -40,12 +42,14 @@ const Comment = ({
   setCurrentCommentInput,
   setCurrentComments,
   setReplyingCommentId,
+  setReplyingCommentUserId,
+  setIsReplyOfReply,
 }: Props) => {
   const { data: session } = useSession();
 
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
-  const { postThumbnail } = usePostContext();
+  const { postThumbnailKey } = usePostContext();
 
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
   const [likesCount, setLikesCount] = useState<number>(comment._count ? comment._count.likedBy : 0);
@@ -101,7 +105,7 @@ const Comment = ({
         'LIKECOMMENT',
         `${window.location.origin}/posts/${postId}`,
         comment.id,
-        postThumbnail
+        postThumbnailKey
       );
     }
 
@@ -133,10 +137,13 @@ const Comment = ({
     });
   };
 
-  const replyHandler = async (metionUser: string, commentId: string) => {
+  const replyHandler = async (metionUser: string, commentId: string, isReplyOfReply: boolean) => {
+    //How to send and store comments here?
     setIsReply(true);
     setReplyingCommentId(commentId);
+    setReplyingCommentUserId(comment.userId);
     setCurrentCommentInput(`@${metionUser} `);
+    setIsReplyOfReply(isReplyOfReply);
   };
 
   const fetchChildrenComments = async () => {
@@ -195,7 +202,7 @@ const Comment = ({
                     Like
                   </span>
                   <span
-                    onClick={() => replyHandler(comment.user.username, comment.id)}
+                    onClick={() => replyHandler(comment.user.username, comment.id, false)}
                     className="hover:cursor-pointer"
                   >
                     Reply

@@ -93,19 +93,20 @@ enum Type {
   LIKEPOST
   LIKECOMMENT
   COMMENT
+  REPLY
 }
 
 model Notification {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  senderId   String   @db.ObjectId
-  receiverId String   @db.ObjectId
-  targetId   String?  @db.ObjectId
-  type       Type
-  is_read    Boolean  @default(false)
-  is_clicked Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  link       String
-  thumbnail  String?
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  senderId     String   @db.ObjectId
+  receiverId   String   @db.ObjectId
+  targetId     String?  @db.ObjectId
+  type         Type
+  is_read      Boolean  @default(false)
+  is_clicked   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  link         String
+  thumbnailKey String?
 
   //one to many relation
   receiver User @relation("UserReceiveNotifications", fields: [receiverId], references: [id])

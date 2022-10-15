@@ -76,11 +76,12 @@ const Post = ({ post }: Props) => {
     <PostProvider
       postId={post.id}
       postAuthorId={post.userId}
-      postThumbnail={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${post.files[0].Key}`}
+      postThumbnailKey={`${post.files[0].Key}`}
       initialIsLiked={session ? post.likedByIds.includes(session!.user.id) : false}
       initialLikesCount={post._count.likedBy}
       initialPreviewComments={post.comments}
       initialTotalCommentsCount={post._count.comments}
+      initialIsModal={true}
     >
       <div className="relative box-content h-auto w-full rounded-md border border-primary bg-white shadow-xl">
         <div className="flex items-center justify-between p-3">

@@ -62,14 +62,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         type,
         link,
         targetId,
-        thumbnail,
+        thumbnailKey,
       }: {
         senderId: string;
         receiverId: string;
         type: Type;
         link: string;
         targetId?: string;
-        thumbnail?: string;
+        thumbnailKey?: string;
       } = req.body;
 
       if (type === 'FOLLOW') {
@@ -120,7 +120,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           type,
           targetId,
           link,
-          thumbnail,
+          thumbnailKey,
         },
       });
 

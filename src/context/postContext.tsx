@@ -4,13 +4,14 @@ import { Comment as CommentType } from '../types';
 
 interface Props {
   children: React.ReactNode;
-  initialPreviewComments: CommentType[];
-  initialTotalCommentsCount: number;
-  initialIsLiked: boolean;
-  initialLikesCount: number;
+  initialPreviewComments?: CommentType[];
+  initialTotalCommentsCount?: number;
+  initialIsLiked?: boolean;
+  initialLikesCount?: number;
   postId: string;
   postAuthorId: string;
-  postThumbnail: string;
+  postThumbnailKey: string;
+  initialIsModal: boolean;
 }
 
 interface PostContextType {
@@ -18,9 +19,10 @@ interface PostContextType {
   totalCommentsCount: number;
   isLiked: boolean;
   totalLikesCount: number;
+  isModal: boolean;
   postId: string;
   postAuthorId: string;
-  postThumbnail: string;
+  postThumbnailKey: string;
   setPreviewComments: Dispatch<SetStateAction<CommentType[]>>;
   setTotalCommentsCount: Dispatch<SetStateAction<number>>;
   setIsLiked: Dispatch<SetStateAction<boolean>>;
@@ -34,7 +36,8 @@ const defaultValue: PostContextType = {
   totalLikesCount: 0,
   postId: '',
   postAuthorId: '',
-  postThumbnail: '',
+  postThumbnailKey: '',
+  isModal: true,
   setPreviewComments: () => {},
   setTotalCommentsCount: () => {},
   setIsLiked: () => {},
@@ -49,14 +52,20 @@ export function PostProvider({
   initialTotalCommentsCount,
   initialIsLiked,
   initialLikesCount,
+  initialIsModal,
   postId,
   postAuthorId,
-  postThumbnail,
+  postThumbnailKey,
 }: Props) {
-  const [previewComments, setPreviewComments] = useState<CommentType[]>(initialPreviewComments);
-  const [totalCommentsCount, setTotalCommentsCount] = useState<number>(initialTotalCommentsCount);
-  const [isLiked, setIsLiked] = useState<boolean>(initialIsLiked);
-  const [totalLikesCount, setTotalLikesCount] = useState<number>(initialLikesCount);
+  const [previewComments, setPreviewComments] = useState<CommentType[]>(
+    initialPreviewComments || []
+  );
+  const [totalCommentsCount, setTotalCommentsCount] = useState<number>(
+    initialTotalCommentsCount || 0
+  );
+  const [isLiked, setIsLiked] = useState<boolean>(initialIsLiked || false);
+  const [totalLikesCount, setTotalLikesCount] = useState<number>(initialLikesCount || 0);
+  const [isModal, _setIsModal] = useState<boolean>(initialIsModal);
 
   return (
     <postContext.Provider
@@ -64,10 +73,11 @@ export function PostProvider({
         previewComments,
         totalCommentsCount,
         isLiked,
+        isModal,
         totalLikesCount,
         postId,
         postAuthorId,
-        postThumbnail,
+        postThumbnailKey,
         setPreviewComments,
         setTotalCommentsCount,
         setIsLiked,

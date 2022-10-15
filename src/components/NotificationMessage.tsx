@@ -12,28 +12,35 @@ const NotificationMessage = ({ senderUsername, type }: Props) => {
     case 'FOLLOW':
       message = (
         <span>
-          <span className="font-semibold">{senderUsername}</span> started following you.
+          <span className="font-bold">{senderUsername}</span> started following you.
         </span>
       );
       break;
     case 'LIKEPOST':
       message = (
         <span>
-          <span className="font-semibold">{senderUsername}</span> liked your post.
+          <span className="font-bold">{senderUsername}</span> liked your post.
         </span>
       );
       break;
     case 'COMMENT':
       message = (
         <span>
-          <span className="font-semibold">{senderUsername}</span> left a comment on your post.
+          <span className="font-bold">{senderUsername}</span> left a comment on your post.
         </span>
       );
       break;
     case 'LIKECOMMENT':
       message = (
         <span>
-          <span className="font-semibold">{senderUsername}</span> liked your comment.
+          <span className="font-bold">{senderUsername}</span> liked your comment.
+        </span>
+      );
+      break;
+    case 'REPLY':
+      message = (
+        <span>
+          <span className="font-bold">{senderUsername}</span> replied to your comment.
         </span>
       );
       break;

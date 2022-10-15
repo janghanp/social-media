@@ -7,7 +7,7 @@ export const sendNotification = async (
   type: Type,
   link: string,
   targetId?: string,
-  thumbnail?: string
+  thumbnailKey?: string
 ) => {
   await axios.post('/api/notification', {
     senderId,
@@ -15,6 +15,6 @@ export const sendNotification = async (
     type,
     link,
     targetId,
-    thumbnail,
+    thumbnailKey,
   });
 };

@@ -43,11 +43,11 @@ const NotificationItem = ({ notification, setIsNotificationOpen }: Props) => {
           {dayjs().to(dayjs(notification.createdAt))}
         </span>
       </div>
-      {notification.thumbnail && (
+      {notification.thumbnailKey && (
         <div className="flex-none">
           <Image
             className="rounded-md"
-            src={notification.thumbnail}
+            src={`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${notification.thumbnailKey}`}
             width={40}
             height={40}
             alt="Image"

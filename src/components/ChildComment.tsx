@@ -15,7 +15,7 @@ interface Props {
   childComment: CommentType;
   setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
   setChildrenCount: React.Dispatch<SetStateAction<number>>;
-  replyHandler: (mentionUser: string, commentId: string) => void;
+  replyHandler: (mentionUser: string, commentId: string, isReplyOfReply: boolean) => void;
 }
 
 const ChildComment = ({
@@ -36,7 +36,7 @@ const ChildComment = ({
   );
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
 
-  const { postId, postThumbnail, setTotalCommentsCount } = usePostContext();
+  const { postId, postThumbnailKey, setTotalCommentsCount, isModal } = usePostContext();
 
   const likeCommentHandler = async () => {
     await axios.post('/api/likeComment', {
@@ -52,7 +52,7 @@ const ChildComment = ({
         'LIKECOMMENT',
         `${window.location.origin}/posts/${postId}`,
         childComment.id,
-        postThumbnail
+        postThumbnailKey
       );
     }
 
@@ -98,7 +98,9 @@ const ChildComment = ({
       },
     });
 
-    setTotalCommentsCount((prevState) => prevState - 1);
+    if (isModal) {
+      setTotalCommentsCount((prevState) => prevState - 1);
+    }
   };
 
   return (
@@ -131,7 +133,9 @@ const ChildComment = ({
                   Like
                 </span>
                 <span
-                  onClick={() => replyHandler(childComment.user.username, childComment.parentId!)}
+                  onClick={() =>
+                    replyHandler(childComment.user.username, childComment.parentId!, true)
+                  }
                   className="hover:cursor-pointer"
                 >
                   Reply

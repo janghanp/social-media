@@ -71,7 +71,7 @@ export interface Notification {
   senderId: string;
   receiverId: string;
   targetId?: string;
-  thumbnail?: string;
+  thumbnailKey?: string;
   type: Type;
   link: string;
   is_read: boolean;

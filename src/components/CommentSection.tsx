@@ -66,16 +66,18 @@ const CommentSection = ({ post }: Props) => {
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [isReply, setIsReply] = useState<boolean>(false);
+  const [isReplyOfReply, setIsReplyOfReply] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [editingCommentId, setEditingCommentId] = useState<string>('');
   const [replyingCommentId, setReplyingCommentId] = useState<string>('');
+  const [replyingCommentUserId, setReplyingCommentUserId] = useState<string>('');
   const [currentCommentInput, setCurrentCommentInput] = useState<string>('');
   const [isLastPage, setIsLastPage] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [currentComments, setCurrentComments] = useState<CommentType[]>([]);
   const [skip, setSkip] = useState<number>(0);
 
-  const { postThumbnail, setTotalCommentsCount, setPreviewComments } = usePostContext();
+  const { postThumbnailKey, setTotalCommentsCount, setPreviewComments, isModal } = usePostContext();
 
   useEffect(() => {
     async function fetchComments(): Promise<void> {
@@ -140,13 +142,17 @@ const CommentSection = ({ post }: Props) => {
         'COMMENT',
         `${window.location.origin}/posts/${post.id}`,
         undefined,
-        postThumbnail
+        postThumbnailKey
       );
     }
 
     setCurrentComments((prevState) => [newComment, ...prevState]);
-    setTotalCommentsCount((prevState) => prevState + 1);
-    setPreviewComments((prevState) => [newComment, ...prevState]);
+
+    if (isModal) {
+      setTotalCommentsCount((prevState) => prevState + 1);
+      setPreviewComments((prevState) => [newComment, ...prevState]);
+    }
+
     setSkip((prevState) => prevState + 1);
   };
 
@@ -167,7 +173,9 @@ const CommentSection = ({ post }: Props) => {
         }
       });
 
-      setPreviewComments(newCurrentComments.slice(0, 2));
+      if (isModal) {
+        setPreviewComments(newCurrentComments.slice(0, 2));
+      }
 
       return newCurrentComments;
     });
@@ -193,6 +201,19 @@ const CommentSection = ({ post }: Props) => {
       mentionUser,
     });
 
+    if (currentUser!.id !== replyingCommentUserId || isReplyOfReply) {
+      console.log('send a notification!');
+
+      sendNotification(
+        currentUser!.id,
+        replyingCommentUserId,
+        'REPLY',
+        `${window.location.origin}/posts/${post.id}`,
+        undefined,
+        postThumbnailKey
+      );
+    }
+
     setIsReply(false);
     setReplyingCommentId('');
     setCurrentCommentInput('');
@@ -209,7 +230,10 @@ const CommentSection = ({ post }: Props) => {
 
       return newCurrentComments;
     });
-    setTotalCommentsCount((state) => state + 1);
+
+    if (isModal) {
+      setTotalCommentsCount((state) => state + 1);
+    }
   };
 
   const deleteComment = async (commentId: string, postId: string) => {
@@ -222,10 +246,16 @@ const CommentSection = ({ post }: Props) => {
 
     const comment = currentComments.filter((currentComment) => currentComment.id === commentId)[0];
 
-    setTotalCommentsCount((prevState) => prevState - (comment._count.children + 1));
+    if (isModal) {
+      setTotalCommentsCount((prevState) => prevState - (comment._count.children + 1));
+    }
+
     setCurrentComments((prevState) => {
       const newCurrentComments = prevState.filter((prevComment) => prevComment.id !== commentId);
-      setPreviewComments(newCurrentComments.slice(0, 2));
+
+      if (isModal) {
+        setPreviewComments(newCurrentComments.slice(0, 2));
+      }
 
       return newCurrentComments;
     });
@@ -286,6 +316,8 @@ const CommentSection = ({ post }: Props) => {
                     deleteComment={deleteComment}
                     setCurrentComments={setCurrentComments}
                     setReplyingCommentId={setReplyingCommentId}
+                    setReplyingCommentUserId={setReplyingCommentUserId}
+                    setIsReplyOfReply={setIsReplyOfReply}
                   />
                 </Fragment>
               );
