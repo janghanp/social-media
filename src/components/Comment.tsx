@@ -1,4 +1,5 @@
 import { SetStateAction, useState, useEffect, memo } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -27,7 +28,7 @@ interface Props {
   setCurrentComments: React.Dispatch<SetStateAction<CommentType[]>>;
   setReplyingCommentId: React.Dispatch<SetStateAction<string>>;
   setReplyingCommentUserId: React.Dispatch<SetStateAction<string>>;
-  setIsReplyOfReply: React.Dispatch<SetStateAction<boolean>>;
+  setReplyOfReplyId: React.Dispatch<SetStateAction<string>>;
   deleteComment: (commentId: string, postId: string) => void;
 }
 
@@ -43,9 +44,11 @@ const Comment = ({
   setCurrentComments,
   setReplyingCommentId,
   setReplyingCommentUserId,
-  setIsReplyOfReply,
+  setReplyOfReplyId,
 }: Props) => {
   const { data: session } = useSession();
+
+  const router = useRouter();
 
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
@@ -137,13 +140,15 @@ const Comment = ({
     });
   };
 
-  const replyHandler = async (metionUser: string, commentId: string, isReplyOfReply: boolean) => {
-    //How to send and store comments here?
+  const replyHandler = async (metionUser: string, commentId: string, replyOfReplyId?: string) => {
     setIsReply(true);
     setReplyingCommentId(commentId);
     setReplyingCommentUserId(comment.userId);
     setCurrentCommentInput(`@${metionUser} `);
-    setIsReplyOfReply(isReplyOfReply);
+
+    if (replyOfReplyId) {
+      setReplyOfReplyId(replyOfReplyId);
+    }
   };
 
   const fetchChildrenComments = async () => {
@@ -178,7 +183,10 @@ const Comment = ({
     <>
       <div className="group my-1 flex w-full flex-row items-center justify-between gap-x-2 break-all">
         <div className="flex w-full flex-row items-start justify-start gap-x-2">
-          <div className="avatar flex-none overflow-hidden rounded-full">
+          <div
+            onClick={() => router.push(`/${comment.user.username}`)}
+            className="avatar flex-none overflow-hidden rounded-full hover:cursor-pointer"
+          >
             <Image src={comment.user.image} width={40} height={40} alt={comment.user.id} />
           </div>
           <div className="-mt-2 flex flex-col">
@@ -201,12 +209,14 @@ const Comment = ({
                   >
                     Like
                   </span>
-                  <span
-                    onClick={() => replyHandler(comment.user.username, comment.id, false)}
-                    className="hover:cursor-pointer"
-                  >
-                    Reply
-                  </span>
+                  {comment.userId !== currentUser!.id && (
+                    <span
+                      onClick={() => replyHandler(comment.user.username, comment.id)}
+                      className="hover:cursor-pointer"
+                    >
+                      Reply
+                    </span>
+                  )}
                   {(session?.user.id === comment.userId || session?.user.id === postAuthorId) && (
                     <div
                       onClick={() => setIsControlMenuOpen(true)}

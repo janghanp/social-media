@@ -27,12 +27,12 @@ const NotificationItem = ({ notification, setIsNotificationOpen }: Props) => {
     <li
       key={notification.id}
       onClick={notificationClickHandler}
-      className="flex items-start space-x-3 p-3 transition duration-300 hover:cursor-pointer hover:bg-gray-200"
+      className="flex items-start justify-between space-x-3 p-3 transition duration-300 hover:cursor-pointer hover:bg-gray-200"
     >
       <div className="avatar flex-none overflow-hidden rounded-full">
         <Image src={notification.sender.image} width={40} height={40} alt="Image" />
       </div>
-      <div className="flex flex-col text-sm">
+      <div className="flex flex-1 flex-col text-sm">
         <div className={`${notification.is_clicked ? 'text-gray-300' : 'text-primary'}`}>
           <NotificationMessage
             senderUsername={notification.sender.username}

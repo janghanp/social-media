@@ -47,8 +47,6 @@ const NotificationList = ({
 
   const isLoading = !notifications && !error;
 
-  console.log(notifications);
-
   return (
     <>
       <div onClick={() => setIsNotificationOpen(false)} className="fixed inset-0 z-30"></div>

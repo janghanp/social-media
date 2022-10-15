@@ -1,5 +1,6 @@
 import { SetStateAction, useState, memo } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import Image from 'next/image';
 import dayjs from 'dayjs';
@@ -15,7 +16,7 @@ interface Props {
   childComment: CommentType;
   setChildrenComments: React.Dispatch<SetStateAction<CommentType[]>>;
   setChildrenCount: React.Dispatch<SetStateAction<number>>;
-  replyHandler: (mentionUser: string, commentId: string, isReplyOfReply: boolean) => void;
+  replyHandler: (mentionUser: string, commentId: string, replyOfReplyId: string) => void;
 }
 
 const ChildComment = ({
@@ -25,6 +26,8 @@ const ChildComment = ({
   setChildrenCount,
 }: Props) => {
   const { data: session } = useSession();
+
+  const router = useRouter();
 
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
@@ -106,7 +109,10 @@ const ChildComment = ({
   return (
     <>
       <div className="group flex w-full flex-row items-start justify-start gap-x-2">
-        <div className="avatar flex-none overflow-hidden rounded-full">
+        <div
+          onClick={() => router.push(`/${childComment.user.username}`)}
+          className="avatar flex-none overflow-hidden rounded-full hover:cursor-pointer"
+        >
           <Image src={childComment.user.image} width={40} height={40} alt="user-image" />
         </div>
         <div className="-mt-2 flex flex-col">
@@ -132,14 +138,20 @@ const ChildComment = ({
                 >
                   Like
                 </span>
-                <span
-                  onClick={() =>
-                    replyHandler(childComment.user.username, childComment.parentId!, true)
-                  }
-                  className="hover:cursor-pointer"
-                >
-                  Reply
-                </span>
+                {childComment.userId !== currentUser!.id && (
+                  <span
+                    onClick={() =>
+                      replyHandler(
+                        childComment.user.username,
+                        childComment.parentId!,
+                        childComment.userId
+                      )
+                    }
+                    className="hover:cursor-pointer"
+                  >
+                    Reply
+                  </span>
+                )}
                 {session?.user.id === childComment.userId && (
                   <div
                     onClick={() => setIsControlMenuOpen(true)}

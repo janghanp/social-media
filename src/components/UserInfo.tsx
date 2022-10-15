@@ -24,18 +24,14 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
   const [isFollowing, setIsFollowing] = useState<boolean>(
     !!currentUser?.followingIds.find((id) => id === postAuthor.id)
   );
-
   const [followerCounts, setFollowerCounts] = useState<number>(postAuthor._count!.followedBy);
-
   const [followingCounts, setFollowingCounts] = useState<number>(postAuthor._count!.following);
-
   const [toggleFriendshipModal, setToggleFriendshipModal] = useState<FriendshipModalType>({
     isOpen: false,
     status: '',
   });
 
   useEffect(() => {
-    //Props as an initial state.
     setFollowerCounts(postAuthor._count!.followedBy);
     setFollowingCounts(postAuthor._count!.following);
     setIsFollowing(!!currentUser?.followingIds.find((id) => id === postAuthor.id));
@@ -64,8 +60,10 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
       updatedCurrentUser = data;
 
       if (postAuthor.id === currentUser!.id) {
+        console.log(1);
         setFollowingCounts((prevState) => prevState + 1);
       } else if (receiverId === postAuthor.id) {
+        console.log(2);
         setFollowerCounts((prevState) => prevState + 1);
         setIsFollowing((prevState) => !prevState);
       }
@@ -92,6 +90,10 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
   const showFriendshipModal = (status: 'isFollowing' | 'isFollowedBy') => {
     setToggleFriendshipModal({ isOpen: true, status });
   };
+
+  console.log({ followerCounts });
+  console.log({ followingCounts });
+  console.log({ currentUser });
 
   return (
     <>

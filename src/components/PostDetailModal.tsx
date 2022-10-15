@@ -57,7 +57,7 @@ const PostDetailModal = ({ postId, closeModal, deletePostHandler, editPostHandle
           </div>
           <div className="grid grid-cols-5 gap-x-2">
             <div className="relative z-10 col-span-5 flex w-full justify-center md:col-span-3">
-              <div className="w-[80%]">
+              <div className="w-[90%]">
                 <ImageSlide files={post.files} />
               </div>
             </div>

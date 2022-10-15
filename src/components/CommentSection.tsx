@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -60,13 +61,15 @@ interface Props {
 const CommentSection = ({ post }: Props) => {
   const { data: session } = useSession();
 
+  const router = useRouter();
+
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [isReply, setIsReply] = useState<boolean>(false);
-  const [isReplyOfReply, setIsReplyOfReply] = useState<boolean>(false);
+  const [replyOfReplyId, setReplyOfReplyId] = useState<string>('');
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [editingCommentId, setEditingCommentId] = useState<string>('');
   const [replyingCommentId, setReplyingCommentId] = useState<string>('');
@@ -201,9 +204,16 @@ const CommentSection = ({ post }: Props) => {
       mentionUser,
     });
 
-    if (currentUser!.id !== replyingCommentUserId || isReplyOfReply) {
-      console.log('send a notification!');
-
+    if (replyOfReplyId) {
+      sendNotification(
+        currentUser!.id,
+        replyOfReplyId,
+        'REPLY',
+        `${window.location.origin}/posts/${post.id}`,
+        undefined,
+        postThumbnailKey
+      );
+    } else if (currentUser!.id !== replyingCommentUserId) {
       sendNotification(
         currentUser!.id,
         replyingCommentUserId,
@@ -215,6 +225,11 @@ const CommentSection = ({ post }: Props) => {
     }
 
     setIsReply(false);
+
+    if (replyOfReplyId) {
+      setReplyOfReplyId('');
+    }
+
     setReplyingCommentId('');
     setCurrentCommentInput('');
     setCurrentComments((prevState) => {
@@ -272,7 +287,10 @@ const CommentSection = ({ post }: Props) => {
     <div className="relative col-span-5 max-h-max md:col-span-2 md:flex md:flex-col md:justify-between">
       <div className="hidden max-h-max md:flex md:flex-col md:justify-between">
         <div className="flex items-center space-x-3 border-b p-3">
-          <div className="avatar overflow-hidden rounded-full">
+          <div
+            onClick={() => router.push(`/${post.user.username}`)}
+            className="avatar overflow-hidden rounded-full hover:cursor-pointer"
+          >
             <Image src={post.user.image} width={40} height={40} alt="Image" />
           </div>
           <span className="text-sm text-gray-500">
@@ -317,7 +335,7 @@ const CommentSection = ({ post }: Props) => {
                     setCurrentComments={setCurrentComments}
                     setReplyingCommentId={setReplyingCommentId}
                     setReplyingCommentUserId={setReplyingCommentUserId}
-                    setIsReplyOfReply={setIsReplyOfReply}
+                    setReplyOfReplyId={setReplyOfReplyId}
                   />
                 </Fragment>
               );
