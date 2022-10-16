@@ -142,8 +142,6 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
   };
 
   const createCustomFile = async (Key: string, ratio: number) => {
-    console.log('createCustomFile called');
-
     const blobImage = await fetch(`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${Key}`).then(
       (response) => {
         return response.blob();
