@@ -71,11 +71,12 @@ export interface Notification {
   senderId: string;
   receiverId: string;
   targetId?: string;
-  thumbnailKey?: string;
+  postId?: string;
   type: Type;
   link: string;
   is_read: boolean;
   is_clicked: boolean;
   createdAt: Date;
   sender: User;
+  in_what_post?: { files: FileInfo[] };
 }

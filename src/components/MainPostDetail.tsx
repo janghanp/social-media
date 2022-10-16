@@ -9,12 +9,7 @@ interface Props {
 
 const MainPostDetail = ({ mainPost }: Props) => {
   return (
-    <PostProvider
-      postId={mainPost.id}
-      postAuthorId={mainPost.userId}
-      postThumbnailKey={`${mainPost.files[0].Key}`}
-      initialIsModal={false}
-    >
+    <PostProvider postId={mainPost.id} postAuthorId={mainPost.userId} initialIsModal={false}>
       <div className="flex w-full flex-row items-start justify-center border-b border-gray-300 pb-10">
         <div className="relative rounded-md border-2 border-primary bg-white p-3 shadow-lg md:w-11/12 lg:w-10/12 xl:w-[1150px]">
           <div className="mb-2 flex w-full items-center justify-end"></div>

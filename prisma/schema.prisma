@@ -65,9 +65,10 @@ model Post {
   likedByIds          String[] @db.ObjectId
   parentCommentsCount Int      @default(0)
 
-  user     User      @relation("UserAndPosts", fields: [userId], references: [id])
-  comments Comment[] @relation("PostAndComments")
-  likedBy  User[]    @relation("UsersLikePosts", fields: [likedByIds], references: [id])
+  user         User           @relation("UserAndPosts", fields: [userId], references: [id])
+  comments     Comment[]      @relation("PostAndComments")
+  likedBy      User[]         @relation("UsersLikePosts", fields: [likedByIds], references: [id])
+  Notification Notification[] @relation("PostAndNotifications")
 }
 
 model Comment {
@@ -97,19 +98,18 @@ enum Type {
 }
 
 model Notification {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  senderId     String   @db.ObjectId
-  receiverId   String   @db.ObjectId
-  targetId     String?  @db.ObjectId
-  type         Type
-  is_read      Boolean  @default(false)
-  is_clicked   Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  link         String
-  thumbnailKey String?
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  senderId   String   @db.ObjectId
+  receiverId String   @db.ObjectId
+  targetId   String?  @db.ObjectId
+  type       Type
+  is_read    Boolean  @default(false)
+  is_clicked Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  link       String
+  postId     String?  @db.ObjectId
 
-  //one to many relation
-  receiver User @relation("UserReceiveNotifications", fields: [receiverId], references: [id])
-  //one to many relation
-  sender   User @relation("UserSendNotifications", fields: [senderId], references: [id])
+  receiver     User  @relation("UserReceiveNotifications", fields: [receiverId], references: [id])
+  sender       User  @relation("UserSendNotifications", fields: [senderId], references: [id])
+  in_what_post Post? @relation("PostAndNotifications", fields: [postId], references: [id])
 }

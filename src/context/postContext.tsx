@@ -10,7 +10,6 @@ interface Props {
   initialLikesCount?: number;
   postId: string;
   postAuthorId: string;
-  postThumbnailKey: string;
   initialIsModal: boolean;
 }
 
@@ -22,7 +21,6 @@ interface PostContextType {
   isModal: boolean;
   postId: string;
   postAuthorId: string;
-  postThumbnailKey: string;
   setPreviewComments: Dispatch<SetStateAction<CommentType[]>>;
   setTotalCommentsCount: Dispatch<SetStateAction<number>>;
   setIsLiked: Dispatch<SetStateAction<boolean>>;
@@ -36,7 +34,6 @@ const defaultValue: PostContextType = {
   totalLikesCount: 0,
   postId: '',
   postAuthorId: '',
-  postThumbnailKey: '',
   isModal: true,
   setPreviewComments: () => {},
   setTotalCommentsCount: () => {},
@@ -55,7 +52,6 @@ export function PostProvider({
   initialIsModal,
   postId,
   postAuthorId,
-  postThumbnailKey,
 }: Props) {
   const [previewComments, setPreviewComments] = useState<CommentType[]>(
     initialPreviewComments || []
@@ -77,7 +73,6 @@ export function PostProvider({
         totalLikesCount,
         postId,
         postAuthorId,
-        postThumbnailKey,
         setPreviewComments,
         setTotalCommentsCount,
         setIsLiked,

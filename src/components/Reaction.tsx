@@ -21,7 +21,6 @@ const Reaction = ({ openPostDetailModal }: Props) => {
     totalLikesCount,
     postId,
     postAuthorId,
-    postThumbnailKey,
     setIsLiked,
     setTotalLikesCount,
   } = usePostContext();
@@ -54,7 +53,7 @@ const Reaction = ({ openPostDetailModal }: Props) => {
         'LIKEPOST',
         `${window.location.origin}/posts/${postId}`,
         postId,
-        postThumbnailKey
+        postId
       );
     }
   };

@@ -13,7 +13,6 @@ import ControlMenu from './ControlMenu';
 import ChildComment from './ChildComment';
 import { useCurrentUserState } from '../store';
 import { sendNotification } from '../lib/sendNotification';
-import { usePostContext } from '../context/postContext';
 
 dayjs.extend(relativeTime);
 
@@ -51,8 +50,6 @@ const Comment = ({
   const router = useRouter();
 
   const currentUser = useCurrentUserState((state) => state.currentUser);
-
-  const { postThumbnailKey } = usePostContext();
 
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
   const [likesCount, setLikesCount] = useState<number>(comment._count ? comment._count.likedBy : 0);
@@ -107,8 +104,8 @@ const Comment = ({
         comment.userId,
         'LIKECOMMENT',
         `${window.location.origin}/posts/${postId}`,
-        comment.id,
-        postThumbnailKey
+        postId,
+        comment.id
       );
     }
 

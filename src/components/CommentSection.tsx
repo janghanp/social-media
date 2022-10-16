@@ -80,7 +80,7 @@ const CommentSection = ({ post }: Props) => {
   const [currentComments, setCurrentComments] = useState<CommentType[]>([]);
   const [skip, setSkip] = useState<number>(0);
 
-  const { postThumbnailKey, setTotalCommentsCount, setPreviewComments, isModal } = usePostContext();
+  const { setTotalCommentsCount, setPreviewComments, isModal } = usePostContext();
 
   useEffect(() => {
     async function fetchComments(): Promise<void> {
@@ -144,8 +144,8 @@ const CommentSection = ({ post }: Props) => {
         post.userId,
         'COMMENT',
         `${window.location.origin}/posts/${post.id}`,
-        undefined,
-        postThumbnailKey
+        post.id,
+        undefined
       );
     }
 
@@ -210,8 +210,8 @@ const CommentSection = ({ post }: Props) => {
         replyOfReplyId,
         'REPLY',
         `${window.location.origin}/posts/${post.id}`,
-        undefined,
-        postThumbnailKey
+        post.id,
+        undefined
       );
     } else if (currentUser!.id !== replyingCommentUserId) {
       sendNotification(
@@ -219,8 +219,8 @@ const CommentSection = ({ post }: Props) => {
         replyingCommentUserId,
         'REPLY',
         `${window.location.origin}/posts/${post.id}`,
-        undefined,
-        postThumbnailKey
+        post.id,
+        undefined
       );
     }
 

@@ -76,7 +76,6 @@ const Post = ({ post }: Props) => {
     <PostProvider
       postId={post.id}
       postAuthorId={post.userId}
-      postThumbnailKey={`${post.files[0].Key}`}
       initialIsLiked={session ? post.likedByIds.includes(session!.user.id) : false}
       initialLikesCount={post._count.likedBy}
       initialPreviewComments={post.comments}

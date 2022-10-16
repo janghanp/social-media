@@ -29,6 +29,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ],
           },
           take: 50,
+          include: {
+            in_what_post: {
+              select: {
+                files: true,
+              },
+            },
+          },
         });
 
         return res.status(200).send(unReadNotifications);
@@ -41,6 +48,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         include: {
           sender: true,
+          in_what_post: {
+            select: {
+              files: true,
+            },
+          },
         },
         orderBy: {
           createdAt: 'desc',
@@ -62,15 +74,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         type,
         link,
         targetId,
-        thumbnailKey,
+        postId,
       }: {
         senderId: string;
         receiverId: string;
         type: Type;
         link: string;
         targetId?: string;
-        thumbnailKey?: string;
+        postId: string;
       } = req.body;
+
+      console.log({ senderId, receiverId, type, link, targetId, postId });
 
       if (type === 'FOLLOW') {
         //Don't send a notification when a user re-follows people.
@@ -120,7 +134,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           type,
           targetId,
           link,
-          thumbnailKey,
+          postId,
         },
       });
 

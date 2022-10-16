@@ -57,7 +57,9 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
         requesterId,
         receiverId,
         'FOLLOW',
-        `${window.location.origin}/${currentUser?.username}`
+        `${window.location.origin}/${currentUser?.username}`,
+        undefined,
+        undefined
       );
 
       updatedCurrentUser = data;
