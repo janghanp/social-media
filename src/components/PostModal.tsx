@@ -118,7 +118,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
     if (isEditing && formik.values.files.length === 0 && !isInitializing) {
       setInitialFiles();
     }
-  }, [initialFiles, isEditing, setIsInitializing, formik]);
+  }, [initialFiles, isEditing, setIsInitializing, formik, isInitializing]);
 
   const copyObjectsInUse = async (files: CustomFile[], body: string) => {
     const fileInfos = files.map((file) => ({

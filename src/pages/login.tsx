@@ -41,7 +41,7 @@ const Login: NextPage = () => {
   }, [router.query]);
 
   return (
-    <div className="container mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center">
+    <div className="container mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-5">
       {signInError && (
         <div className="alert alert-warning fixed top-60 max-w-2xl shadow-lg">
           <div>
