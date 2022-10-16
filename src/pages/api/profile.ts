@@ -5,10 +5,10 @@ import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { prisma } from '../../lib/prisma';
 
 const s3 = new S3Client({
-  region: process.env.AWS_REGION as string,
+  region: process.env.AWS_REGION_P as string,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID_P as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_P as string,
   },
 });
 
