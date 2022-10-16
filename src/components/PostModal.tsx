@@ -101,7 +101,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
     setIsPostModalOpen,
   ]);
 
-  //When editing
+  //When editing initialzing existing files.
   useEffect(() => {
     const setInitialFiles = async () => {
       setIsInitializing(true);
@@ -115,10 +115,10 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
       setIsInitializing(false);
     };
 
-    if (isEditing && formik.values.files.length === 0) {
+    if (isEditing && formik.values.files.length === 0 && !isInitializing) {
       setInitialFiles();
     }
-  }, [initialFiles, isEditing, formik, setIsInitializing]);
+  }, [initialFiles, isEditing, setIsInitializing, formik]);
 
   const copyObjectsInUse = async (files: CustomFile[], body: string) => {
     const fileInfos = files.map((file) => ({
@@ -142,6 +142,8 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
   };
 
   const createCustomFile = async (Key: string, ratio: number) => {
+    console.log('createCustomFile called');
+
     const blobImage = await fetch(`${process.env.NEXT_PUBLIC_AWS_BUCKET_URL}/posts/${Key}`).then(
       (response) => {
         return response.blob();
