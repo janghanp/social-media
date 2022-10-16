@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { User } from '../types';
 import { useCurrentUserState } from '../store';
@@ -17,12 +17,8 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
   const currentUser = useCurrentUserState((state) => state.currentUser);
 
   const [isCurrenUserFollowingThisUser, setIsCurrentUserFollowingThisUser] = useState<boolean>(
-    !!friend.followedByIds.find((id) => id === currentUser!.id)
+    !!currentUser!.followingIds.find((id) => id === friend.id)
   );
-
-  useEffect(() => {
-    setIsCurrentUserFollowingThisUser(!!friend.followedByIds.find((id) => id === currentUser!.id));
-  }, [friend.followedByIds, currentUser]);
 
   const isMe = friend.id === currentUser!.id;
 
@@ -48,7 +44,6 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
 
   return (
     <div className="flex w-full items-center justify-between">
-      {/* user info */}
       <div className="flex">
         <div
           onClick={avatarClickHandler}
@@ -61,8 +56,6 @@ const Friend = ({ friend, closeFriendshipModal, toggleFriendship }: Props) => {
           <span className="text-sm text-gray-400">{trimText(friend.username)}</span>
         </div>
       </div>
-
-      {/* button */}
       {isMe ? (
         ''
       ) : (

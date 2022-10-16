@@ -34,8 +34,11 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
   useEffect(() => {
     setFollowerCounts(postAuthor._count!.followedBy);
     setFollowingCounts(postAuthor._count!.following);
+  }, [postAuthor]);
+
+  useEffect(() => {
     setIsFollowing(!!currentUser?.followingIds.find((id) => id === postAuthor.id));
-  }, [postAuthor, currentUser?.followingIds]);
+  }, [postAuthor.id, currentUser?.followingIds]);
 
   const toggleFriendship = async (
     requesterId: string,
@@ -60,10 +63,8 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
       updatedCurrentUser = data;
 
       if (postAuthor.id === currentUser!.id) {
-        console.log(1);
         setFollowingCounts((prevState) => prevState + 1);
       } else if (receiverId === postAuthor.id) {
-        console.log(2);
         setFollowerCounts((prevState) => prevState + 1);
         setIsFollowing((prevState) => !prevState);
       }
@@ -90,10 +91,6 @@ const UserInfo = ({ postAuthor, totalPostsCount }: Props) => {
   const showFriendshipModal = (status: 'isFollowing' | 'isFollowedBy') => {
     setToggleFriendshipModal({ isOpen: true, status });
   };
-
-  console.log({ followerCounts });
-  console.log({ followingCounts });
-  console.log({ currentUser });
 
   return (
     <>
