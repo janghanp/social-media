@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 const Home: NextPage<Props> = ({ initialPosts }: Props) => {
   return (
     <>
-      <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row  px-5 pt-10 lg:px-0">
+      <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-row px-3 pt-10 lg:px-0">
         <PostsList initialPosts={initialPosts} />
       </div>
     </>

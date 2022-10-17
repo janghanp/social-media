@@ -173,7 +173,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
       ></div>
       {isLoading && (
         <div className="fixed inset-0 z-50 bg-black/30">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pr-12">
             <FadeLoader
               loading={isLoading}
               color="#ffffff"
@@ -188,7 +188,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
       <div
         className={`fixed top-10 ${
           formik.values.files.length !== 0 || isInitializing ? 'bottom-10' : 'bottom-auto'
-        } left-1/2 z-40 w-[90%] -translate-x-1/2 overflow-y-auto rounded-md border-2 border-primary bg-white p-7 shadow-lg sm:w-[650px] sm:p-10`}
+        } left-1/2 z-40 w-[98%] -translate-x-1/2 overflow-y-auto rounded-md border-2 border-primary bg-white p-7 shadow-lg sm:w-[650px] sm:p-10`}
       >
         <h3 className="mb-5 text-xl font-bold sm:text-2xl">What is on your mind?</h3>
         <button
