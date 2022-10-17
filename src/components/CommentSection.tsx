@@ -284,12 +284,12 @@ const CommentSection = ({ post }: Props) => {
   };
 
   return (
-    <div className="relative col-span-5 max-h-max md:col-span-2 md:flex md:flex-col md:justify-between">
-      <div className="hidden max-h-max md:flex md:flex-col md:justify-between">
+    <div className="relative h-[1000px] w-full max-w-[500px] flex-grow sm:h-auto">
+      <div>
         <div className="flex items-center space-x-3 border-b p-3">
           <div
             onClick={() => router.push(`/${post.user.username}`)}
-            className="avatar overflow-hidden rounded-full hover:cursor-pointer"
+            className="avatar overflow-hidden rounded-full hover:cursor-pointer flex-none"
           >
             <Image src={post.user.image} width={40} height={40} alt="Image" />
           </div>
@@ -299,8 +299,8 @@ const CommentSection = ({ post }: Props) => {
         </div>
         <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
           <div className="flex w-auto gap-x-2 p-3">
-            <div className="avatar overflow-hidden">
-              <div className="flex h-[40px]  w-[40px] items-center justify-center rounded-full">
+            <div className="avatar overflow-hidden flex-none">
+              <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full">
                 <Image src={post.user.image} width={40} height={40} alt="Image" />
               </div>
             </div>
@@ -343,7 +343,7 @@ const CommentSection = ({ post }: Props) => {
           </CommentsList>
         </div>
       </div>
-      <div className="border-t-0 md:border-t">
+      <div className="absolute bottom-0 w-full border-t">
         <CommentInputBox
           isEdit={isEdit}
           isReply={isReply}
