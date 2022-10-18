@@ -41,7 +41,7 @@ const PostDetailModal = ({ postId, closeModal, deletePostHandler, editPostHandle
           </div>
         </div>
       ) : (
-        <div className="fixed left-1/2 top-1/2 z-40 h-full max-h-[98%] w-[98%] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-md border-2 border-primary bg-white p-3 shadow-lg sm:h-auto sm:w-[95%] md:w-11/12 xl:w-[1150px]">
+        <div className="fixed left-1/2 top-1/2 z-40 h-full w-full -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-md border-2 border-primary bg-white p-3 shadow-lg sm:h-auto sm:w-[95%] md:w-11/12 xl:w-[1150px]">
           <div className="mb-2 flex w-full items-center justify-end">
             {currentUser?.id === post.userId && (
               <div
@@ -56,18 +56,12 @@ const PostDetailModal = ({ postId, closeModal, deletePostHandler, editPostHandle
             </button>
           </div>
 
-
-          <div className="flex h-[95%] flex-col items-center justify-start sm:h-full sm:flex-row sm:items-stretch sm:justify-around">
-            <div className="relative z-10 flex w-full max-w-[600px] justify-center ">
-              <div className="w-[90%]">
-                <ImageSlide files={post.files} />
-              </div>
+          <div className="flex h-[95%] flex-col items-center justify-start sm:h-full sm:flex-row sm:items-stretch sm:justify-around gapx-0 sm:gap-x-5">
+            <div className="w-[80%] sm:w-[50%]">
+              <ImageSlide files={post.files} />
             </div>
             <CommentSection post={post} />
           </div>
-
-
-
         </div>
       )}
       {isControlMenuOpen && (

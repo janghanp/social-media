@@ -48,7 +48,7 @@ const PostDetailPage = ({ mainPost, posts }: Props) => {
     <>
       <div className="container mx-auto mt-16 flex min-h-screen max-w-4xl flex-col px-2 pt-10 lg:px-0">
         <MainPostDetail mainPost={mainPost} />
-        <UserPosts posts={posts} />
+        <UserPosts posts={posts} postAuthorName={mainPost.user.username} />
       </div>
     </>
   );

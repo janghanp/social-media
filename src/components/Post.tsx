@@ -91,7 +91,7 @@ const Post = ({ post }: Props) => {
             >
               <Image src={post.user.image} width={40} height={40} alt="userImage" />
             </div>
-            <span className="text-sm lowercase text-gray-500">
+            <span className="text-sm text-gray-500">
               {post.user.username} &nbsp;• &nbsp; {dayjs().to(dayjs(post.createdAt))}
             </span>
           </div>

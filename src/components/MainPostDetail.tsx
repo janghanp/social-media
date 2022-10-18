@@ -12,11 +12,9 @@ const MainPostDetail = ({ mainPost }: Props) => {
     <PostProvider postId={mainPost.id} postAuthorId={mainPost.userId} initialIsModal={false}>
       <div className="w-full flex-row items-start justify-center border-b border-gray-300 pb-10">
         <div className="h-[85vh] w-full rounded-md border-2 border-primary p-3 sm:h-auto">
-          <div className="flex h-full flex-col items-center justify-start sm:h-full sm:flex-row sm:items-stretch sm:justify-around">
-            <div className="relative z-10 flex w-full max-w-[600px] justify-center ">
-              <div className="w-[90%]">
-                <ImageSlide files={mainPost.files} />
-              </div>
+          <div className="flex h-full flex-col items-center justify-start gap-x-0 sm:h-full sm:flex-row sm:items-stretch sm:justify-around sm:gap-x-5">
+            <div className="w-[80%] sm:w-[50%]">
+              <ImageSlide files={mainPost.files} />
             </div>
             <CommentSection post={mainPost} />
           </div>

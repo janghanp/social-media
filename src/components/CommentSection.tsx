@@ -286,10 +286,10 @@ const CommentSection = ({ post }: Props) => {
   return (
     <div className="relative h-[1000px] w-full max-w-[500px] flex-grow sm:h-auto">
       <div>
-        <div className="flex items-center space-x-3 border-b p-3">
+        <div className="hidden items-center space-x-3 border-b p-3 sm:flex">
           <div
             onClick={() => router.push(`/${post.user.username}`)}
-            className="avatar overflow-hidden rounded-full hover:cursor-pointer flex-none"
+            className="avatar flex-none overflow-hidden rounded-full hover:cursor-pointer"
           >
             <Image src={post.user.image} width={40} height={40} alt="Image" />
           </div>
@@ -297,9 +297,9 @@ const CommentSection = ({ post }: Props) => {
             {post.user.username} &nbsp;• &nbsp; {dayjs().to(dayjs(post.createdAt))}
           </span>
         </div>
-        <div className="absolute top-20 bottom-16 w-full overflow-y-auto">
+        <div className="absolute top-5 bottom-16 w-full overflow-y-auto sm:top-20">
           <div className="flex w-auto gap-x-2 p-3">
-            <div className="avatar overflow-hidden flex-none">
+            <div className="avatar flex-none overflow-hidden">
               <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full">
                 <Image src={post.user.image} width={40} height={40} alt="Image" />
               </div>
