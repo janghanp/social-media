@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import Image from 'next/image';
 import dayjs from 'dayjs';
+import { PulseLoader } from 'react-spinners';
 
 import { Comment as CommentType } from '../types';
 import { AiOutlineEllipsis } from 'react-icons/ai';
@@ -38,10 +39,13 @@ const ChildComment = ({
     childComment._count ? childComment._count.likedBy : 0
   );
   const [isControlMenuOpen, setIsControlMenuOpen] = useState<boolean>(false);
+  const [isLikeLoading, setIsLikeLoading] = useState<boolean>(false);
 
   const { postId, setTotalCommentsCount, isModal } = usePostContext();
 
   const likeCommentHandler = async () => {
+    setIsLikeLoading(true);
+
     await axios.post('/api/likeComment', {
       commentId: childComment.id,
       userId: session!.user.id,
@@ -85,6 +89,8 @@ const ChildComment = ({
         }
       });
     });
+
+    setIsLikeLoading(false);
   };
 
   const deleteCommentHandler = async () => {
@@ -130,38 +136,40 @@ const ChildComment = ({
                 {likesCount} {likesCount === 1 ? 'Like' : 'Likes'}
               </span>
             )}
-            {session && (
-              <div className="flex gap-x-3 font-semibold">
+            <div className="flex gap-x-3 font-semibold">
+              {isLikeLoading ? (
+                <PulseLoader size={5} color="#d1d1d1" />
+              ) : (
                 <span
                   onClick={likeCommentHandler}
                   className={`hover:cursor-pointer ${isLiked && 'text-red-400'}`}
                 >
                   Like
                 </span>
-                {childComment.userId !== currentUser!.id && (
-                  <span
-                    onClick={() =>
-                      replyHandler(
-                        childComment.user.username,
-                        childComment.parentId!,
-                        childComment.userId
-                      )
-                    }
-                    className="hover:cursor-pointer"
-                  >
-                    Reply
-                  </span>
-                )}
-                {session?.user.id === childComment.userId && (
-                  <div
-                    onClick={() => setIsControlMenuOpen(true)}
-                    className="hidden hover:cursor-pointer group-hover:block"
-                  >
-                    <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
-                  </div>
-                )}
-              </div>
-            )}
+              )}
+              {childComment.userId !== currentUser!.id && (
+                <span
+                  onClick={() =>
+                    replyHandler(
+                      childComment.user.username,
+                      childComment.parentId!,
+                      childComment.userId
+                    )
+                  }
+                  className="hover:cursor-pointer"
+                >
+                  Reply
+                </span>
+              )}
+              {session?.user.id === childComment.userId && (
+                <div
+                  onClick={() => setIsControlMenuOpen(true)}
+                  className="hidden hover:cursor-pointer group-hover:block"
+                >
+                  <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

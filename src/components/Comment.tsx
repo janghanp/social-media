@@ -13,6 +13,7 @@ import ControlMenu from './ControlMenu';
 import ChildComment from './ChildComment';
 import { useCurrentUserState } from '../store';
 import { sendNotification } from '../lib/sendNotification';
+import { PulseLoader } from 'react-spinners';
 
 dayjs.extend(relativeTime);
 
@@ -57,6 +58,7 @@ const Comment = ({
     session && comment.likedByIds.includes(session.user.id) ? true : false
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLikeLoading, setIsLikeLoading] = useState<boolean>(false);
   const [toggleChildren, setToggleChildren] = useState<boolean>(false);
   const [childrenComments, setChildrenComments] = useState<CommentType[]>([]);
   const [childrenCount, setChildrenCount] = useState<number>(
@@ -92,6 +94,8 @@ const Comment = ({
   };
 
   const likeCommentHandler = async () => {
+    setIsLikeLoading(true);
+
     await axios.post('/api/likeComment', {
       commentId: comment.id,
       userId: session!.user.id,
@@ -135,6 +139,8 @@ const Comment = ({
         }
       });
     });
+
+    setIsLikeLoading(false);
   };
 
   const replyHandler = async (metionUser: string, commentId: string, replyOfReplyId?: string) => {
@@ -194,36 +200,38 @@ const Comment = ({
             <div className="mt-2 flex h-5 gap-x-2 text-xs text-gray-500">
               <span>{dayjs().to(dayjs(comment.createdAt))}</span>
               {likesCount > 0 && (
-                <span>
+                <span className="font-bold">
                   {likesCount} {likesCount === 1 ? 'Like' : 'Likes'}
                 </span>
               )}
-              {session && (
-                <div className="flex gap-x-3 font-semibold">
+              <div className="flex gap-x-3 font-semibold">
+                {isLikeLoading ? (
+                  <PulseLoader size={5} color='#d1d1d1' />
+                ) : (
                   <span
                     onClick={likeCommentHandler}
                     className={`hover:cursor-pointer ${isLiked && 'text-red-400'}`}
                   >
                     Like
                   </span>
-                  {comment.userId !== currentUser!.id && (
-                    <span
-                      onClick={() => replyHandler(comment.user.username, comment.id)}
-                      className="hover:cursor-pointer"
-                    >
-                      Reply
-                    </span>
-                  )}
-                  {(session?.user.id === comment.userId || session?.user.id === postAuthorId) && (
-                    <div
-                      onClick={() => setIsControlMenuOpen(true)}
-                      className="hidden hover:cursor-pointer group-hover:block"
-                    >
-                      <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
-                    </div>
-                  )}
-                </div>
-              )}
+                )}
+                {comment.userId !== currentUser!.id && (
+                  <span
+                    onClick={() => replyHandler(comment.user.username, comment.id)}
+                    className="hover:cursor-pointer"
+                  >
+                    Reply
+                  </span>
+                )}
+                {(session?.user.id === comment.userId || session?.user.id === postAuthorId) && (
+                  <div
+                    onClick={() => setIsControlMenuOpen(true)}
+                    className="hidden hover:cursor-pointer group-hover:block"
+                  >
+                    <AiOutlineEllipsis className="h-5 w-5 stroke-red-500" />
+                  </div>
+                )}
+              </div>
             </div>
             {comment._count.children > 0 && (
               <div className="mt-2 flex items-center before:mr-2 before:w-7 before:border before:content-['']">
