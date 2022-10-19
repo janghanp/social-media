@@ -52,7 +52,7 @@ const Avatar = ({ userImage, userName, signout }: Props) => {
         <li>
           <div onClick={settingsHandler}>
             <HiCog className="h-5 w-5" />
-            <span>Setttings</span>
+            <span>Settings</span>
           </div>
         </li>
         <li>
