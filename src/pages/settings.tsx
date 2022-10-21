@@ -137,7 +137,7 @@ const Settings: NextPage = () => {
   };
 
   return (
-    <div className="container relative mx-auto mt-16 flex min-h-screen max-w-4xl flex-col justify-start border px-2 pt-10 lg:px-0">
+    <div className="container relative mx-auto mt-16 flex min-h-screen max-w-4xl flex-col justify-start px-2 pt-10 lg:px-0">
       <DynamicAlert
         showAlert={showAlert}
         setShowAlert={setShowAlert}
