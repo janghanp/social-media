@@ -206,7 +206,7 @@ const Comment = ({
               )}
               <div className="flex gap-x-3 font-semibold">
                 {isLikeLoading ? (
-                  <PulseLoader size={5} color='#d1d1d1' />
+                  <PulseLoader size={5} color="#d1d1d1" />
                 ) : (
                   <span
                     onClick={likeCommentHandler}

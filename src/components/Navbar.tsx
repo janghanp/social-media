@@ -17,7 +17,7 @@ const Navbar = () => {
 
   const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
 
-  const isLoggedIn = session && currentUser ? true : false;
+  const isLoggedIn = session && currentUser;
 
   const signOutHandler = async () => {
     setCurrentUser(null);

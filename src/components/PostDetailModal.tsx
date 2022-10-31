@@ -56,7 +56,7 @@ const PostDetailModal = ({ postId, closeModal, deletePostHandler, editPostHandle
             </button>
           </div>
 
-          <div className="flex h-[95%] flex-col items-center justify-start sm:h-full sm:flex-row sm:items-stretch sm:justify-around gapx-0 sm:gap-x-5">
+          <div className="gapx-0 flex h-[95%] flex-col items-center justify-start sm:h-full sm:flex-row sm:items-stretch sm:justify-around sm:gap-x-5">
             <div className="w-[80%] sm:w-[50%]">
               <ImageSlide files={post.files} />
             </div>
