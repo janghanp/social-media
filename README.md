@@ -12,7 +12,11 @@
 
 </p>
 
--images-
+![alt text](https://github.com/janghanp/social-media/blob/main/public/images/screenshot1.png?raw=true)
+
+![alt text](https://github.com/janghanp/social-media/blob/main/public/images/screenshot2.png?raw=true)
+
+![alt text](https://github.com/janghanp/social-media/blob/main/public/images/screenshot3.png?raw=true)
 
 #### The features are:-
 
@@ -21,7 +25,6 @@
 - Authentication with NextAuth.js.
 - Infinite scroll.
 - Deployed to Vercel.
-
 
 ### Built With
 
