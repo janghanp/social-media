@@ -18,7 +18,7 @@
 
 ![alt text](https://github.com/janghanp/social-media/blob/main/public/images/screenshot3.png?raw=true)
 
-## The features are:-
+## Features
 
 - A user can edit photos before posting.
 - Images are stored in Amazon S3 bucket.
@@ -26,7 +26,7 @@
 - Infinite scroll.
 - Deployed to Vercel.
 
-## Built With
+## Teck Stack
 
 - **Typescript**
 - **Nextjs12 (without app router)**
