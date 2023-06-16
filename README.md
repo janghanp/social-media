@@ -28,9 +28,9 @@
 
 ### Built With
 
-- #### Typescript
-- #### Nextjs12 (without app router)
-- #### Tailwindcss (daisyui)
-- #### zustand & SWR & React Context
-- #### Prisma
-- #### MongoDB
+- **Typescript**
+- **Nextjs12 (without app router)**
+- **Tailwindcss (daisyui)**
+- **zustand & SWR & React Context**
+- **Prisma**
+- **MongoDB**
