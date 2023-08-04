@@ -83,7 +83,7 @@ const Welcome: NextPage = () => {
 
   return (
     <div className="fixed inset-0 z-30 bg-black/80">
-      <div className="absolute top-1/2 left-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-10 shadow-lg sm:w-[500px]">
+      <div className="absolute left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md border-2 border-primary bg-white p-10 shadow-lg sm:w-[500px]">
         <h1 className="text-center text-2xl font-semibold ">Welcome to social media!</h1>
         <h1 className="mt-5 text-center text-xl font-semibold">
           To be continued enter a username.

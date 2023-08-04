@@ -8,7 +8,7 @@
   </h3>
  <br />
  
- ### Click here for live demo   <a href="https://social-media-ten-ecru.vercel.app">Social media</a>
+ ### Click here for live demo   <a href="https://qqsocialmedia.xyz">Social media</a>
 
 </p>
 

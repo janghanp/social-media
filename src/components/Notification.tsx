@@ -25,7 +25,7 @@ const Notification = () => {
       >
         <HiOutlineBell className="h-7 w-7 hover:cursor-pointer" />
         {unReadNotifications?.length! > 0 && (
-          <div className="absolute -top-2 -right-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-white bg-red-500 text-xs font-bold text-white">
+          <div className="absolute -right-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-white bg-red-500 text-xs font-bold text-white">
             {unReadNotifications?.length}
           </div>
         )}

@@ -23,7 +23,7 @@ const Alert = ({ message, showAlert, setShowAlert }: Props) => {
           initial={{ opacity: 0, y: -60 }}
           animate={{ opacity: 1, y: -40 }}
           exit={{ opacity: 0, y: -90 }}
-          className="alert alert-success absolute right-0 left-0 text-sm shadow-lg sm:text-base"
+          className="alert alert-success absolute left-0 right-0 text-sm shadow-lg sm:text-base"
         >
           <div>
             <svg

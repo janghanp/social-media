@@ -4,7 +4,6 @@ import Cropper from 'react-easy-crop';
 import { Point, Area } from 'react-easy-crop/types';
 import FadeLoader from 'react-spinners/FadeLoader';
 import { v4 as uuidv4 } from 'uuid';
-import assignIn from 'lodash.assignin';
 
 import { CustomFile } from '../types';
 import getCroppedImg from '../lib/cropImage';
@@ -135,7 +134,7 @@ const ImageCropModal = ({ customFile, formikFiles, setImageToCrop, setFieldValue
   return ReactDom.createPortal(
     <>
       (
-      <div className="fixed top-1/2 left-1/2 z-40 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-white p-7 shadow-lg">
+      <div className="fixed left-1/2 top-1/2 z-40 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-white p-7 shadow-lg">
         <Cropper
           image={customFile.preview}
           zoom={zoom}
@@ -146,7 +145,7 @@ const ImageCropModal = ({ customFile, formikFiles, setImageToCrop, setFieldValue
           onCropComplete={onCropComplete}
         />
 
-        <div className="absolute left-1/2 bottom-10 z-40 flex -translate-x-1/2 flex-col items-center justify-center gap-y-5">
+        <div className="absolute bottom-10 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center justify-center gap-y-5">
           <div className="flex w-full items-center justify-center gap-x-5">
             <select
               className="select select-bordered select-xs max-w-xs"
@@ -185,7 +184,7 @@ const ImageCropModal = ({ customFile, formikFiles, setImageToCrop, setFieldValue
             </div>
           )}
         </div>
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <FadeLoader
             loading={isLoading}
             color="#ffffff"

@@ -40,12 +40,12 @@ const PreviewImageItem = ({ customFile, deleteFileFromFormik, setImageToCrop }: 
     <>
       <div
         onClick={() => deleteFileFromFormik(customFile)}
-        className="btn btn-circle btn-sm absolute top-3 right-3 z-10 border-none bg-black/50 hover:bg-black/30"
+        className="btn btn-circle btn-sm absolute right-3 top-3 z-10 border-none bg-black/50 hover:bg-black/30"
       >
         <MdClose />
       </div>
       <div
-        className="absolute top-3 left-3 z-10 flex flex-row items-center justify-center rounded-md bg-black/50 p-2 text-white hover:cursor-pointer hover:bg-black/30"
+        className="absolute left-3 top-3 z-10 flex flex-row items-center justify-center rounded-md bg-black/50 p-2 text-white hover:cursor-pointer hover:bg-black/30"
         onClick={() => setImageToCrop(customFile)}
       >
         <MdOutlineModeEdit className="mr-1 h-6 w-6 self-center stroke-0 text-center" />

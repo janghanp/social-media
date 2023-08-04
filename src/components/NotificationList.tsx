@@ -55,7 +55,7 @@ const NotificationList = ({
         animate={{ opacity: 1, y: -40 }}
         className="ma rounded-box absolute -right-16 top-20 z-40 max-h-[550px] w-[300px] overflow-y-auto  border-2 border-primary bg-base-100 shadow sm:right-0 sm:w-[350px]"
       >
-        <div className="flex items-center justify-between py-3 px-5">
+        <div className="flex items-center justify-between px-5 py-3">
           <span className="text-lg font-semibold">Notifications</span>
           <NotificationOption
             setIsNotificationOpen={setIsNotificationOpen}

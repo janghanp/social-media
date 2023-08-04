@@ -52,7 +52,7 @@ const UserPost = ({ post }: Props) => {
     <>
       <div className="relative h-full w-full hover:cursor-pointer" onClick={openModal}>
         {post.files!.length > 1 && (
-          <div className="absolute top-2 right-2 z-10">
+          <div className="absolute right-2 top-2 z-10">
             <HiDocumentDuplicate className="h-7 w-7" fill="white" />
           </div>
         )}

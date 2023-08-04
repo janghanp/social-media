@@ -33,7 +33,7 @@ const NotificationOption = ({ setIsNotificationOpen, refetchNotifications }: Pro
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0 }}
           onClick={clickHanlder}
-          className="transtion absolute top-10 right-5 z-50 min-w-max rounded-md border-2 border-primary bg-white p-3 duration-300 hover:cursor-pointer hover:bg-gray-100"
+          className="transtion absolute right-5 top-10 z-50 min-w-max rounded-md border-2 border-primary bg-white p-3 duration-300 hover:cursor-pointer hover:bg-gray-100"
         >
           Mark all as read
         </motion.div>

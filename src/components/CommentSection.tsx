@@ -297,7 +297,7 @@ const CommentSection = ({ post }: Props) => {
             {post.user.username} &nbsp;• &nbsp; {dayjs().to(dayjs(post.createdAt))}
           </span>
         </div>
-        <div className="absolute top-5 bottom-16 w-full overflow-y-auto sm:top-20">
+        <div className="absolute bottom-16 top-5 w-full overflow-y-auto sm:top-20">
           <div className="flex w-auto gap-x-2 p-3">
             <div className="avatar flex-none overflow-hidden">
               <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full">

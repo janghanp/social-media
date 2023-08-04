@@ -173,7 +173,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
       ></div>
       {isLoading && (
         <div className="fixed inset-0 z-50 bg-black/30">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pr-12">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pr-12">
             <FadeLoader
               loading={isLoading}
               color="#ffffff"
@@ -193,7 +193,7 @@ const PostModal = ({ postId, initialFiles, initialBody, setIsPostModalOpen }: Pr
         <h3 className="mb-5 text-xl font-bold sm:text-2xl">What is on your mind?</h3>
         <button
           onClick={cancelHandler}
-          className={`btn btn-outline btn-circle btn-sm absolute right-5 top-5 border-2 ${
+          className={`btn btn-circle btn-outline btn-sm absolute right-5 top-5 border-2 ${
             isLoading && 'btn-disabled'
           }`}
         >

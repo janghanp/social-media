@@ -51,7 +51,7 @@ const PostDetailModal = ({ postId, closeModal, deletePostHandler, editPostHandle
                 <AiOutlineEllipsis className="h-6 w-6" />
               </div>
             )}
-            <button onClick={closeModal} className={`btn btn-outline btn-circle btn-sm border-2`}>
+            <button onClick={closeModal} className={`btn btn-circle btn-outline btn-sm border-2`}>
               ✕
             </button>
           </div>
