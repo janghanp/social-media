@@ -26,7 +26,7 @@
 - Infinite scroll.
 - Deployed to Vercel.
 
-## Teck Stack
+## Tech Stack
 
 - **Typescript**
 - **Nextjs12 (without app router)**
