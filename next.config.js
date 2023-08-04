@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    outputStandalone: true
+  },
   optimizeFonts: false,
   reactStrictMode: false,
   images: {
