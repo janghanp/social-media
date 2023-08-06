@@ -20,7 +20,7 @@
 
 ## Features
 
-- A user can edit photos before posting.
+- Users can edit photos before posting.
 - Images are stored in Amazon S3 bucket.
 - Authentication with NextAuth.js.
 - Infinite scroll.
