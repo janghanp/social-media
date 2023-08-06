@@ -24,7 +24,6 @@
 - Images are stored in Amazon S3 bucket.
 - Authentication with NextAuth.js.
 - Infinite scroll.
-- Deployed to Vercel.
 
 ## Tech Stack
 
